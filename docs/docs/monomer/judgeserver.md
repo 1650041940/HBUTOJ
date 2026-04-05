@@ -6,7 +6,7 @@
 
 ## 一、常规部署
 
-1. [下载本项目](https://gitee.com/himitzh0730/hoj/tree/master/hoj-springboot)，git clone或者download zip
+1. [下载本项目](https://github.com/1650041940/HBUTOJ/tree/main/hoj-springboot)，git clone或者download zip
 
 2. 修改本项目路径下`/hoj-springboot/JudgeServer/src/main/resources/bootstrap.yml`的相关配置
 
@@ -45,7 +45,7 @@
    mkdir -p /hoj/testcase
    ```
 
-6. 将`JudgeServer.jar`与`/judger`文件夹内或的[判题沙盒](https://gitee.com/himitzh0730/hoj/tree/master/judger)的Judger-SandBox文件（go打包的linux系统下可执行文件）一起上传到云服务器的`/hoj/server`
+6. 将`JudgeServer.jar`与仓库 [sandbox](https://github.com/1650041940/HBUTOJ/tree/main/sandbox) 目录内的沙盒可执行文件（go打包的linux系统下可执行文件）一起上传到云服务器的`/hoj/server`
 
 7. 同时在该文件夹内创建一个JudgeServer.json的文件，JVM的配置可以直接配置，内容如下：
 
@@ -162,10 +162,10 @@
 下载打包所需文件
 
 ```shell
-git clone https://gitee.com/himitzh0730/hoj-deploy.git && cd hoj-deploy/src/judgeserver
+git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay/src/judgeserver
 ```
 
-当前文件夹为打包`hoj-judgeserver`镜像的相关文件，将这些文件复制到同一个文件夹内，**然后打包[JudgeServer](https://gitee.com/himitzh0730/hoj/tree/master/hoj-springboot/JudgeServer)（SpringBoot项目）成jar包也放到当前文件夹**，之后执行以下命令进行打包成镜像.
+当前文件夹为打包`hoj-judgeserver`镜像的相关文件，将这些文件复制到同一个文件夹内，**然后打包[JudgeServer](https://github.com/1650041940/HBUTOJ/tree/main/hoj-springboot/JudgeServer)（SpringBoot项目）成jar包也放到当前文件夹**，之后执行以下命令进行打包成镜像.
 
 ```shell
 docker build -t hoj-judgeserver .

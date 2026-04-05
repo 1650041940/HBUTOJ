@@ -2,21 +2,13 @@
   <div>
     <div class="intr-center">
       <paper-card type="server">
-        <h1 class="text-darken">HOJ</h1>
+        <h1 class="text-darken">HBUTOJ</h1>
         <h1>
-          <a href="https://gitee.com/himitzh0730/hoj" target="_blank"
-            >Hcode Online Judge</a
-          >
+          <a href="https://github.com/1650041940" target="_blank">GitHub</a>
         </h1>
         <p>
-          {{ $t('m.Leader_BackEnd_FrontEnd_Engineer') }} / Himit_ZH
-          <a href="https://github.com/HimitZH" class="icon" target="_blank"
-            ><i class="fa fa-github"></i>
-          </a>
-        </p>
-        <p>
-          {{ $t('m.Group_Function_Development_Contributor') }} / 冷蕴
-          <a href="https://github.com/IUaenaSong" class="icon" target="_blank"
+          {{ $t('m.Leader_BackEnd_FrontEnd_Engineer') }} / 1650041940
+          <a href="https://github.com/1650041940" class="icon" target="_blank"
             ><i class="fa fa-github"></i>
           </a>
         </p>

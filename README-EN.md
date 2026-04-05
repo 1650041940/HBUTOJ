@@ -1,4 +1,4 @@
-# Hcode Online Judge（HOJ）
+# HBUTOJ
 
 ![logo](./logo.png)
 
@@ -11,11 +11,20 @@
 [![Redis](https://img.shields.io/badge/Redis-5.0.9-red)](https://redis.io/)
 [![Nacos](https://img.shields.io/badge/Nacos-1.4.2-%23267DF7)](https://github.com/alibaba/nacos)
 [![Vue](https://img.shields.io/badge/Vue-2.6.11-success)](https://cn.vuejs.org/)
-[![Github Star](https://img.shields.io/github/stars/HimitZH/HOJ?style=social)](https://github.com/HimitZH/HOJ)
-[![Gitee Star](https://gitee.com/himitzh0730/hoj/badge/star.svg)](https://gitee.com/himitzh0730/hoj)
-[![QQ Group 598587305](https://img.shields.io/badge/QQ%20Group-598587305-blue)](https://qm.qq.com/cgi-bin/qm/qr?k=WWGBZ5gfDiBZOcpNvM8xnZTfUq7BT4Rs&jump_from=webapi)
 
 [简体中文](./README.md) | English
+
+## Attribution
+
+HBUTOJ is a fork / derivative work based on the open-source project HOJ. Thanks to the upstream author and contributors.
+
+- Project repo: https://github.com/1650041940/HBUTOJ
+- Deploy repo: https://github.com/1650041940/hbutoj_deplay
+- License: see LICENSE in this repository
+
+(Upstream project: HOJ. To avoid documentation divergence, we do not keep upstream repo direct links here.)
+
+Note: the public-facing name is HBUTOJ. Some internal identifiers (package names / config keys) may still keep upstream naming for compatibility.
 
 ## Overview
 
@@ -26,36 +35,34 @@
 - Perfect contest function：**Star team、 Attention team、 External Rank、Scroll Board**
 - **Support group and discussion area function**
 
-|            Online Demo             |                Documents                 |               Github&Gitee               |         QQ Group          |
-| :--------------------------------: | :--------------------------------------: | :--------------------------------------: | :-----------------------: |
-| [https://hdoi.cn](https://hdoi.cn) | [https://docs.hdoi.cn](https://docs.hdoi.cn) | [https://github.com/HimitZH/HOJ](https://github.com/HimitZH/HOJ)  [https://gitee.com/himitzh0730/hoj](https://gitee.com/himitzh0730/hoj) | 598587305（Full）、743568562 |
+See the upstream demo/docs links in the Attribution section.
 
 ## Installation
 
-Please running HOJ on the following platforms:
+Please run HBUTOJ on the following platforms:
 
 - **Ubuntu 18.04** and above
 - **CentOS Linux release 8.0** and above
 
-And the server configuration requirements for stable operation of HOJ:
+And the server configuration requirements for stable operation of HBUTOJ:
 
 - **CPU:  2 cores** and above
 - **Memory:  4G** and above
 
-For installation options and troubleshooting tips, see [HOJ Documents](https://docs.hdoi.cn/deploy/docker).
+For upstream installation notes and troubleshooting tips, see the upstream docs link in Attribution.
 
 
 
 > One click deployment Base On Docker & Docker-compose
 
-If your system already has **Docker** and **Docker-compose** and want to quickly taste the functions of the HOJ, you can deploy it quickly according to the following commands：
+If your system already has **Docker** and **Docker-compose** and you want to quickly try HBUTOJ, deploy it using your own deploy repository (see your `hbutoj_deplay` repo).
 
 ```shell
 sudo apt-get update && sudo apt-get install -y vim curl git
 
 sudo apt-get update
 
-git clone https://github.com/HimitZH/HOJ-Deploy.git && cd HOJ-Deploy && cd standAlone
+git clone <YOUR_DEPLOY_REPO_URL> && cd <YOUR_DEPLOY_REPO_DIR> && cd standAlone
 
 # Change some configuration such as password.
 vim .env
@@ -65,7 +72,7 @@ sudo docker-compose up -d
 
 According to the network speed, the setup can be completed automatically in about 5 to 20 minutes without manual intervention.
 
-Wait for the command execution to complete, and then run `docker ps`. When you see that the status of all the containers does not have `unhealthy` , it means HOJ has started successfully.
+Wait for the command execution to complete, and then run `docker ps`. When you see that the status of all the containers does not have `unhealthy` , it means HBUTOJ has started successfully.
 
 ## Browser Support
 
@@ -73,7 +80,7 @@ Modern browsers(chrome, firefox) and Internet Explorer 10+, also supports mobile
 
 ## Support & Contribution
 
-- If you think HOJ is helpful to you, please give the project a star.
+- If you think HBUTOJ is helpful to you, please give the project a star.
 - If you found any bug, please feel free to contact us [QQ Group: 598587305 ](https://qm.qq.com/cgi-bin/qm/qr?k=WWGBZ5gfDiBZOcpNvM8xnZTfUq7BT4Rs&jump_from=webapi) or issue.
 - Thanks to everyone that contributes to this project.
 
@@ -87,94 +94,94 @@ Modern browsers(chrome, firefox) and Internet Explorer 10+, also supports mobile
 
 ### 1. Home
 
-![首页英文](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/f6792ddc05f34527bdf744fa4d6d5c88.png)
+![首页英文](docs/docs/.vuepress/public/f6792ddc05f34527bdf744fa4d6d5c88.png)
 
 ### 2. Station message
 
 > System notification
 
-![站内消息系统](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/a1a83ff01be84406954537e2ab78d999.png)
+![站内消息系统](docs/docs/.vuepress/public/a1a83ff01be84406954537e2ab78d999.png)
 
 >Reply to me
 
-![站内消息系统](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/513e7e37f52f48518c2fa1bf14eeea99.png)
+![站内消息系统](docs/docs/.vuepress/public/513e7e37f52f48518c2fa1bf14eeea99.png)
 
 ### 3. Problem
 
 > Problem List
 
-![题目列表](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/d9ba009c757d48b590debe3a409c571f.png)
+![题目列表](docs/docs/.vuepress/public/0ee61f329e094592b0a0cff55d12b404.png)
 
 
 
 > Problem Details
 
-![题目详情页](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/9f872dc1974f45c389e084f0e31a5217.png)
+![题目详情页](docs/docs/.vuepress/public/9f872dc1974f45c389e084f0e31a5217.png)
 
 ### 4. Training
 
 > Training List
 
-![训练列表页](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/58ac74824fcf4963810beea7ba1203b9.png)
+![训练列表页](docs/docs/.vuepress/public/58ac74824fcf4963810beea7ba1203b9.png)
 
 > Trianing Problem List
 
-![训练题目列表页](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/b366a6a628984995b57a49c565a2ec47.png)
+![训练题目列表页](docs/docs/.vuepress/public/b366a6a628984995b57a49c565a2ec47.png)
 
 ### 5.  Contest
 
 > Contest List
 
-![比赛列表页](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/00a0438a576d43edbab676b829a38922.png)
+![比赛列表页](docs/docs/.vuepress/public/00a0438a576d43edbab676b829a38922.png)
 
 
 
 > Contest Details
 
-![比赛详情页](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/50026bde6dd64cd5929b38f8ecc6e72e.png)
+![比赛详情页](docs/docs/.vuepress/public/50026bde6dd64cd5929b38f8ecc6e72e.png)
 
 > Contest Problem List
 
-![比赛题目列表](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/8646fc212b5c47e9b35e60634cfc8d6a.png)
+![比赛题目列表](docs/docs/.vuepress/public/8646fc212b5c47e9b35e60634cfc8d6a.png)
 
 > Contest  Rank
 
 - ICPC/ACM 
 
-  ![比赛排行榜](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/c50140e3b73d482d82ca6f13f47aa080.png)
+  ![比赛排行榜](docs/docs/.vuepress/public/c50140e3b73d482d82ca6f13f47aa080.png)
 
 
 
 - OI / IOI
 
-  ![oi排行榜](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/67f6262854bb44efa70c374f1f156166.png)
+  ![oi排行榜](docs/docs/.vuepress/public/67f6262854bb44efa70c374f1f156166.png)
 
 
 
 
 - Scroll Board
 
-  ![在这里插入图片描述](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/8f8258babd3f43f78802144e7ecf18fe.png)
+  ![在这里插入图片描述](docs/docs/.vuepress/public/8f8258babd3f43f78802144e7ecf18fe.png)
 
 ### 6. Submission
 
 > Submission List
 
-![提交列表](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/20210609213021223.png)
+![提交列表](docs/docs/.vuepress/public/20210609213021223.png)
 
 ### 7. Rank
 
-![排行榜](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/407ad16361f34b44a282b07af68825e0.png)
+![排行榜](docs/docs/.vuepress/public/407ad16361f34b44a282b07af68825e0.png)
 
 ### 8. Group
 
 > Group List
 
-![团队列表页](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/7988504326c843ef94e937a2b4f32f03.png)
+![团队列表页](docs/docs/.vuepress/public/7988504326c843ef94e937a2b4f32f03.png)
 
 > Group Details
 
-![团队题目列表页](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/2c05e44f5a464381b9a357aff37b0086.png)
+![团队题目列表页](docs/docs/.vuepress/public/2c05e44f5a464381b9a357aff37b0086.png)
 
 
 
@@ -182,25 +189,25 @@ Modern browsers(chrome, firefox) and Internet Explorer 10+, also supports mobile
 
 > Disscussion List
 
-![公共讨论区](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/20210513134216723.png)
+![公共讨论区](docs/docs/.vuepress/public/20210513134216723.png)
 
 
 
 > Comment
 
-![评论组件](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/20210513142826730.png)
+![评论组件](docs/docs/.vuepress/public/20210513142826730.png)
 
 ### 10. User Info
 
 > User Home
 
-![个人首页](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/7d3e99dbc6fe4739a0720fcc019b2b6e.png)
+![个人首页](docs/docs/.vuepress/public/7d3e99dbc6fe4739a0720fcc019b2b6e.png)
 
 
 
 > Change User Info
 
-![个人设置](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/971566eeac674d388b9f5d6064286e14.png)
+![个人设置](docs/docs/.vuepress/public/971566eeac674d388b9f5d6064286e14.png)
 
 
 
@@ -208,14 +215,14 @@ Modern browsers(chrome, firefox) and Internet Explorer 10+, also supports mobile
 
 > Admin Home Page
 
-![管理后端](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/9b9674c0f30a441bb200a32756f24d2c.png)
+![管理后端](docs/docs/.vuepress/public/9b9674c0f30a441bb200a32756f24d2c.png)
 
 
 
 ### 12. Mobile
 
-![手机端](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/c7b3648217af4899bedf7f7d804968ba.png)
+![手机端](docs/docs/.vuepress/public/c7b3648217af4899bedf7f7d804968ba.png)
 
 
 
-![评论区](https://cdn.jsdelivr.net/gh/HimitZH/HOJ/docs/docs/.vuepress/public/20210509233845230.png)
+![评论区](docs/docs/.vuepress/public/20210509233845230.png)

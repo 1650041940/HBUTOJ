@@ -10,6 +10,7 @@ import ContestList from "@/views/oj/contest/ContestList.vue"
 import Problem from "@/views/oj/problem/Problem.vue"
 import ACMRank from "@/views/oj/rank/ACMRank.vue"
 import OIRank from "@/views/oj/rank/OIRank.vue"
+import RatingRank from "@/views/oj/rank/RatingRank.vue"
 import ContestDetails from "@/views/oj/contest/ContestDetails.vue"
 import ACMScoreBoard from "@/views/oj/contest/outside/ACMScoreBoard.vue"
 import OIScoreBoard from "@/views/oj/contest/outside/OIScoreBoard.vue"
@@ -74,13 +75,13 @@ const ojRoutes = [
     name: 'TrainingFullProblemDetails',
     path: '/training/:trainingID/problem/:problemID/full-screen',
     component: Problem,
-    meta: { title: 'Training Problem Details', fullScreenSource: 'training'}
+    meta: { title: 'Training Problem Details', fullScreenSource: 'training' }
   },
   {
     name: 'ContestFullProblemDetails',
     path: '/contest/:contestID/problem/:problemID/full-screen',
     component: Problem,
-    meta: { title: 'Contest Problem Details', fullScreenSource: 'contest'}
+    meta: { title: 'Contest Problem Details', fullScreenSource: 'contest' }
   },
   {
     name: 'GroupFullProblemDetails',
@@ -92,7 +93,7 @@ const ojRoutes = [
     name: 'GroupTrainingFullProblemDetails',
     path: '/group/:groupID/training/:trainingID/problem/:problemID/full-screen',
     component: Problem,
-    meta: { title: 'Group Training Problem Details', fullScreenSource: 'training'}
+    meta: { title: 'Group Training Problem Details', fullScreenSource: 'training' }
   },
   {
     path: '/training',
@@ -103,8 +104,8 @@ const ojRoutes = [
   {
     name: 'TrainingDetails',
     path: '/training/:trainingID/',
-    component:TrainingDetails,
-    meta: {title: 'Training Details'},
+    component: TrainingDetails,
+    meta: { title: 'Training Details' },
     children: [
       {
         name: 'TrainingProblemList',
@@ -147,8 +148,8 @@ const ojRoutes = [
   {
     name: 'ContestDetails',
     path: '/contest/:contestID/',
-    component:ContestDetails,
-    meta: {title: 'Contest Details',requireAuth:true},
+    component: ContestDetails,
+    meta: { title: 'Contest Details', requireAuth: true },
     children: [
       {
         name: 'ContestSubmissionList',
@@ -190,37 +191,37 @@ const ojRoutes = [
         name: 'ContestACInfo',
         path: 'ac-info',
         component: ACMInfoAdmin,
-        meta: { title: 'Contest AC Info'}
+        meta: { title: 'Contest AC Info' }
       },
       {
-        name:'ContestRejudgeAdmin',
-        path:'rejudge',
-        component:ContestRejudgeAdmin,
-        meta: { title: 'Contest Rejudge',requireSuperAdmin:true }
+        name: 'ContestRejudgeAdmin',
+        path: 'rejudge',
+        component: ContestRejudgeAdmin,
+        meta: { title: 'Contest Rejudge', requireSuperAdmin: true }
       },
       {
         name: 'ContestComment',
-        path:'comment',
+        path: 'comment',
         component: ContestComment,
-        meta: { title: 'Contest Comment', access:'contestComment'}
+        meta: { title: 'Contest Comment', access: 'contestComment' }
       },
       {
         name: 'ContestPrint',
-        path:'print',
+        path: 'print',
         component: ContestPrint,
-        meta: { title: 'Contest Print'}
+        meta: { title: 'Contest Print' }
       },
       {
         name: 'ContestAdminPrint',
-        path:'admin-print',
+        path: 'admin-print',
         component: ContestAdminPrint,
-        meta: { title: 'Contest Admin Print'}
+        meta: { title: 'Contest Admin Print' }
       },
       {
         name: 'ScrollBoard',
-        path:'scroll-board',
+        path: 'scroll-board',
         component: ScrollBoard,
-        meta: { title: 'Contest Scroll Board'}
+        meta: { title: 'Contest Scroll Board' }
       }
     ]
   },
@@ -234,7 +235,7 @@ const ojRoutes = [
     path: '/submission-detail/:submitID',
     name: 'SubmissionDetails',
     component: SubmissionDetails,
-    meta: {title: 'Submission Details' }
+    meta: { title: 'Submission Details' }
   },
   {
     path: '/acm-rank',
@@ -247,6 +248,12 @@ const ojRoutes = [
     name: 'OI Rank',
     component: OIRank,
     meta: { title: 'OI Rank' }
+  },
+  {
+    path: '/rating-rank',
+    name: 'Rating Rank',
+    component: RatingRank,
+    meta: { title: 'Rating Rank' }
   },
   {
     path: '/reset-password',
@@ -275,32 +282,32 @@ const ojRoutes = [
   {
     path: '/discussion',
     name: 'AllDiscussion',
-    meta: {title: 'Discussion', access:'discussion'},
-    component:DiscussionList
+    meta: { title: 'Discussion', access: 'discussion' },
+    component: DiscussionList
   },
   {
     path: '/discussion/:problemID',
     name: 'ProblemDiscussion',
-    meta: {title: 'Discussion', access:'discussion'},
-    component:DiscussionList
+    meta: { title: 'Discussion', access: 'discussion' },
+    component: DiscussionList
   },
   {
     path: '/discussion-detail/:discussionID',
-    name:'DiscussionDetails',
-    meta: {title: 'Discussion Details', access:'discussion'},
+    name: 'DiscussionDetails',
+    meta: { title: 'Discussion Details', access: 'discussion' },
     component: Discussion
   },
   {
     path: '/group',
     name: 'GroupList',
     component: GroupList,
-    meta: {title: 'Group'}
+    meta: { title: 'Group' }
   },
   {
     path: '/group/:groupID',
     name: 'GroupDetails',
     component: GroupDetails,
-    meta: {title: 'Group Details', requireAuth: true},
+    meta: { title: 'Group Details', requireAuth: true },
     children: [
       {
         path: 'announcement',
@@ -329,8 +336,8 @@ const ojRoutes = [
       {
         name: 'GroupTrainingDetails',
         path: 'training/:trainingID/',
-        component:TrainingDetails,
-        meta: {title: 'Group Training Details'},
+        component: TrainingDetails,
+        meta: { title: 'Group Training Details' },
         children: [
           {
             name: 'GroupTrainingProblemList',
@@ -368,24 +375,24 @@ const ojRoutes = [
         path: 'submission-detail/:submitID',
         name: 'GroupSubmissionDetails',
         component: SubmissionDetails,
-        meta: {title: 'Group Submission Details' }
+        meta: { title: 'Group Submission Details' }
       },
       {
         path: 'discussion',
         name: 'GroupDiscussionList',
         component: GroupDiscussionList,
-        meta: { title: 'Group Discussion', access:'groupDiscussion' }
+        meta: { title: 'Group Discussion', access: 'groupDiscussion' }
       },
       {
         path: 'discussion/:problemID',
         name: 'GroupProblemDiscussion',
-        meta: {title: 'Group Discussion', access:'groupDiscussion'},
-        component:GroupDiscussionList
+        meta: { title: 'Group Discussion', access: 'groupDiscussion' },
+        component: GroupDiscussionList
       },
       {
         path: 'discussion-detail/:discussionID',
-        name:'GroupDiscussionDetails',
-        meta: {title: 'Group Discussion Details', access:'groupDiscussion'},
+        name: 'GroupDiscussionDetails',
+        meta: { title: 'Group Discussion Details', access: 'groupDiscussion' },
         component: Discussion
       },
       {
@@ -410,56 +417,56 @@ const ojRoutes = [
   },
   {
     path: '/introduction',
-    meta: {title: 'Introduction'},
-    component:Introduction,
+    meta: { title: 'Introduction' },
+    component: Introduction,
   },
   {
     path: '/developer',
-    meta: {title: 'Developer'},
-    component:Developer,
+    meta: { title: 'Developer' },
+    component: Developer,
   },
   {
-    name:'Message',
-    path:'/message/',
-    component:Message,
+    name: 'Message',
+    path: '/message/',
+    component: Message,
     meta: { requireAuth: true, title: 'Message' },
     children: [
       {
         name: 'DiscussMsg',
         path: 'discuss',
         component: UserMsg,
-        meta: { requireAuth: true,title: 'Discuss Message' }
+        meta: { requireAuth: true, title: 'Discuss Message' }
       },
       {
         name: 'ReplyMsg',
         path: 'reply',
         component: UserMsg,
-        meta: { requireAuth: true,title: 'Reply Message' }
+        meta: { requireAuth: true, title: 'Reply Message' }
       },
       {
         name: 'LikeMsg',
         path: 'like',
         component: UserMsg,
-        meta: { requireAuth: true,title: 'Like Message' }
+        meta: { requireAuth: true, title: 'Like Message' }
       },
       {
         name: 'SysMsg',
         path: 'sys',
         component: SysMsg,
-        meta: { requireAuth: true,title: 'System Message' }
+        meta: { requireAuth: true, title: 'System Message' }
       },
       {
         name: 'MineMsg',
         path: 'mine',
         component: SysMsg,
-        meta: { requireAuth: true,title: 'Mine Message' }
+        meta: { requireAuth: true, title: 'Mine Message' }
       },
     ]
   },
   {
     path: '*',
-    meta: {title: '404'},
-    component:NotFound,
+    meta: { title: '404' },
+    component: NotFound,
     meta: { title: '404' }
   }
 ]

@@ -16,10 +16,11 @@ const rootState = {
   },
   websiteConfig:{
     recordName:'© 2020-2022',
-    projectName:'HOJ',
-    shortName:'OJ',
+    projectName:'HBUTOJ',
+    shortName:'HBUTOJ',
     recordUrl:'#',
     projectUrl:'#',
+    helpUrl:'#',
     openPublicDiscussion: true,
     openGroupDiscussion: true,
     openContestComment: true

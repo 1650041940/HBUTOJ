@@ -100,6 +100,38 @@
         :sm="24"
         class="phone-margin"
       >
+        <el-card v-if="isAuthenticated" class="card-top">
+          <div slot="header" class="clearfix">
+            <span class="panel-title home-title">
+              <i class="el-icon-date"></i> {{ $t('m.Daily_Problem') }}
+            </span>
+          </div>
+          <div v-loading="loading.dailyProblemLoading">
+            <template v-if="dailyProblem && dailyProblem.problemId">
+              <p style="margin: 0 0 8px 0;">
+                <a @click="goDailyProblem">{{ dailyProblem.problemId }} - {{ dailyProblem.title }}</a>
+              </p>
+              <p style="margin: 0 0 8px 0;" v-if="dailyProblem.difficulty !== null && dailyProblem.difficulty !== undefined">
+                {{ $t('m.Difficulty') }}：{{ dailyProblem.difficulty }}
+              </p>
+              <p style="margin: 0 0 8px 0;" v-if="dailyProblem.tags && dailyProblem.tags.length">
+                {{ $t('m.Tags') }}：
+                <el-tag size="mini" v-for="(tag, idx) in dailyProblem.tags" :key="idx" style="margin-right: 6px; margin-bottom: 4px;">{{ tag }}</el-tag>
+              </p>
+              <p style="margin: 0 0 8px 0;" v-if="dailyProblem.reason">
+                {{ $t('m.Recommendation_Reason') }}：{{ dailyProblem.reason }}
+              </p>
+              <div style="margin-top: 8px;">
+                <el-button type="primary" size="mini" @click="goDailyProblem">{{ $t('m.Go_Solve') }}</el-button>
+                <el-button size="mini" @click="getNextDailyProblem">{{ $t('m.Next_Problem') }}</el-button>
+              </div>
+            </template>
+            <template v-else>
+              <span>{{ $t('m.No_Data') }}</span>
+            </template>
+          </div>
+        </el-card>
+
         <template v-if="contests.length">
           <el-card>
             <div
@@ -390,7 +422,10 @@ export default {
         recent7ACRankLoading: false,
         recentUpdatedProblemsLoading: false,
         recentContests: false,
+        dailyProblemLoading: false,
       },
+      dailyProblem: null,
+      dailyProblemIndex: 1,
       carouselImgList: [
         {
           url:  require('@/assets/home1.jpeg'),
@@ -456,8 +491,49 @@ export default {
     this.getRecentContests();
     this.getRecent7ACRank();
     this.getRecentUpdatedProblemList();
+    if (this.isAuthenticated) {
+      this.getDailyProblem();
+    }
   },
   methods: {
+    getDailyProblem() {
+      this.loading.dailyProblemLoading = true;
+      this.dailyProblemIndex = 1;
+      api.getDailyProblem().then(
+        (res) => {
+          this.dailyProblem = res.data.data;
+          this.loading.dailyProblemLoading = false;
+        },
+        () => {
+          this.loading.dailyProblemLoading = false;
+        }
+      );
+    },
+    getNextDailyProblem() {
+      if (!this.dailyProblem) {
+        return;
+      }
+      this.loading.dailyProblemLoading = true;
+      api.getNextDailyProblem(this.dailyProblemIndex, this.dailyProblem.id).then(
+        (res) => {
+          this.dailyProblem = res.data.data;
+          this.dailyProblemIndex += 1;
+          this.loading.dailyProblemLoading = false;
+        },
+        () => {
+          this.loading.dailyProblemLoading = false;
+        }
+      );
+    },
+    goDailyProblem() {
+      if (!this.dailyProblem) {
+        return;
+      }
+      this.$router.push({
+        name: 'ProblemDetails',
+        params: { problemID: this.dailyProblem.problemId },
+      });
+    },
     getHomeCarousel() {
       api.getHomeCarousel().then((res) => {
         if (res.data.data != null && res.data.data.length > 0) {
@@ -545,6 +621,15 @@ export default {
   computed: {
     ...mapState(["websiteConfig"]),
     ...mapGetters(["isAuthenticated"]),
+  },
+  watch: {
+    isAuthenticated(val) {
+      if (val) {
+        this.getDailyProblem();
+      } else {
+        this.dailyProblem = null;
+      }
+    },
   },
 };
 </script>

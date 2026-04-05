@@ -1,7 +1,7 @@
 ---
 home: true
 heroImage: /logo.png
-heroText:  HOJ
+heroText:  HBUTOJ
 tagline: 基于分布式、前后端分离的高性能在线评测系统
 action:
   - text: 文档介绍 🔔
@@ -20,7 +20,7 @@ features:
   details: 判题使用 cgroup 隔离用户程序，网站权限控制完善
 - title: 多样化
   details: 独有自身判题服务，同时支持其它知名OJ题目的提交判题
-footer: MIT Licensed | Copyright © 2025.09.13 @Author Himit_ZH  QQ Group:598587305、743568562
+footer: MIT Licensed | Maintainer @1650041940
 ---
 
 [![Java](https://img.shields.io/badge/Java-1.8-informational)](http://openjdk.java.net/)
@@ -30,20 +30,17 @@ footer: MIT Licensed | Copyright © 2025.09.13 @Author Himit_ZH  QQ Group:598587
 [![Redis](https://img.shields.io/badge/Redis-5.0.9-red)](https://redis.io/)
 [![Nacos](https://img.shields.io/badge/Nacos-1.4.2-%23267DF7)](https://github.com/alibaba/nacos)
 [![Vue](https://img.shields.io/badge/Vue-2.6.11-success)](https://cn.vuejs.org/)
-[![Github Star](https://img.shields.io/github/stars/HimitZH/HOJ?style=social)](https://github.com/HimitZH/HOJ)
-[![Gitee Star](https://gitee.com/himitzh0730/hoj/badge/star.svg)](https://gitee.com/himitzh0730/hoj)
+[![Github Star](https://img.shields.io/github/stars/1650041940/HBUTOJ?style=social)](https://github.com/1650041940/HBUTOJ)
 [![QQ Group 598587305](https://img.shields.io/badge/QQ%20Group-598587305-blue)](https://qm.qq.com/cgi-bin/qm/qr?k=WWGBZ5gfDiBZOcpNvM8xnZTfUq7BT4Rs&jump_from=webapi)
 
-Hcode Online Judge (HOJ) : 基于前后端分离，分布式架构的在线测评平台（hoj），前端使用vue，后端主要使用springboot，redis，mysql，nacos等技术，**支持HDU、POJ、Codeforces（包括GYM）、AtCoder、SPOJ、Libre的Remote Judge判题，同时适配手机端、电脑端浏览，拥有讨论区与站内消息系统，支持私有训练、公开训练（题单），支持团队功能，还有完善的判题模式（普通测评、特殊测评、交互测评、子任务评测、文件IO）和完善的比赛功能（打星队伍、关注队伍、外榜、滚榜）。**
+HBUTOJ : 基于前后端分离，分布式架构的在线测评平台，前端使用vue，后端主要使用springboot，redis，mysql，nacos等技术，**支持HDU、POJ、Codeforces（包括GYM）、AtCoder、SPOJ、Libre的Remote Judge判题，同时适配手机端、电脑端浏览，拥有讨论区与站内消息系统，支持私有训练、公开训练（题单），支持团队功能，还有完善的判题模式（普通测评、特殊测评、交互测评、子任务评测、文件IO）和完善的比赛功能（打星队伍、关注队伍、外榜、滚榜）。**
 
-[Github 仓库](https://github.com/HimitZH/HOJ)
-[Gitee 仓库](https://gitee.com/himitzh0730/hoj)
+[Github 仓库](https://github.com/1650041940/HBUTOJ)
+[部署仓库](https://github.com/1650041940/hbutoj_deplay)
 
 欢迎star收藏本项目对开发者的支持，谢谢  
 有任何部署问题或项目bug请发issue或者加QQ群   
-**如果要对本项目进行商业化，请在页面底部的Powered by指向HOJ本仓库地址**
-
-[HDOI Onlie Judge](https://hdoi.cn/)
+**如果要对本项目进行商业化，请在页面底部的 Powered by 指向 HBUTOJ 项目仓库地址**
 
 ## 联系我们
 

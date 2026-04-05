@@ -107,7 +107,7 @@
 直接下载部署项目，进入到当前文件夹执行打包命令
 
 ```shell
-git clone https://gitee.com/himitzh0730/hoj-deploy.git && cd hoj-deploy/src/rsync
+git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay/src/rsync
 ```
 
 当前文件夹为打包`hoj-rsync`镜像的相关文件，将这些文件复制到同一个文件夹内，之后执行以下命令进行打包成镜像.

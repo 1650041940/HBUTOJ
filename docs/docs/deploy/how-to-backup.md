@@ -2,7 +2,7 @@
 
 ### 1. 单体部署
 
-请到`~/hoj-deploy/standAlone`的目录下，即是与`docker-compose.yml`的文件同个目录下，该目录下有个叫`hoj`的文件夹，里面的文件夹介绍如下：
+请到`~/hbutoj_deplay/standAlone`的目录下，即是与`docker-compose.yml`的文件同个目录下，该目录下有个叫`hoj`的文件夹，里面的文件夹介绍如下：
 
 ```html
 hoj
@@ -23,7 +23,7 @@ hoj
 
 注意：在新机器上启用备份的数据的操作顺序如下：
 
-1. 先将`hoj`文件夹先复制到`~/hoj-deploy/standAlone`目录里面（保证该目录无`hoj`文件夹，干净！）
+1. 先将`hoj`文件夹先复制到`~/hbutoj_deplay/standAlone`目录里面（保证该目录无`hoj`文件夹，干净！）
 2. 然后修改`.env`文件的配置，主要是`Redis`,`Nacos`,`MySQL`等的密码配置，与原先备份`hoj`文件夹时的老机器的配置一致！
 3. 最后再使用`docker-compose up -d`启动！
 
@@ -35,7 +35,7 @@ hoj
 
 - 主服务器（运行hoj-backend的服务器）
 
-  请到`~/hoj-deploy/distributed/main`的目录下，即是与`docker-compose.yml`的文件同个目录下，该目录下有个叫`hoj`的文件夹，里面的文件夹介绍如下：
+  请到`~/hbutoj_deplay/distributed/main`的目录下，即是与`docker-compose.yml`的文件同个目录下，该目录下有个叫`hoj`的文件夹，里面的文件夹介绍如下：
 
   ```html
   hoj
@@ -51,7 +51,7 @@ hoj
 
 - 判题服务器（运行hoj-judgeserver的服务器）
 
-  请到`~/hoj-deploy/distributed/judgeserver`的目录下，即是与`docker-compose.yml`的文件同个目录下，该目录下有个叫`judge`的文件夹，里面的文件夹介绍如下：
+  请到`~/hbutoj_deplay/distributed/judgeserver`的目录下，即是与`docker-compose.yml`的文件同个目录下，该目录下有个叫`judge`的文件夹，里面的文件夹介绍如下：
 
   ```html
   judge
@@ -67,7 +67,7 @@ hoj
 
 注意：在新机器上启用备份的数据的操作顺序如下：
 
-1. 先将`hoj`文件夹先复制到`~/hoj-deploy/distributed/main`目录里面（保证该目录无`hoj`文件夹，干净！）
+1. 先将`hoj`文件夹先复制到`~/hbutoj_deplay/distributed/main`目录里面（保证该目录无`hoj`文件夹，干净！）
 2. 然后修改`.env`文件的配置，主要是`Redis`,`Nacos`,`MySQL`等的密码配置，与原先备份`hoj`文件夹时的老机器的配置一致！
 3. 最后再使用`docker-compose up -d`启动！
 

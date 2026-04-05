@@ -49,7 +49,7 @@ mysql> FLUSH PRIVILEGES;
 
 （1）可以选择拉取仓库最新的docker-compose.yml文件（跟部署操作一样,但是会覆盖之前设置的参数）或者访问：
 
-https://gitee.com/himitzh0730/hoj-deploy/blob/master/standAlone/docker-compose.yml
+https://github.com/1650041940/hbutoj_deplay/blob/main/standAlone/docker-compose.yml
 
 （2）或者编辑docker-compose.yml文件，手动添加新模块
 
@@ -84,7 +84,7 @@ docker-compose up -d
 
 >  附加：如何自定义前端请看这里 => [自定义前端文档](/use/update-fe.html)
 
-（1）首先到`./hoj/hoj-vue`文件夹中，拉取[hoj-vue](https://gitee.com/himitzh0730/hoj/tree/master/hoj-vue)仓库最新的代码，请注意解决出现的冲突。
+（1）首先到`./hoj/hoj-vue`文件夹中，拉取[hoj-vue](https://github.com/1650041940/HBUTOJ/tree/main/hoj-vue)仓库最新的代码，请注意解决出现的冲突。
 
 ```shell
 git pull
@@ -96,7 +96,7 @@ git pull
 
 ```bash
 git remote -v                 # 查看主仓库的远程仓库
-git fetch origin master:temp  # 将最新的主仓库代码拉到本地一个temp的分支
+git fetch origin main:temp    # 将最新的主仓库代码拉到本地一个temp的分支
 git diff temp                 # 比较现在本地代码与最新temp分支的区别
 git merge temp                # 合并temp分支到本地的master分支
 git branch -d temp            # 删除temp这个临时分支

@@ -31,7 +31,7 @@
 
 ### (2). 部署
 
-1. [下载本项目](https://gitee.com/himitzh0730/hoj/tree/master/hoj-vue)，git clone或者download zip
+1. [下载本项目](https://github.com/1650041940/HBUTOJ/tree/main/hoj-vue)，git clone或者download zip
 
 2. 前提是本地有vue-cli4与npm，请自行百度下载
 
@@ -53,7 +53,7 @@
 
    ​
 
-   再将另外一个滚榜的前端文件夹也放到指定的文件夹，先去下载文件夹[scrollBoard](https://gitee.com/himitzh0730/hoj/tree/master/hoj-scrollBoard), 然后在服务器上创建文件夹`/hoj/www/scrollBoard`，将下载好的文件夹scrollBoard的内容复制进去。
+   再将另外一个滚榜的前端文件夹也放到指定的文件夹，先去下载文件夹[scrollBoard](https://github.com/1650041940/HBUTOJ/tree/main/hoj-scrollBoard), 然后在服务器上创建文件夹`/hoj/www/scrollBoard`，将下载好的文件夹scrollBoard的内容复制进去。
 
    ```shell
    mkdir -p /hoj/www/scrollBoard
@@ -74,7 +74,7 @@
    ```json
    server{
        listen 80;  # 监听访问的端口号
-       server_name www.hcode.top;  # 此处填写你的域名或IP
+      server_name www.hbutoj.example.com;  # 此处填写你的域名或IP
        root /hoj/www/html;   # 此处填写你的网页根目录
        location /api{
                  proxy_set_header X-Real-IP $remote_addr;
@@ -123,7 +123,7 @@ html文件夹下为hoj的vue前端打包的静态资源
 直接下载本项目，进入到当前文件夹执行打包命令
 
 ```shell
-git clone https://gitee.com/himitzh0730/hoj-deploy.git && cd hoj-deploy/src/frontend
+git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay/src/frontend
 ```
 
 当前文件夹为打包`hoj-frontend`镜像的相关文件，将这些文件复制到同一个文件夹内，之后执行以下命令进行打包成镜像

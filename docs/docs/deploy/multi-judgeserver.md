@@ -13,7 +13,7 @@
 
 如果之前是选择了单体部署，也就是主服务器既有backend和judgeserver服务，那么部署更多不同服务器的判题机应该如下修改：
 
-1. 在原先运行的服务器上，修改`hoj-deploy/standAlone`文件夹里面的`docker-compose.yml`，**添加以下rsync-master服务**，数据同步密码请自行修改，如下：
+1. 在原先运行的服务器上，修改`hbutoj_deplay/standAlone`文件夹里面的`docker-compose.yml`，**添加以下rsync-master服务**，数据同步密码请自行修改，如下：
 
    **（注意：如果云服务器有防火墙请开启8848，3306，873端口）**
 
@@ -58,7 +58,7 @@
    1. 下载文件,进入到指定文件夹
 
       ```shell
-      git clone https://gitee.com/himitzh0730/hoj-deploy.git && cd hoj-deploy/distributed/judgeserver
+      git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay/distributed/judgeserver
       ```
 
    2. 修改配置`.env`文件。
@@ -126,7 +126,7 @@
 1. 如果之前已经选择了分布式部署，那么增加判题机，则与原先启动判题机的操作一样即可，在新的服务器上操作如下：
 
    ```shell
-   git clone https://gitee.com/himitzh0730/hoj-deploy.git && cd hoj-deploy/distributed/judgeserver
+   git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay/distributed/judgeserver
    vim .env
    ```
 

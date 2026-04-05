@@ -905,7 +905,7 @@ export default {
           tips = '\n```\ncode block\n```\n';
           break;
         case 2:
-          tips = '[HOJ](https://hcode.top)';
+          tips = '[HBUTOJ](https://github.com/1650041940)';
           break;
         case 3:
           tips = '\n- ...';

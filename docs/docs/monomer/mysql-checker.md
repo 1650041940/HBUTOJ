@@ -21,10 +21,10 @@
 
 ## 二、自己打包镜像部署
 
-首先 先下载[hoj-deploy](https://gitee.com/himitzh0730/hoj-deploy/tree/master) 然后进入对应的镜像打包文件夹
+首先 先下载[hbutoj_deplay](https://github.com/1650041940/hbutoj_deplay) 然后进入对应的镜像打包文件夹
 
 ```shell
-git clone https://gitee.com/himitzh0730/hoj-deploy.git && cd hoj-deploy/src/mysql-checker
+git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay/src/mysql-checker
 ```
 
 当前文件夹为打包`hoj-mysql-checker`镜像的相关文件，只需将这些文件复制到同一个文件夹内，之后执行以下命令进行打包成镜像。

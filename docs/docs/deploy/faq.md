@@ -14,7 +14,7 @@
 
 #### 1. 问题引用
 
-- 原HOJ仓库issue引用：[本地构建没问题 centOs 7 下构建报如下错误](https://gitee.com/himitzh0730/hoj/issues/I5HZNP)
+- 原HOJ仓库issue引用：本地构建没问题，CentOS 7 下构建报错（上游链接已移除，issue 编号：I5HZNP）
 
 - `hoj-judgeserver`容器一直重启，`docker logs hoj-judgeserver`查看日志发现，启动Go-judge（Sandbox）报错：`prefork environment failed container: failed to start container fork/exec /proc/self/exe: invalid argument`
 
@@ -73,7 +73,7 @@
 
 :::
 
-部署之前指的是还没执行`docker-compose up -d`命令，在`./hoj-deploy/standAlone`目录中还未有`hoj`文件夹（[hoj文件夹的介绍](/deploy/how-to-backup/)）时，可以先修改`.env`文件里面对应各种的默认密码，保存后再执行`docker-compose up -d`启动HOJ
+部署之前指的是还没执行`docker-compose up -d`命令，在`./hbutoj_deplay/standAlone`目录中还未有`hoj`文件夹（[hoj文件夹的介绍](/deploy/how-to-backup/)）时，可以先修改`.env`文件里面对应各种的默认密码，保存后再执行`docker-compose up -d`启动HBUTOJ
 
 :::danger
 
@@ -81,7 +81,7 @@
 
 :::
 
-1. 目前网站没有重要的数据，可以直接删除在`./hoj-deploy/standAlone`目录中`hoj`文件夹，然后修改`.env`文件里面对应各种的默认密码，保存后再执行`docker-compose up -d`启动HOJ
+1. 目前网站没有重要的数据，可以直接删除在`./hbutoj_deplay/standAlone`目录中`hoj`文件夹，然后修改`.env`文件里面对应各种的默认密码，保存后再执行`docker-compose up -d`启动HBUTOJ
 
 2. 由于网站数据比较多，不能直接删除`hoj`文件夹，那么操作如下：
 

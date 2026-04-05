@@ -5,10 +5,10 @@
 下载本项目，进入到当前文件夹执行打包命令
 
 ```shell
-git clone https://gitee.com/himitzh0730/hoj-deploy.git && cd hoj-deploy/src/backend
+git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay/src/backend
 ```
 
-当前文件夹为打包`hoj-backend`镜像的相关文件，将这些文件复制到同一个文件夹内，**然后打包[DataBackup](https://gitee.com/himitzh0730/hoj/tree/master/hoj-springboot/DataBackup)（SpringBoot项目）成jar包也放到当前文件夹**，之后执行以下命令进行打包成镜像
+当前文件夹为打包`hoj-backend`镜像的相关文件，将这些文件复制到同一个文件夹内，**然后打包[DataBackup](https://github.com/1650041940/HBUTOJ/tree/main/hoj-springboot/DataBackup)（SpringBoot项目）成jar包也放到当前文件夹**，之后执行以下命令进行打包成镜像
 
 ```shell
 docker build -t hoj-backend .

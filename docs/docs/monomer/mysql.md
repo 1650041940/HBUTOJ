@@ -1,9 +1,9 @@
 # 单体部署①——MySQL部署
 
-首先 先下载[hoj-deploy](https://gitee.com/himitzh0730/hoj-deploy/tree/master)
+首先 先下载[hbutoj_deplay](https://github.com/1650041940/hbutoj_deplay)
 
 ```shell
-git clone https://gitee.com/himitzh0730/hoj-deploy.git && cd hoj-deploy/src/mysql
+git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay/src/mysql
 ```
 
 ## 前言

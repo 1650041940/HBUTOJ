@@ -9,10 +9,10 @@
 
 
 :::danger
-注意：如果正式部署运用HOJ，请修改默认配置的密码，例如Redis、MySQL、Nacos的密码！！！  
+注意：如果正式部署运用HBUTOJ，请修改默认配置的密码，例如Redis、MySQL、Nacos的密码！！！  
 **使用默认密码可能会导致数据泄露，网站极其不安全！**
 
-如果当前服务器系统为CentOS7请先看：[centos7部署HOJ可能遇到的问题](/deploy/faq/#一、部署在centos7系统中无法正常评测-如何解决)
+如果当前服务器系统为CentOS7请先看：[centos7部署HBUTOJ可能遇到的问题](/deploy/faq/#一、部署在centos7系统中无法正常评测-如何解决)
 
 :::
 
@@ -22,7 +22,7 @@
 
 提示：当前默认是设置**amd64**的镜像，如果使用的服务器是**arm64**架构的，请记得修改docker-compose.yml文件，将每个模块中的image配置修改成支持**arm64**的镜像地址，yml文件中也有注释提示，请仔细查看。需要将`docker-compose.yml`文件中各个模块image为`image: registry.cn-shenzhen.aliyuncs.com/hcode/******` 修改为`image: himitzh/******` 
 
-例如将`image: registry.cn-shenzhen.aliyuncs.com/hcode/hoj_judgeserver`  => `image:himitzh/hoj_judgeserver`
+HBUTOJ 的部署仓库默认使用 GHCR（例如 `ghcr.io/1650041940/hbutoj_backend`）。若你要在 arm64 上部署，请优先选择带 arm64 的镜像，或自行在 arm64 机器上构建并替换 `image:`。
 
 :::
 
@@ -31,9 +31,9 @@
 1. **选择好需要安装的位置，运行下面命令**
 
    ```shell
-   git clone https://gitee.com/himitzh0730/hoj-deploy.git && cd hoj-deploy
+   git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay
    # 或者选择github的仓库
-   # git clone https://github.com/HimitZH/HOJ-Deploy.git && cd hoj-deploy
+   # git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay
    ```
 
 2. **进入到单体部署的配置文件夹**
@@ -109,9 +109,9 @@
 1. **选择好需要安装的位置，运行下面命令**
 
    ```shell
-   git clone https://gitee.com/himitzh0730/hoj-deploy.git && cd hoj-deploy
+   git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay
    # 或者选择github的仓库
-   # git clone https://github.com/HimitZH/HOJ-Deploy.git && cd hoj-deploy
+   # git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay
    ```
 
 2. **进入文件夹**
@@ -321,7 +321,7 @@
    提示：如果服务器的内存在4G或4G以上，请去掉JVM限制才能大大提高并发量，操作如下：
    :::
 
-   进入到之前部署的文件夹`~/hoj-deploy/standAlone`内，修改`docker-compose.yml`文件。
+   进入到之前部署的文件夹`~/hbutoj_deplay/standAlone`内，修改`docker-compose.yml`文件。
 
    ```shell
    # 修改文件
