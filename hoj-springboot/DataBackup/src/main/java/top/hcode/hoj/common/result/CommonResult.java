@@ -1,15 +1,19 @@
 package top.hcode.hoj.common.result;
 
 import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommonResult<T> {
 
-    private final Integer status;   // 状态码
+    private Integer status;   // 状态码
 
-    private final T data;   // 返回的数据
+    private T data;   // 返回的数据
 
-    private final String msg;    // 自定义信息
+    private String msg;    // 自定义信息
 
 
     /**
