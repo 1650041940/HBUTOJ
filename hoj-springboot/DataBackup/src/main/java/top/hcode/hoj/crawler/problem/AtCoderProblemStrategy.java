@@ -2,7 +2,6 @@ package top.hcode.hoj.crawler.problem;
 
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.http.HttpUtil;
-import org.apache.commons.lang.Validate;
 import org.jsoup.Jsoup;
 import top.hcode.hoj.pojo.entity.problem.Problem;
 import top.hcode.hoj.utils.Constants;
@@ -37,22 +36,43 @@ public class AtCoderProblemStrategy extends ProblemStrategy {
     @Override
     public RemoteProblemInfo getProblemInfo(String problemId, String author) throws Exception {
 
-        problemId = problemId.toLowerCase();
-//        boolean isMatch = ReUtil.isMatch("[a-z]+[0-9]+_[a-z]*[0-9]*", problemId);
-        boolean isMatch = false;
-        if (!isMatch && !problemId.contains("_")){
-            throw new IllegalArgumentException("AtCoder: Incorrect problem id format! Must be like `abc110_a`");
+        problemId = problemId == null ? null : problemId.trim().toLowerCase();
+        boolean isMatch = ReUtil.isMatch("^[a-z0-9]+_[a-z0-9]+$", problemId);
+        if (!isMatch) {
+            throw new IllegalArgumentException("AtCoder: 题号格式不正确，必须类似 abc110_a（仅包含小写字母/数字与下划线）");
         }
 
         String contestId = problemId.split("_")[0];
 
-        String body = HttpUtil.get(getProblemUrl(problemId, contestId));
-        Pattern pattern = Pattern.compile("Time Limit: (\\d+) sec / Memory Limit: (\\d+) MB");
+        String url = getProblemUrl(problemId, contestId);
+        String body = HttpUtil.get(url);
+
+        Pattern pattern = Pattern.compile(
+            "Time\\s*Limit:\\s*([0-9]+(?:\\.[0-9]+)?)\\s*sec\\s*/\\s*Memory\\s*Limit:\\s*(\\d+)\\s*M(?:i)?B",
+                Pattern.CASE_INSENSITIVE
+        );
         Matcher matcher = pattern.matcher(body);
-        Validate.isTrue(matcher.find());
-        String timeLimit = matcher.group(1).trim();
-        String memoryLimit = matcher.group(2).trim();
+        if (!matcher.find()) {
+            throw new IllegalArgumentException(
+                    "AtCoder: 获取题目信息失败（无法解析时限/内存）。" +
+                            "请确认题号存在且服务器可访问：" + url +
+                            "；若服务器网络受限/被拦截，也会导致解析失败。"
+            );
+        }
+
+        double timeLimitSec = Double.parseDouble(matcher.group(1).trim());
+        int timeLimitMs = (int) Math.round(timeLimitSec * 1000.0);
+        int memoryLimitMb = Integer.parseInt(matcher.group(2).trim());
+
         String title = ReUtil.get("<title>[\\s\\S]*? - ([\\s\\S]*?)</title>", body, 1);
+        if (title == null) {
+            String rawTitle = Jsoup.parse(body).title();
+            if (rawTitle != null && rawTitle.contains(" - ")) {
+                title = rawTitle.substring(rawTitle.lastIndexOf(" - ") + 3);
+            } else {
+                title = rawTitle;
+            }
+        }
 
 
         Problem problem = new Problem();
@@ -60,8 +80,8 @@ public class AtCoderProblemStrategy extends ProblemStrategy {
                 .setAuthor(author)
                 .setTitle(title)
                 .setType(0)
-                .setTimeLimit(Integer.parseInt(timeLimit) * 1000)
-                .setMemoryLimit(Integer.parseInt(memoryLimit))
+            .setTimeLimit(timeLimitMs)
+            .setMemoryLimit(memoryLimitMb)
                 .setIsRemote(true)
                 .setSource(getProblemSource(problemId, contestId))
                 .setAuth(1)

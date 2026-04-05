@@ -204,4 +204,34 @@
         where ju.submit_id is not null
         order by ju.submit_id DESC
     </select>
+
+    <select id="getProblemDifficultyMonthlyStats" resultType="top.hcode.hoj.pojo.vo.ProblemDifficultyMonthlyStatVO">
+        SELECT t.pid AS pid,
+               t.attempted_users AS attemptedUsers,
+               t.accepted_users AS acceptedUsers,
+               a.avg_attempts AS avgAttempts
+        FROM (
+                 SELECT pid,
+                        COUNT(DISTINCT uid) AS attempted_users,
+                        COUNT(DISTINCT CASE WHEN status = 0 THEN uid END) AS accepted_users
+                 FROM judge
+                 WHERE cid = 0
+                   AND submit_time &gt;= #{startTime}
+                   AND submit_time &lt; #{endTime}
+                 GROUP BY pid
+             ) t
+                 LEFT JOIN (
+            SELECT pid, AVG(sub_cnt) AS avg_attempts
+            FROM (
+                     SELECT pid, uid, COUNT(*) AS sub_cnt
+                     FROM judge
+                     WHERE cid = 0
+                       AND submit_time &gt;= #{startTime}
+                       AND submit_time &lt; #{endTime}
+                     GROUP BY pid, uid
+                     HAVING SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END) &gt; 0
+                 ) x
+            GROUP BY pid
+        ) a ON a.pid = t.pid
+    </select>
 </mapper>

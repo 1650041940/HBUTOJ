@@ -199,6 +199,12 @@ public class AdminTrainingProblemManager {
     }
 
     public void importTrainingRemoteOJProblem(String name, String problemId, Long tid) throws StatusFailException {
+        if (problemId != null) {
+            problemId = problemId.trim();
+        }
+        if ("AC".equalsIgnoreCase(name) && problemId != null) {
+            problemId = problemId.toLowerCase();
+        }
         QueryWrapper<Problem> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("problem_id", name.toUpperCase() + "-" + problemId);
         Problem problem = problemEntityService.getOne(queryWrapper, false);

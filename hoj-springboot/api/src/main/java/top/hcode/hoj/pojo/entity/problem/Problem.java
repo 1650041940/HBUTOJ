@@ -77,6 +77,10 @@ public class Problem implements Serializable {
     @ApiModelProperty(value = "题目难度")
     private Integer difficulty;
 
+    @ApiModelProperty(value = "题目难度分(用于做题rating/推荐，范围建议600~2600)")
+    @TableField("difficulty_rating")
+    private Integer difficultyRating;
+
     @ApiModelProperty(value = "备注,提醒")
     private String hint;
 

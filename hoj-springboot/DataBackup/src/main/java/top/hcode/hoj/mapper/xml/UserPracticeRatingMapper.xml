@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.hcode.hoj.mapper.UserPracticeRatingMapper">
+
+    <select id="getPracticeRatingRank" resultType="top.hcode.hoj.pojo.vo.RatingRankVO">
+        SELECT u.uuid AS uid,
+               u.username AS username,
+               u.nickname AS nickname,
+               r.rating AS rating,
+               r.solved_count AS count
+        FROM user_practice_rating r
+                 INNER JOIN user_info u ON u.uuid = r.uid
+        <where>
+            <if test="searchUser != null and searchUser != ''">
+                (u.username LIKE CONCAT('%', #{searchUser}, '%')
+                    OR u.nickname LIKE CONCAT('%', #{searchUser}, '%'))
+            </if>
+        </where>
+        ORDER BY r.rating DESC, r.solved_count DESC, u.username ASC
+    </select>
+
+</mapper>

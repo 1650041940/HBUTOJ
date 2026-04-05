@@ -31,7 +31,7 @@ public class SwaggerConfig {
         boolean flag = environment.acceptsProfiles(profiles);
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
-                .groupName("hoj") //分组
+            .groupName("hbutoj") //分组
                 .enable(flag) //开启
                 .select()
                 //RequestHandlerSelectors扫描方式
@@ -45,14 +45,14 @@ public class SwaggerConfig {
     //配置swagger信息
     private ApiInfo apiInfo() {
         //作者信息
-        Contact contact = new Contact("Himit_ZH",
-                "https://docs.hdoi.cn",
-                "372347736@qq.com");
+        Contact contact = new Contact("1650041940",
+            "https://github.com/1650041940",
+            "");
         return new ApiInfo(
-                "HOJ-Backend的API文档",
-                "HCODE ONLINE JUDGE(HOJ)的后端接口文档",
-                "v4.4",
-                "https://docs.hdoi.cn",
+            "HBUTOJ-Backend API",
+            "HBUTOJ Online Judge backend API documentation",
+            "v1",
+            "https://github.com/1650041940",
                 contact,
                 "MIT",
                 "http://www.apache.org/licenses/LICENSE-2.0",

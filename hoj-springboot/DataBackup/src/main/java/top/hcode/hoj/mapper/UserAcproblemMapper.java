@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 import top.hcode.hoj.pojo.entity.user.UserAcproblem;
+import top.hcode.hoj.pojo.vo.UserSolvedProblemStatVO;
+
+import java.util.List;
 
 
 /**
@@ -17,5 +20,7 @@ import top.hcode.hoj.pojo.entity.user.UserAcproblem;
 @Mapper
 @Repository
 public interface UserAcproblemMapper extends BaseMapper<UserAcproblem> {
+
+	List<UserSolvedProblemStatVO> getUserSolvedProblemStats();
 
 }

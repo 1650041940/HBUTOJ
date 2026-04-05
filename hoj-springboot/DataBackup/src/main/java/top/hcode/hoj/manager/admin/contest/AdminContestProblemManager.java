@@ -305,6 +305,12 @@ public class AdminContestProblemManager {
     }
 
     public void importContestRemoteOJProblem(String name, String problemId, Long cid, String displayId) throws StatusFailException {
+        if (problemId != null) {
+            problemId = problemId.trim();
+        }
+        if ("AC".equalsIgnoreCase(name) && problemId != null) {
+            problemId = problemId.toLowerCase();
+        }
         QueryWrapper<Problem> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("problem_id", name.toUpperCase() + "-" + problemId);
         Problem problem = problemEntityService.getOne(queryWrapper, false);

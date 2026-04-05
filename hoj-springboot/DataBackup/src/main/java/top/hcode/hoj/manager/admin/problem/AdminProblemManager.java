@@ -225,6 +225,12 @@ public class AdminProblemManager {
 
     @Transactional(rollbackFor = Exception.class)
     public void importRemoteOJProblem(String name, String problemId) throws StatusFailException {
+        if (problemId != null) {
+            problemId = problemId.trim();
+        }
+        if ("AC".equalsIgnoreCase(name) && problemId != null) {
+            problemId = problemId.toLowerCase();
+        }
         QueryWrapper<Problem> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("problem_id", name.toUpperCase() + "-" + problemId);
         Problem problem = problemEntityService.getOne(queryWrapper);

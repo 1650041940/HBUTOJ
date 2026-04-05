@@ -38,6 +38,7 @@ import top.hcode.hoj.service.admin.rejudge.RejudgeService;
 import top.hcode.hoj.utils.Constants;
 import top.hcode.hoj.utils.JsoupUtils;
 import top.hcode.hoj.utils.RedisUtils;
+import top.hcode.hoj.manager.rating.RatingManager;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -107,6 +108,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Resource
     private ApplicationContext applicationContext;
+
+    @Resource
+    private RatingManager ratingManager;
 
     /**
      * @MethodName deleteAvatar
@@ -442,6 +446,22 @@ public class ScheduleServiceImpl implements ScheduleService {
                 "Hello, dear administrator, there are currently **" + count
                 + "** problem problems applying for public list. " +
                 "Please go to the backstage [Group Problem Examine](/admin/group-problem/apply) for approval as soon as possible!";
+    }
+
+    /**
+     * 每月1号 04:30 刷新：题目难度（月度调整）+ 用户做题rating（月度刷新）
+     */
+    @Scheduled(cron = "0 30 4 1 * *")
+    public void monthlyAdjustProblemDifficultyAndPracticeRating() {
+        ratingManager.monthlyAdjustProblemDifficultyAndPracticeRating();
+    }
+
+    /**
+     * 每天 04:10 处理已结束比赛的 contest rating（幂等，避免重复计算）
+     */
+    @Scheduled(cron = "0 10 4 * * *")
+    public void processEndedContestsForRating() {
+        ratingManager.processEndedContestsForRating();
     }
 
 }

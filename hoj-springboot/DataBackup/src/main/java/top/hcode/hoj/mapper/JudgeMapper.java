@@ -9,6 +9,7 @@ import top.hcode.hoj.pojo.entity.judge.Judge;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import top.hcode.hoj.pojo.vo.ContestScrollBoardSubmissionVO;
 import top.hcode.hoj.pojo.vo.JudgeVO;
+import top.hcode.hoj.pojo.vo.ProblemDifficultyMonthlyStatVO;
 import top.hcode.hoj.pojo.vo.ProblemCountVO;
 
 import java.util.Date;
@@ -64,4 +65,7 @@ public interface JudgeMapper extends BaseMapper<Judge> {
 
     List<ContestScrollBoardSubmissionVO> getContestScrollBoardSubmission(@Param("cid") Long cid,
                                                                          @Param("uidList") List<String> uidList);
+
+    List<ProblemDifficultyMonthlyStatVO> getProblemDifficultyMonthlyStats(@Param("startTime") Date startTime,
+                                                                          @Param("endTime") Date endTime);
 }

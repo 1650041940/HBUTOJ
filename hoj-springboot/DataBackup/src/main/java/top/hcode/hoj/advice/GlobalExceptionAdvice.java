@@ -129,7 +129,13 @@ public class GlobalExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = IllegalArgumentException.class)
     public CommonResult<Void> handler(IllegalArgumentException e) {
-        return CommonResult.errorResponse(e.getMessage(), ResultStatus.FAIL);
+        String message = e.getMessage();
+        if ("The validated expression is false".equals(message)) {
+            message = "请求校验/解析失败：远程题抓取解析失败（常见原因：题号格式不正确、题目不存在、服务器无法访问目标OJ/被拦截、目标OJ页面结构变化）。"
+                    + "\nAtCoder 题号示例：abc110_a";
+            log.warn("Default Validate message surfaced to client", e);
+        }
+        return CommonResult.errorResponse(message, ResultStatus.FAIL);
     }
 
     /**

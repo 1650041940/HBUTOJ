@@ -21,14 +21,14 @@ public class WebConfig {
 
     private Boolean emailSsl = true;
 
-    private String emailBGImg = "https://cdn.jsdelivr.net/gh/HimitZH/CDN/images/HCODE.png";
+    private String emailBGImg = "";
 
     // 网站前端显示配置
     private String baseUrl = "http://" + IpUtils.getServiceIp();
 
-    private String name = "Hcode Online Judge";
+    private String name = "HBUTOJ Online Judge";
 
-    private String shortName = "HOJ";
+    private String shortName = "HBUTOJ";
 
     private String description;
 
@@ -38,7 +38,7 @@ public class WebConfig {
 
     private String recordUrl;
 
-    private String projectName = "HOJ";
+    private String projectName = "HBUTOJ";
 
-    private String projectUrl = "https://gitee.com/himitzh0730/hoj";
+    private String projectUrl = "https://github.com/1650041940";
 }
