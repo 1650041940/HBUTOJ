@@ -11,11 +11,11 @@
 2. 修改本项目路径下`/hoj-springboot/JudgeServer/src/main/resources/bootstrap.yml`的相关配置
 
    ```yaml
-   hoj-judge-server:
+  hbutoj-judge-server:
      max-task-num: -1 # -1表示最大并行任务数为cpu核心数+1
      ip: 127.0.0.1 # -1表示使用默认本地ipv4，若是部署其它服务器，务必使用公网ip
      port: 8088  # 端口号
-     name: hoj-judger-1 # 判题机名字 唯一不可重复！！！
+    name: hbutoj-judger-1 # 判题机名字 唯一不可重复！！！
      nacos-url: 127.0.0.1:8848  # nacos地址
      remote-judge:
        open: true # 当前判题服务器是否开启远程虚拟判题功能
@@ -52,7 +52,7 @@
    ```json
    {
      "apps" : {
-           "name":"hoj-judgeServer",
+          "name":"hbutoj-judgeServer",
            "script":"java",
            "args":[
                    "-XX:+UseG1GC",
@@ -71,7 +71,7 @@
    }
    ```
 
-8. 下载对应编译语言的编译器，HOJ默认支持 GCC,G++,Python2,Python3,Java,Golang,C#编程语言
+8. 下载对应编译语言的编译器，HBUTOJ默认支持 GCC,G++,Python2,Python3,Java,Golang,C#编程语言
 
    默认情况下Ubutun18.04自带Python 3.6、Python2.7、GCC7.5.0、G++7.5.0
 
@@ -165,10 +165,10 @@
 git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay/src/judgeserver
 ```
 
-当前文件夹为打包`hoj-judgeserver`镜像的相关文件，将这些文件复制到同一个文件夹内，**然后打包[JudgeServer](https://github.com/1650041940/HBUTOJ/tree/main/hoj-springboot/JudgeServer)（SpringBoot项目）成jar包也放到当前文件夹**，之后执行以下命令进行打包成镜像.
+当前文件夹为打包`hbutoj-judgeserver`镜像的相关文件，将这些文件复制到同一个文件夹内，**然后打包[JudgeServer](https://github.com/1650041940/HBUTOJ/tree/main/hoj-springboot/JudgeServer)（SpringBoot项目）成jar包也放到当前文件夹**，之后执行以下命令进行打包成镜像.
 
 ```shell
-docker build -t hoj-judgeserver .
+docker build -t hbutoj-judgeserver .
 ```
 
 docker-compose 启动
@@ -177,10 +177,10 @@ docker-compose 启动
 version: "3"
 services:
 
-  hoj-judgeserver:
-#    image: registry.cn-shenzhen.aliyuncs.com/hcode/hoj_judgeserver
-	image: hoj-judgeserver
-    container_name: hoj-judgeserver
+  hbutoj-judgeserver:
+#    image: registry.cn-shenzhen.aliyuncs.com/hcode/hbutoj_judgeserver
+	image: hbutoj-judgeserver
+    container_name: hbutoj-judgeserver
     restart: always
     volumes:
       - ./judge/test_case:/judge/test_case
@@ -192,7 +192,7 @@ services:
       - TZ=Asia:/Shanghai
       - JUDGE_SERVER_IP=your_judgeserver_ip # 判题服务所在的ip
       - JUDGE_SERVER_PORT=8088 # 判题服务启动的端口号
-      - JUDGE_SERVER_NAME=hoj-judger-1 # 判题服务名字，多个判题服务请使用不同
+      - JUDGE_SERVER_NAME=hbutoj-judger-1 # 判题服务名字，多个判题服务请使用不同
       - NACOS_URL=172.20.0.4:8848 # nacos的url
       - NACOS_USERNAME=nacos # nacos的管理员账号
       - NACOS_PASSWORD=nacos # naocs的管理员账号密码

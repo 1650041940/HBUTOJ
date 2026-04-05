@@ -12,10 +12,10 @@
 
 ### 1、修改MySQL8.0默认的密码加密方式
 
-（1）进行hoj-mysql容器
+（1）进行hbutoj-mysql容器
 
 ```shell
-docker exec -it hoj-mysql bash
+docker exec -it hbutoj-mysql bash
 ```
 
   (2) 输入对应的mysql密码，进入mysql数据库
@@ -45,7 +45,7 @@ mysql> FLUSH PRIVILEGES;
 
 （4） 两次exit 退出mysql和容器
 
-### 2、 添加hoj-mysql-checker模块
+### 2、 添加hbutoj-mysql-checker模块
 
 （1）可以选择拉取仓库最新的docker-compose.yml文件（跟部署操作一样,但是会覆盖之前设置的参数）或者访问：
 
@@ -54,17 +54,17 @@ https://github.com/1650041940/hbutoj_deplay/blob/main/standAlone/docker-compose.
 （2）或者编辑docker-compose.yml文件，手动添加新模块
 
 ```yaml
-  hoj-mysql-checker:
-    image: registry.cn-shenzhen.aliyuncs.com/hcode/hoj_database_checker
-    container_name: hoj-mysql-checker
+  hbutoj-mysql-checker:
+    image: registry.cn-shenzhen.aliyuncs.com/hcode/hbutoj_database_checker
+    container_name: hbutoj-mysql-checker
     depends_on:
-      - hoj-mysql
+      - hbutoj-mysql
     links:
-      - hoj-mysql:mysql
+      - hbutoj-mysql:mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-hoj123456}
     networks:
-      hoj-network:
+      hbutoj-network:
         ipv4_address: 172.20.0.8
 ```
 

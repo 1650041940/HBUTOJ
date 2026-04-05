@@ -25,7 +25,7 @@ dist
 ....
 ```
 
-将 `dist` 文件夹复制到服务器上某个目录下，比如 `/hoj/www/html/dist`，然后修改 `docker-compose.yml`，在 `hoj-frontend` 模块中的 `volumes` 中增加一行 `- /hoj/www/html/dist:/usr/share/nginx/html` （冒号前面的请修改为实际的路径），然后 `docker-compose up -d` 即可。
+将 `dist` 文件夹复制到服务器上某个目录下，比如 `/hbutoj/www/html/dist`，然后修改 `docker-compose.yml`，在 `hbutoj-frontend` 模块中的 `volumes` 中增加一行 `- /hbutoj/www/html/dist:/usr/share/nginx/html` （冒号前面的请修改为实际的路径），然后 `docker-compose up -d` 即可。
 
 
 ## 二、仅修改图标
@@ -33,7 +33,7 @@ dist
 如果仅仅只是修改前台logo、管理后台logo和favicon.ico，那么操作如下：
 :::
 
-修改 `docker-compose.yml`，在 `hoj-frontend` 模块中的 `volumes` 中添加如下：
+修改 `docker-compose.yml`，在 `hbutoj-frontend` 模块中的 `volumes` 中添加如下：
 
 注意：冒号前面的是你主机实际存储图片文件的路径，主要是确定是否需要修改这个；冒号后面的是映射的docker容器内的文件路径，**不要修改**！！！
 
@@ -49,5 +49,5 @@ dist
 
 **图片文件需放在与docker-compose.yml同个目录下，或者提供绝对路径也可。**
 
-修改保存完成，使用`docker-compose up -d`重启`hoj-frontend`即可，前端浏览器有缓存，可以刷新浏览器或者换别的浏览器进行查看！
+修改保存完成，使用`docker-compose up -d`重启`hbutoj-frontend`即可，前端浏览器有缓存，可以刷新浏览器或者换别的浏览器进行查看！
 

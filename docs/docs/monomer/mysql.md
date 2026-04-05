@@ -8,10 +8,10 @@ git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay/sr
 
 ## 前言
 
-当前文件夹为打包`hoj-mysql`镜像的相关文件，只需将这些文件复制到同一个文件夹内，之后执行以下命令进行打包成镜像。
+当前文件夹为打包`hbutoj-mysql`镜像的相关文件，只需将这些文件复制到同一个文件夹内，之后执行以下命令进行打包成镜像。
 
 ```shell
-docker build -t hoj-mysql .
+docker build -t hbutoj-mysql .
 ```
 
 
@@ -19,7 +19,7 @@ docker build -t hoj-mysql .
 docker run启动
 
 ```shell
-docker run -d --name hoj-mysql \
+docker run -d --name hbutoj-mysql \
 -v $PWD/hoj/data/mysql/data:/var/lib/mysql \
 -e MYSQL_ROOT_PASSWORD="hoj123456" \
 -e TZ="Asia/Shanghai" \
@@ -27,8 +27,8 @@ docker run -d --name hoj-mysql \
 -e NACOS_PASSWORD=hoj123456 \
 -p 3306:3306 \
 --restart="always" \
-hoj-mysql
-#registry.cn-shenzhen.aliyuncs.com/hcode/hoj_database
+hbutoj-mysql
+#registry.cn-shenzhen.aliyuncs.com/hcode/hbutoj_database
 ```
 
 docker-compose 启动
@@ -36,10 +36,10 @@ docker-compose 启动
 ```shell
 version: "3"
 services:
-  hoj-mysql:
-    #image: registry.cn-shenzhen.aliyuncs.com/hcode/hoj_database
-    image: hoj-mysql
-    container_name: hoj-mysql
+  hbutoj-mysql:
+    #image: registry.cn-shenzhen.aliyuncs.com/hcode/hbutoj_database
+    image: hbutoj-mysql
+    container_name: hbutoj-mysql
     restart: always
     volumes:
       - ./hoj/data/mysql/data:/var/lib/mysql
@@ -52,7 +52,7 @@ services:
       - "3306:3306"
 #  如果有自定义网络可以类似添加如下
 #    networks:
-#      hoj-network:
+#      hbutoj-network:
 #        ipv4_address: 172.20.0.3
 ```
 

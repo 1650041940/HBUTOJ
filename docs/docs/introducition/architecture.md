@@ -20,7 +20,7 @@
 
 :::tip
 
-*hoj-backend（数据服务）*
+*hbutoj-backend（数据服务）*
 
 - 主体Web框架技术以SpringBoot为主
 - 以Nacos为分布式注册中心及分布式配置中心，支持配置文件动态刷新。
@@ -34,11 +34,11 @@
 
 :::tip
 
-*hoj-judgeserver（评测服务）*
+*hbutoj-judgeserver（评测服务）*
 
 - 主体Web框架技术以SpringBoot为主
 - 以Mybatis-Plus为数据库中间件，负责数据实体类与数据库数据的转化与获取。
-- 将服务注册到Nacos，以供hoj-backend进行调度，同时获取到Nacos上的配置
+- 将服务注册到Nacos，以供hbutoj-backend进行调度，同时获取到Nacos上的配置
 
 - 本地评测：
   - 主流程：调用SandBox（Go-Judge）进行评测，将对应结果写回数据库

@@ -16,7 +16,7 @@
 
 - 原HOJ仓库issue引用：本地构建没问题，CentOS 7 下构建报错（上游链接已移除，issue 编号：I5HZNP）
 
-- `hoj-judgeserver`容器一直重启，`docker logs hoj-judgeserver`查看日志发现，启动Go-judge（Sandbox）报错：`prefork environment failed container: failed to start container fork/exec /proc/self/exe: invalid argument`
+- `hbutoj-judgeserver`容器一直重启，`docker logs hbutoj-judgeserver`查看日志发现，启动Go-judge（Sandbox）报错：`prefork environment failed container: failed to start container fork/exec /proc/self/exe: invalid argument`
 
   ![sandbox启动报错日志](/sandbox_error.webp)
 
@@ -24,7 +24,7 @@
 
 **Tips：其实强烈建议换Ubuntu系统，但如果一定要使用CentOS7系统的话请看下面。**
 
-由于hoj使用的判题机中的安全沙盒使用环境的特殊性，如果想在centos7系统中正常运行`hoj-judgeserver`服务，需要开启 user 命名空间来使用。
+由于HBUTOJ使用的判题机中的安全沙盒使用环境的特殊性，如果想在centos7系统中正常运行`hbutoj-judgeserver`服务，需要开启 user 命名空间来使用。
 
 - 永久性设置操作
 
@@ -39,7 +39,7 @@
   echo 10000 > /proc/sys/user/max_user_namespaces
   ```
 
-设置完后，使用`docker restart hoj-judgeserver`重新启动`hoj-judgeserver`的docker容器即可正常评测。
+设置完后，使用`docker restart hbutoj-judgeserver`重新启动`hbutoj-judgeserver`的docker容器即可正常评测。
 
 
 
@@ -85,14 +85,14 @@
 
 2. 由于网站数据比较多，不能直接删除`hoj`文件夹，那么操作如下：
 
-   - **如果修改Redis的密码**：只需修改`.env`文件中的`REDIS_PASSWORD`配置，`docker restart hoj-redis`重新启动`hoj-redis`即可生效。
+   - **如果修改Redis的密码**：只需修改`.env`文件中的`REDIS_PASSWORD`配置，`docker restart hbutoj-redis`重新启动`hbutoj-redis`即可生效。
 
-   - **如果修改MySQL的密码**：需要进入到`hoj-mysql`容器进行修改，操作如下
+   - **如果修改MySQL的密码**：需要进入到`hbutoj-mysql`容器进行修改，操作如下
 
-     （1）进行hoj-mysql容器
+     （1）进行hbutoj-mysql容器
 
      ```shell
-     docker exec -it hoj-mysql bash
+     docker exec -it hbutoj-mysql bash
      ```
 
      （2）输入对应的mysql密码，进入mysql数据库

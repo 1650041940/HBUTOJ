@@ -46,17 +46,17 @@
 5. 在云服务器上创建文件夹
 
    ```shell
-   mkdir -p /hoj/www/html
+   mkdir -p /hbutoj/www/html
    ```
 
    然后将这些静态文件复制到里面即可。
 
    ​
 
-   再将另外一个滚榜的前端文件夹也放到指定的文件夹，先去下载文件夹[scrollBoard](https://github.com/1650041940/HBUTOJ/tree/main/hoj-scrollBoard), 然后在服务器上创建文件夹`/hoj/www/scrollBoard`，将下载好的文件夹scrollBoard的内容复制进去。
+   再将另外一个滚榜的前端文件夹也放到指定的文件夹，先去下载文件夹[scrollBoard](https://github.com/1650041940/HBUTOJ/tree/main/hoj-scrollBoard), 然后在服务器上创建文件夹`/hbutoj/www/scrollBoard`，将下载好的文件夹scrollBoard的内容复制进去。
 
    ```shell
-   mkdir -p /hoj/www/scrollBoard
+   mkdir -p /hbutoj/www/scrollBoard
    ```
 
    然后将这些静态文件复制到里面即可
@@ -75,7 +75,7 @@
    server{
        listen 80;  # 监听访问的端口号
       server_name www.hbutoj.example.com;  # 此处填写你的域名或IP
-       root /hoj/www/html;   # 此处填写你的网页根目录
+       root /hbutoj/www/html;   # 此处填写你的网页根目录
        location /api{
                  proxy_set_header X-Real-IP $remote_addr;
                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -90,14 +90,14 @@
                 gzip_http_version 1.1;
                 gzip_comp_level 9;
                 gzip_types  text/css application/javascript application/json;
-                root /hoj/www/html; # 此处填写你的网页根目录
+                root /hbutoj/www/html; # 此处填写你的网页根目录
          }
          location / {  # 路由重定向以适应Vue中的路由
                  index index.html;
                  try_files $uri $uri/ /index.html;
          }
          location ^~ /scrollBoard{
-             alias  /hoj/www/scrollBoard;
+             alias  /hbutoj/www/scrollBoard;
              try_files $uri $uri/ /index.html;
              index index.html index.htm;
          }
@@ -126,10 +126,10 @@ html文件夹下为hoj的vue前端打包的静态资源
 git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay/src/frontend
 ```
 
-当前文件夹为打包`hoj-frontend`镜像的相关文件，将这些文件复制到同一个文件夹内，之后执行以下命令进行打包成镜像
+当前文件夹为打包`hbutoj-frontend`镜像的相关文件，将这些文件复制到同一个文件夹内，之后执行以下命令进行打包成镜像
 
 ```shell
-docker build -t hoj-frontend .
+docker build -t hbutoj-frontend .
 ```
 
 
@@ -139,15 +139,15 @@ docker build -t hoj-frontend .
 - Http方式
 
   ```shell
-  docker run -d --name hoj-frontend \
+  docker run -d --name hbutoj-frontend \
   -e SERVER_NAME=localhost \
   -e BACKEND_SERVER_HOST=backend_server_host \
   -e BACKEND_SERVER_PORT=backend_server_port \
   -e USE_HTTPS=false \
   -p 80:80 \
   --restart="always" \
-  hoj-frontend
-  # registry.cn-shenzhen.aliyuncs.com/hcode/hoj_frontend
+  hbutoj-frontend
+  # registry.cn-shenzhen.aliyuncs.com/hcode/hbutoj_frontend
   ```
 
 - Https方式
@@ -155,7 +155,7 @@ docker build -t hoj-frontend .
   **需将SSL证书与公钥文件（server.crt、server.kry）放置当前目录** 
 
   ```shell
-  docker run -d --name hoj-frontend \
+  docker run -d --name hbutoj-frontend \
   -e SERVER_NAME=localhost \
   -e BACKEND_SERVER_HOST=backend_server_host \
   -e BACKEND_SERVER_PORT=backend_server_port \
@@ -165,8 +165,8 @@ docker build -t hoj-frontend .
   -p 80:80 \
   -p 443:443 \
   --restart="always" \
-  hoj-frontend
-  # registry.cn-shenzhen.aliyuncs.com/hcode/hoj_frontend
+  hbutoj-frontend
+  # registry.cn-shenzhen.aliyuncs.com/hcode/hbutoj_frontend
   ```
 
 **docker-compose 启动**
@@ -174,10 +174,10 @@ docker build -t hoj-frontend .
 ```yaml
 version: "3"
 services:
-  hoj-frontend:
-    # image: registry.cn-shenzhen.aliyuncs.com/hcode/hoj_frontend
-    image: hoj-frontend
-    container_name: hoj-frontend
+  hbutoj-frontend:
+    # image: registry.cn-shenzhen.aliyuncs.com/hcode/hbutoj_frontend
+    image: hbutoj-frontend
+    container_name: hbutoj-frontend
     restart: always
     # 开启https，请提供证书
     #volumes:
@@ -192,7 +192,7 @@ services:
       - "80:80"
       - "443:443"
 #    networks:
-#      hoj-network:
+#      hbutoj-network:
 #        ipv4_address: 172.20.0.6
 ```
 

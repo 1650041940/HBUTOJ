@@ -18,11 +18,11 @@
    **（注意：如果云服务器有防火墙请开启8848，3306，873端口）**
 
    ```yaml
-   hoj-rsync-master:
-       image: registry.cn-shenzhen.aliyuncs.com/hcode/hoj_rsync:1.0
-       container_name: hoj-rsync-master
+    hbutoj-rsync-master:
+          image: registry.cn-shenzhen.aliyuncs.com/hcode/hbutoj_rsync:1.0
+          container_name: hbutoj-rsync-master
        volumes:
-         - ./hoj/testcase:/hoj/testcase:ro
+             - ./hbutoj/testcase:/hoj/testcase:ro
        environment:
          - RSYNC_MODE=master
          - RSYNC_USER=hojrsync 
@@ -84,7 +84,7 @@
       # 修改为nacos的管理员账号
       NACOS_USERNAME=root
       # 修改为nacos的管理员密码
-      NACOS_PASSWORD=hoj123456
+      NACOS_PASSWORD=CHANGE_ME
 
       # judgeserver的配置
       #修改为当前服务器公网ip
@@ -104,7 +104,7 @@
       # 写入主服务器ip
       RSYNC_MASTER_ADDR=127.0.0.1
       # 与主服务器的rsync密码一致
-      RSYNC_PASSWORD=hoj123456
+      RSYNC_PASSWORD=CHANGE_ME
       ```
 
    3. 启动即可

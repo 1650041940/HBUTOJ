@@ -151,7 +151,7 @@ HBUTOJ 的部署仓库默认使用 GHCR（例如 `ghcr.io/1650041940/hbutoj_back
 
    ```properties
    # hoj全部数据存储的文件夹位置（默认当前路径生成hoj文件夹）
-   HOJ_DATA_DIRECTORY=./hoj
+   HBUTOJ_DATA_DIRECTORY=./hbutoj
 
    # redis的配置
    REDIS_HOST=172.20.0.2
@@ -235,7 +235,7 @@ HBUTOJ 的部署仓库默认使用 GHCR（例如 `ghcr.io/1650041940/hbutoj_back
 
    ```properties
    # hoj全部数据存储的文件夹位置（默认当前路径生成judge文件夹）
-   HOJ_JUDGESERVER_DATA_DIRECTORY=./judge
+   HBUTOJ_JUDGESERVER_DATA_DIRECTORY=./judge
 
    # nacos的配置
    # 修改为nacos所在服务的ip
@@ -332,13 +332,13 @@ HBUTOJ 的部署仓库默认使用 GHCR（例如 `ghcr.io/1650041940/hbutoj_back
 
    **注释或去掉图中选中的行**
 
-   ① hoj-backend模块
+   ① hbutoj-backend模块
 
    ![在这里插入图片描述](/4dfdcb2461c742f1b3717a8a27c3598a.png)
 
    ​
 
-      ② hoj-judgeserver模块
+      ② hbutoj-judgeserver模块
 
    ![在这里插入图片描述](/9a936ad86ff2439a9e1188c286cfd751.png)
 

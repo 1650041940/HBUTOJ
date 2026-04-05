@@ -8,13 +8,13 @@
 可以直接在已有的docker-compose.yml添加以下模块即可，**本容器检查完是否有更新就会正常退出**
 
 ```yaml
-  hoj-mysql-checker:
-    image: registry.cn-shenzhen.aliyuncs.com/hcode/hoj_database_checker
-    container_name: hoj-mysql-checker
+  hbutoj-mysql-checker:
+    image: registry.cn-shenzhen.aliyuncs.com/hcode/hbutoj_database_checker
+    container_name: hbutoj-mysql-checker
     depends_on:
-      - hoj-mysql
+      - hbutoj-mysql
     links:
-      - hoj-mysql:mysql
+      - hbutoj-mysql:mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-hoj123456} # mysql的数据库密码
 ```
@@ -27,10 +27,10 @@
 git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay/src/mysql-checker
 ```
 
-当前文件夹为打包`hoj-mysql-checker`镜像的相关文件，只需将这些文件复制到同一个文件夹内，之后执行以下命令进行打包成镜像。
+当前文件夹为打包`hbutoj-mysql-checker`镜像的相关文件，只需将这些文件复制到同一个文件夹内，之后执行以下命令进行打包成镜像。
 
 ```shell
-docker build -t hoj-mysql-checker .
+docker build -t hbutoj-mysql-checker .
 ```
 
 docker-compose启动
@@ -38,14 +38,14 @@ docker-compose启动
 ```yaml
 version: "3"
 services:
-   hoj-mysql-checker:
-    #image: registry.cn-shenzhen.aliyuncs.com/hcode/hoj_database_checker
-    image: hoj-mysql-checker # 自己的镜像名称
-    container_name: hoj-mysql-checker
+   hbutoj-mysql-checker:
+    #image: registry.cn-shenzhen.aliyuncs.com/hcode/hbutoj_database_checker
+    image: hbutoj-mysql-checker # 自己的镜像名称
+    container_name: hbutoj-mysql-checker
     depends_on:
-      - hoj-mysql
+      - hbutoj-mysql
     links:
-      - hoj-mysql:mysql
+      - hbutoj-mysql:mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-hoj123456} # mysql的数据库密码
 ```

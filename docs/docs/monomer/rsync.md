@@ -110,10 +110,10 @@
 git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay/src/rsync
 ```
 
-当前文件夹为打包`hoj-rsync`镜像的相关文件，将这些文件复制到同一个文件夹内，之后执行以下命令进行打包成镜像.
+当前文件夹为打包`hbutoj-rsync`镜像的相关文件，将这些文件复制到同一个文件夹内，之后执行以下命令进行打包成镜像.
 
 ```shell
-docker build -t hoj-rsync .
+docker build -t hbutoj-rsync .
 ```
 
 **该服务用于测试用例数据在不同服务器之间的同步**
@@ -123,21 +123,21 @@ docker run启动
 - 主服务器（Backend所在服务器）
 
   ```shell
-  docker run -d --name hoj-rsync \
+  docker run -d --name hbutoj-rsync \
   -v ./hoj/testcase:/hoj/testcase:ro \
   -e RSYNC_MODE=master \
   -e RSYNC_USER=hojrsync \
   -e RSYNC_PASSWORD=hoj123456 \
   -p 873:873 \
   --restart=always \
-  hoj-rsync
-  # registry.cn-shenzhen.aliyuncs.com/hcode/hoj_rsync:1.0
+  hbutoj-rsync
+  # registry.cn-shenzhen.aliyuncs.com/hcode/hbutoj_rsync:1.0
   ```
 
 - 从服务器（Judgeserver所在的服务器）
 
   ```shell
-  docker run -d --name hoj-rsync \
+  docker run -d --name hbutoj-rsync \
   -v ./hoj/testcase:/hoj/testcase \
   -e RSYNC_MODE=slave \
   -e RSYNC_USER=hojrsync \
@@ -145,8 +145,8 @@ docker run启动
   -e RSYNC_MASTER_ADDR=master_server_ip \
   -p 873:873 \
   --restart=always \
-  hoj-rsync
-  # registry.cn-shenzhen.aliyuncs.com/hcode/hoj_rsync:1.0
+  hbutoj-rsync
+  # registry.cn-shenzhen.aliyuncs.com/hcode/hbutoj_rsync:1.0
   ```
 
   
@@ -158,10 +158,10 @@ docker-compose启动
   ```yaml
   version: "3"
   services:
-    hoj-rsync-master:
-  #    image: registry.cn-shenzhen.aliyuncs.com/hcode/hoj_rsync:1.0
-      image: hoj-rsync
-      container_name: hoj-rsync-master
+    hbutoj-rsync-master:
+  #    image: registry.cn-shenzhen.aliyuncs.com/hcode/hbutoj_rsync:1.0
+      image: hbutoj-rsync
+      container_name: hbutoj-rsync-master
       volumes:
         - ./hoj/testcase:/hoj/testcase:ro
       environment:
@@ -177,10 +177,10 @@ docker-compose启动
   ```yaml
   version: "3"
   services:
-    hoj-rsync-slave:
-  #    image: registry.cn-shenzhen.aliyuncs.com/hcode/hoj_rsync:1.0
-      image: hoj-rsync
-      container_name: hoj-rsync-slave
+    hbutoj-rsync-slave:
+  #    image: registry.cn-shenzhen.aliyuncs.com/hcode/hbutoj_rsync:1.0
+      image: hbutoj-rsync
+      container_name: hbutoj-rsync-slave
       restart: always
       volumes:
         - ./judge/test_case:/hoj/testcase

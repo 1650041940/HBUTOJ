@@ -13,13 +13,13 @@ https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/vue/2.6.11/vue.min.js
 ```
 
 :::warning
-hoj-frontend(前端vue项目)如果不挂载任何CDN，最终打包生成的文件夹大小约5.3MB
+hbutoj-frontend(前端vue项目)如果不挂载任何CDN，最终打包生成的文件夹大小约5.3MB
 :::
 
 ## 一、全部打包且部署
 
 :::info
-如果本身hoj部署在**学校内网机器**上或者**云服务器是无带宽上限、按流量计费的实例**，那么可以不用考虑带宽问题，可以直接取消CDN挂载，直接全部自己打包成对应的静态文件，然后挂载到docker的`hoj-frontend`镜像里面
+如果本身HBUTOJ部署在**学校内网机器**上或者**云服务器是无带宽上限、按流量计费的实例**，那么可以不用考虑带宽问题，可以直接取消CDN挂载，直接全部自己打包成对应的静态文件，然后挂载到docker的`hbutoj-frontend`镜像里面
 :::
 **操作如下:**
   1. 下载前端源代码：[hoj-vue](https://github.com/1650041940/HBUTOJ/tree/main/hoj-vue)
@@ -183,7 +183,7 @@ hoj-frontend(前端vue项目)如果不挂载任何CDN，最终打包生成的文
      ....
      ```
 
-     将 `dist` 文件夹复制到服务器上某个目录下，比如 `/hoj/www/html/dist`，然后修改 `docker-compose.yml`，在 `hoj-frontend` 模块中的 `volumes` 中增加一行 `- /hoj/www/html/dist:/usr/share/nginx/html` （冒号前面的请修改为实际的路径），然后 `docker-compose up -d` 即可。
+     将 `dist` 文件夹复制到服务器上某个目录下，比如 `/hbutoj/www/html/dist`，然后修改 `docker-compose.yml`，在 `hbutoj-frontend` 模块中的 `volumes` 中增加一行 `- /hbutoj/www/html/dist:/usr/share/nginx/html` （冒号前面的请修改为实际的路径），然后 `docker-compose up -d` 即可。
 
 
 ## 二、全部打包但有个人CDN服务器
@@ -207,4 +207,4 @@ hoj-frontend(前端vue项目)如果不挂载任何CDN，最终打包生成的文
 
     ..............................
 
-   将 `dist` 文件夹复制到服务器上某个目录下，比如 `/hoj/www/html/dist`，然后修改 `docker-compose.yml`，在 `hoj-frontend` 模块中的 `volumes` 中增加一行 `- /hoj/www/html/dist:/usr/share/nginx/html` （冒号前面的请修改为实际的路径），然后 `docker-compose up -d` 即可。
+   将 `dist` 文件夹复制到服务器上某个目录下，比如 `/hbutoj/www/html/dist`，然后修改 `docker-compose.yml`，在 `hbutoj-frontend` 模块中的 `volumes` 中增加一行 `- /hbutoj/www/html/dist:/usr/share/nginx/html` （冒号前面的请修改为实际的路径），然后 `docker-compose up -d` 即可。

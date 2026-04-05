@@ -64,7 +64,7 @@
       "auth": 1, // 默认为1公开，2为私有，3为比赛中
       "author": "admin", // 题目上传的作者，请使用用户名
       "isRemote": false, // 均为非VJ题目，不用修改
-      "problemId": "HOJ-1010", // 题目的展示id
+      "problemId": "HBUTOJ-1010", // 题目的展示id
       "description": "", // 题目的描述，支持markdown语法
       "source": "", // 题目来源
       "title": "", // 题目标题
@@ -140,7 +140,7 @@
       "auth": 1, // 默认为1公开，2为私有，3为比赛中
       "author": "admin", // 题目上传的作者，请使用用户名
       "isRemote": false, // 均为非VJ题目，不用修改
-      "problemId": "HOJ-1010", // 题目的展示id
+      "problemId": "HBUTOJ-1010", // 题目的展示id
       "description": "", // 题目的描述，支持markdown语法
       "source": "", // 题目来源
       "title": "", // 题目标题
