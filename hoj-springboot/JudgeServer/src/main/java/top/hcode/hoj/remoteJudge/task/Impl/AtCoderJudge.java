@@ -63,6 +63,10 @@ public class AtCoderJudge extends RemoteJudgeStrategy {
             throw new RuntimeException("[AtCoder] Failed to Login, the response status:" + remoteJudgeDTO.getLoginStatus());
         }
 
+        // Refresh csrf_token (and optionally LanguageId) from the actual submit page.
+        // AtCoder may reject submit if using a stale/incorrect token.
+        prepareSubmitContext(remoteJudgeDTO);
+
         HttpResponse response = trySubmit();
 
         if (response.getStatus() == 200) { // 说明被限制提交频率了，
@@ -79,8 +83,9 @@ public class AtCoderJudge extends RemoteJudgeStrategy {
         }
 
         if (response.getStatus() != 302) {
-            log.error("Submit to AtCoder failed, the response status:{}, It may be that the frequency of submission operation is too fast. Please try later", response.getStatus());
-            throw new RuntimeException("[AtCoder] Failed to Submit, the response status:" + response.getStatus());
+            String body = safeSnippet(response.body(), 600);
+            log.error("Submit to AtCoder failed, status:{}, body:{}", response.getStatus(), body);
+            throw new RuntimeException("[AtCoder] Failed to Submit, status=" + response.getStatus() + ", body=" + body);
         }
 
         // 停留3秒钟后再获取id，之后归还账号，避免提交频率过快
@@ -102,14 +107,31 @@ public class AtCoderJudge extends RemoteJudgeStrategy {
         List<HttpCookie> cookies = remoteJudgeDTO.getCookies();
         String csrfToken = remoteJudgeDTO.getCsrfToken();
 
+        String languageId = remoteJudgeDTO.getLanguage();
+        // remoteJudgeDTO.getLanguage() stores display name; we need the numeric LanguageId.
+        String resolvedLanguageId = getLanguage(languageId);
+        if (resolvedLanguageId == null) {
+            // As a fallback, resolve from submit page HTML if possible.
+            String submitPageHtml = fetchSubmitPageHtml(remoteJudgeDTO);
+            resolvedLanguageId = resolveLanguageIdFromSubmitPage(submitPageHtml, languageId);
+        }
+        if (resolvedLanguageId == null) {
+            throw new RuntimeException("[AtCoder] Failed to resolve LanguageId for language: " + languageId);
+        }
+
         String submitUrl = HOST + String.format(SUBMIT_URL, remoteJudgeDTO.getContestId());
         HttpRequest request = HttpUtil.createPost(submitUrl);
         HttpRequest httpRequest = request.form(MapUtil.builder(new HashMap<String, Object>())
                 .put("data.TaskScreenName", remoteJudgeDTO.getCompleteProblemId())
-                .put("data.LanguageId", getLanguage(remoteJudgeDTO.getLanguage()))
+                .put("data.LanguageId", resolvedLanguageId)
                 .put("sourceCode", remoteJudgeDTO.getUserCode())
                 .put("csrf_token", csrfToken).map());
         httpRequest.cookie(cookies);
+        httpRequest.addHeaders(headers);
+        httpRequest.header("Origin", HOST);
+        httpRequest.header("Referer", submitUrl);
+        httpRequest.header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+        httpRequest.header("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8");
         HttpResponse response = httpRequest.execute();
         remoteJudgeDTO.setSubmitStatus(response.getStatus());
         return response;
@@ -152,7 +174,7 @@ public class AtCoderJudge extends RemoteJudgeStrategy {
 
         RemoteJudgeDTO remoteJudgeDTO = getRemoteJudgeDTO();
 
-        String csrfToken = getCsrfToken(HOST + LOGIN_URL);
+        String csrfToken = getCsrfToken(HOST + LOGIN_URL, null);
         HttpRequest request = HttpUtil.createPost(HOST + LOGIN_URL);
         request.addHeaders(headers);
         HttpResponse response = request.form(MapUtil.builder(new HashMap<String, Object>())
@@ -184,11 +206,82 @@ public class AtCoderJudge extends RemoteJudgeStrategy {
     }
 
     private String getCsrfToken(String url) {
+        return getCsrfToken(url, null);
+    }
+
+    private void prepareSubmitContext(RemoteJudgeDTO remoteJudgeDTO) {
+        String submitUrl = HOST + String.format(SUBMIT_URL, remoteJudgeDTO.getContestId());
+        String submitHtml = fetchSubmitPageHtml(remoteJudgeDTO);
+        String csrfToken = extractCsrfTokenFromHtml(submitHtml);
+        if (csrfToken == null) {
+            throw new RuntimeException("[AtCoder] Failed to get csrf_token from submit page");
+        }
+        remoteJudgeDTO.setCsrfToken(csrfToken);
+    }
+
+    private String fetchSubmitPageHtml(RemoteJudgeDTO remoteJudgeDTO) {
+        String submitUrl = HOST + String.format(SUBMIT_URL, remoteJudgeDTO.getContestId());
+        HttpRequest request = HttpUtil.createGet(submitUrl);
+        request.addHeaders(headers);
+        request.cookie(remoteJudgeDTO.getCookies());
+        HttpResponse response = request.execute();
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("[AtCoder] Failed to open submit page, status=" + response.getStatus());
+        }
+        return response.body();
+    }
+
+    private String getCsrfToken(String url, List<HttpCookie> cookies) {
         HttpRequest request = HttpUtil.createGet(url);
         request.addHeaders(headers);
+        if (cookies != null) {
+            request.cookie(cookies);
+        }
         HttpResponse response = request.execute();
         String body = response.body();
-        return ReUtil.get("var csrfToken = \"([\\s\\S]*?)\"", body, 1);
+        String token = extractCsrfTokenFromHtml(body);
+        if (token == null) {
+            // Keep backward compatibility with older pattern.
+            token = ReUtil.get("var csrfToken = \\\"([\\s\\S]*?)\\\"", body, 1);
+        }
+        return token;
+    }
+
+    private String extractCsrfTokenFromHtml(String html) {
+        if (html == null) {
+            return null;
+        }
+        String token;
+        token = ReUtil.get("name=\\\"csrf_token\\\"\\s+value=\\\"([^\\\"]+)\\\"", html, 1);
+        if (token != null) {
+            return token;
+        }
+        token = ReUtil.get("<meta\\s+name=\\\"csrf-token\\\"\\s+content=\\\"([^\\\"]+)\\\"", html, 1);
+        if (token != null) {
+            return token;
+        }
+        return ReUtil.get("var\\s+csrfToken\\s*=\\s*\\\"([^\\\"]+)\\\"", html, 1);
+    }
+
+    private String resolveLanguageIdFromSubmitPage(String html, String languageDisplayName) {
+        if (html == null || languageDisplayName == null) {
+            return null;
+        }
+        // Typical option: <option value="5001">C++ 20 (gcc 12.2)</option>
+        String escaped = java.util.regex.Pattern.quote(languageDisplayName.trim());
+        String regex = "<option\\s+value=\\\"(\\d+)\\\"[^>]*>\\s*" + escaped + "\\s*</option>";
+        return ReUtil.get(regex, html, 1);
+    }
+
+    private String safeSnippet(String body, int maxLen) {
+        if (body == null) {
+            return null;
+        }
+        String normalized = body.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ');
+        if (normalized.length() <= maxLen) {
+            return normalized;
+        }
+        return normalized.substring(0, maxLen);
     }
 
     static {

@@ -12,11 +12,12 @@
     <packaging>jar</packaging>
 
     <build>
-        <finalName>${project.artifactId}-${version}</finalName>
+        <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.2.6.RELEASE</version>
                 <configuration>
                     <!-- 指定该Main Class为全局的唯一入口 -->
                     <mainClass>top.hcode.hoj.JudgeServerApplication</mainClass>
