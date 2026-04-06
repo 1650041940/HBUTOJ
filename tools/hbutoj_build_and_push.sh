@@ -74,10 +74,25 @@ HBUTOJ_FRONTEND_IMAGE="${HBUTOJ_FRONTEND_IMAGE:-hbutoj_frontend}"
 HBUTOJ_JUDGESERVER_IMAGE="${HBUTOJ_JUDGESERVER_IMAGE:-hbutoj_judgeserver}"
 HBUTOJ_MYSQL_CHECKER_IMAGE="${HBUTOJ_MYSQL_CHECKER_IMAGE:-hbutoj_database_checker}"
 
+validate_no_placeholder() {
+  local name="$1"
+  local value="$2"
+  if [[ "$value" == *"<"* || "$value" == *">"* ]]; then
+    echo "ERROR: $name contains a placeholder: $value" >&2
+    echo "       Please replace it with a real registry namespace, e.g.:" >&2
+    echo "         export HBUTOJ_IMAGE_PREFIX=ghcr.io/<your_github_username>" >&2
+    exit 1
+  fi
+}
+
 if [[ -z "$HBUTOJ_IMAGE_PREFIX" ]]; then
   echo "ERROR: HBUTOJ_IMAGE_PREFIX is required (e.g. ghcr.io/<you> or registry.cn-shenzhen.aliyuncs.com/<namespace>)." >&2
   exit 1
 fi
+
+validate_no_placeholder HBUTOJ_IMAGE_PREFIX "$HBUTOJ_IMAGE_PREFIX"
+validate_no_placeholder HBUTOJ_MYSQL_IMAGE_PREFIX "${HBUTOJ_MYSQL_IMAGE_PREFIX:-}"
+validate_no_placeholder HBUTOJ_MYSQL_CHECKER_IMAGE_PREFIX "${HBUTOJ_MYSQL_CHECKER_IMAGE_PREFIX:-}"
 
 if [[ -z "$HBUTOJ_IMAGE_TAG" && -z "$HBUTOJ_BACKEND_IMAGE_TAG" && -z "$HBUTOJ_FRONTEND_IMAGE_TAG" && -z "$HBUTOJ_JUDGESERVER_IMAGE_TAG" && -z "$HBUTOJ_MYSQL_CHECKER_IMAGE_TAG" ]]; then
   echo "ERROR: No image tag provided. Set HBUTOJ_IMAGE_TAG or per-component tags (HBUTOJ_BACKEND_IMAGE_TAG/HBUTOJ_FRONTEND_IMAGE_TAG/HBUTOJ_JUDGESERVER_IMAGE_TAG/HBUTOJ_MYSQL_CHECKER_IMAGE_TAG)." >&2
