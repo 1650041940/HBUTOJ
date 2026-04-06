@@ -185,6 +185,10 @@ echo "==> Copy frontend dist into deploy repo"
 rm -rf "$DEPLOY_REPO/src/frontend/html"/*
 cp -a "$FRONTEND_DIST"/. "$DEPLOY_REPO/src/frontend/html/"
 
+echo "==> Sync scrollBoard into deploy repo"
+rm -rf "$DEPLOY_REPO/src/frontend/scrollBoard"/*
+cp -a "$ROOT_DIR/hoj-scrollBoard"/. "$DEPLOY_REPO/src/frontend/scrollBoard/"
+
 # 4) Build + push images
 
 docker_build_push() {
