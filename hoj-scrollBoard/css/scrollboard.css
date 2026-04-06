@@ -180,7 +180,7 @@ table.rank-fixed {
 
 .team-avatar {
     flex: 0 0 auto; /* 不伸缩，不收缩 */
-    width: 50x;
+    width: 50px;
     height: 50px;
     border-radius: 50%;
     object-fit: cover;
@@ -201,15 +201,12 @@ table.rank-fixed {
 }
 
 .team-school {
-    color: #666;
     font-size: 70%;
     font-weight: normal;
     color: dimgrey;
     position: relative;
     display: block;
-    table.rank-fixed {
-    table-layout: fixed;
-    width: 100%;
+    overflow: hidden;
 }
 
 .team-title,
@@ -217,21 +214,6 @@ table.rank-fixed {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.team-title {
-    font-weight: bold;
-    font-size: 1em;
-}
-
-.team-school {
-    color: #666;
-    font-size: 70%;
-    font-weight: normal;
-    color: dimgrey;
-    position: relative;
-    display: block;
-    overflow: hidden;
 }
 
 .table>tbody>tr>td{
