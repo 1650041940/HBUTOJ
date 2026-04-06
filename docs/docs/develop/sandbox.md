@@ -2,7 +2,7 @@
 
 > Judger-SandBox使用的是开源项目[go-judge](https://github.com/criyle/go-judge)Linux版本的可执行文件，更多调用方式请自行浏览[go-judge](https://github.com/criyle/go-judge)
 
-HOJ用的是java来调用此沙盒，请看[JudgeServer-judge](https://github.com/1650041940/HBUTOJ/tree/main/hoj-springboot/JudgeServer/src/main/java/top/hcode/hoj/judge)下的SandboxRun.java
+HOJ用的是java来调用此沙盒，请看[JudgeServer-judge](https://github.com/1650041940/HBUTOJ/tree/main/hbutoj-springboot/JudgeServer/src/main/java/top/hcode/hoj/judge)下的SandboxRun.java
 
 启动沙盒可执行文件（见仓库 [sandbox](https://github.com/1650041940/HBUTOJ/tree/main/sandbox) 目录），默认监听5050端口
 

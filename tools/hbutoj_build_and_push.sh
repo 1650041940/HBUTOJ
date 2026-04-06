@@ -133,7 +133,7 @@ BUILD_ID="$(git -C "$ROOT_DIR" rev-parse --short HEAD 2>/dev/null || date +%Y%m%
 echo "==> Build id: $BUILD_ID"
 
 # 1) Build backend + judgeserver jars
-pushd "$ROOT_DIR/hoj-springboot" >/dev/null
+pushd "$ROOT_DIR/hbutoj-springboot" >/dev/null
 
 echo "==> Building backend jar (DataBackup)"
 mvn $MVN_QUIET_FLAG -pl DataBackup -am clean package -DskipTests
@@ -175,11 +175,11 @@ popd >/dev/null
 
 echo "==> Copy backend jar into deploy repo"
 rm -f "$DEPLOY_REPO/src/backend"/*.jar
-cp -f "$ROOT_DIR/hoj-springboot/$BACKEND_JAR" "$DEPLOY_REPO/src/backend/hoj-backend.jar"
+cp -f "$ROOT_DIR/hbutoj-springboot/$BACKEND_JAR" "$DEPLOY_REPO/src/backend/hoj-backend.jar"
 
 echo "==> Copy judgeserver jar into deploy repo"
 rm -f "$DEPLOY_REPO/src/judgeserver"/*.jar
-cp -f "$ROOT_DIR/hoj-springboot/$JUDGESERVER_JAR" "$DEPLOY_REPO/src/judgeserver/"
+cp -f "$ROOT_DIR/hbutoj-springboot/$JUDGESERVER_JAR" "$DEPLOY_REPO/src/judgeserver/"
 
 echo "==> Copy frontend dist into deploy repo"
 rm -rf "$DEPLOY_REPO/src/frontend/html"/*
@@ -187,7 +187,7 @@ cp -a "$FRONTEND_DIST"/. "$DEPLOY_REPO/src/frontend/html/"
 
 echo "==> Sync scrollBoard into deploy repo"
 rm -rf "$DEPLOY_REPO/src/frontend/scrollBoard"/*
-cp -a "$ROOT_DIR/hoj-scrollBoard"/. "$DEPLOY_REPO/src/frontend/scrollBoard/"
+cp -a "$ROOT_DIR/hbutoj-scrollBoard"/. "$DEPLOY_REPO/src/frontend/scrollBoard/"
 
 # 4) Build + push images
 

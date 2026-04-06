@@ -6,9 +6,9 @@
 
 ## 一、常规部署
 
-1. [下载本项目](https://github.com/1650041940/HBUTOJ/tree/main/hoj-springboot)，git clone或者download zip
+1. [下载本项目](https://github.com/1650041940/HBUTOJ/tree/main/hbutoj-springboot)，git clone或者download zip
 
-2. 修改本项目路径下`/hoj-springboot/JudgeServer/src/main/resources/bootstrap.yml`的相关配置
+2. 修改本项目路径下`/hbutoj-springboot/JudgeServer/src/main/resources/bootstrap.yml`的相关配置
 
    ```yaml
   hbutoj-judge-server:
@@ -28,7 +28,7 @@
    mvn clean package -Dmaven.test.skip=true
    ```
 
-4. 打包成功后在路径`/hoj-springboot/JudgeServer/target/` 文件夹内找到类似JudgeServer.jar的jar包
+4. 打包成功后在路径`/hbutoj-springboot/JudgeServer/target/` 文件夹内找到类似JudgeServer.jar的jar包
 
 5. 在需要部署判题服务的云服务器上创建文件夹来存储jar包和沙盒文件,同时还要判题过程中需要的文件夹
 
@@ -165,7 +165,7 @@
 git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay/src/judgeserver
 ```
 
-当前文件夹为打包`hbutoj-judgeserver`镜像的相关文件，将这些文件复制到同一个文件夹内，**然后打包[JudgeServer](https://github.com/1650041940/HBUTOJ/tree/main/hoj-springboot/JudgeServer)（SpringBoot项目）成jar包也放到当前文件夹**，之后执行以下命令进行打包成镜像.
+当前文件夹为打包`hbutoj-judgeserver`镜像的相关文件，将这些文件复制到同一个文件夹内，**然后打包[JudgeServer](https://github.com/1650041940/HBUTOJ/tree/main/hbutoj-springboot/JudgeServer)（SpringBoot项目）成jar包也放到当前文件夹**，之后执行以下命令进行打包成镜像.
 
 ```shell
 docker build -t hbutoj-judgeserver .

@@ -53,7 +53,7 @@
 
    ​
 
-   再将另外一个滚榜的前端文件夹也放到指定的文件夹，先去下载文件夹[scrollBoard](https://github.com/1650041940/HBUTOJ/tree/main/hoj-scrollBoard), 然后在服务器上创建文件夹`/hbutoj/www/scrollBoard`，将下载好的文件夹scrollBoard的内容复制进去。
+   再将另外一个滚榜的前端文件夹也放到指定的文件夹，先去下载文件夹[scrollBoard](https://github.com/1650041940/HBUTOJ/tree/main/hbutoj-scrollBoard), 然后在服务器上创建文件夹`/hbutoj/www/scrollBoard`，将下载好的文件夹scrollBoard的内容复制进去。
 
    ```shell
    mkdir -p /hbutoj/www/scrollBoard
