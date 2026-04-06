@@ -142,6 +142,9 @@
           <el-form-item :label="$t('m.Student_Number')">
             <el-input v-model="formProfile.number" :maxlength="20" />
           </el-form-item>
+          <el-form-item :label="$t('m.Grade')">
+            <el-input v-model="formProfile.grade" :maxlength="20" />
+          </el-form-item>
         </el-col>
         <el-col :md="4" :lg="4">
           <div class="separator hidden-md-and-down"></div>
@@ -230,6 +233,7 @@ export default {
         nickname: '',
         signature: '',
         number: '',
+        grade: '',
         blog: '',
         school: '',
         github: '',

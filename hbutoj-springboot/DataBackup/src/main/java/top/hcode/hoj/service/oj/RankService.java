@@ -5,5 +5,5 @@ import top.hcode.hoj.common.result.CommonResult;
 
 public interface RankService {
 
-    public CommonResult<IPage> getRankList(Integer limit, Integer currentPage, String searchUser, Integer type);
+    public CommonResult<IPage> getRankList(Integer limit, Integer currentPage, String searchUser, String grade, Integer type);
 }

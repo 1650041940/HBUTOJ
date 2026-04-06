@@ -59,4 +59,15 @@ public class ImageServiceImpl implements ImageService {
             return CommonResult.errorResponse(e.getMessage(), ResultStatus.SYSTEM_ERROR);
         }
     }
+
+    @Override
+    public CommonResult<Map<Object, Object>> uploadTeamAwardImg(MultipartFile image) {
+        try {
+            return CommonResult.successResponse(imageManager.uploadTeamAwardImg(image));
+        } catch (StatusFailException e) {
+            return CommonResult.errorResponse(e.getMessage());
+        } catch (StatusSystemErrorException e) {
+            return CommonResult.errorResponse(e.getMessage(), ResultStatus.SYSTEM_ERROR);
+        }
+    }
 }

@@ -37,6 +37,9 @@ public class UserInfoVO {
     @ApiModelProperty(value = "学号")
     private String number;
 
+    @ApiModelProperty(value = "年级")
+    private String grade;
+
     @ApiModelProperty(value = "性别")
     private String gender;
 

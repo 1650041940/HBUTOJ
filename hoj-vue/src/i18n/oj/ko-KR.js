@@ -134,6 +134,7 @@ export const m = {
   CF_Username: 'Codeforces 사용자 이름',
   School: '학교',
   Student_Number: '학번',
+  Grade: '학년',
   Blog: '블로그',
   Github: 'Github',
   Gender: '성별',
@@ -209,6 +210,7 @@ export const m = {
   Latest_Problem: '최신 문제',
   Supported_Remote_Online_Judge: '지원되는 원격 온라인 저지',
   Statistics_Submissions_In_The_Last_Week: '최근 1주일 제출 통계',
+  Team_Award: '팀 수상',
 
 
   // 테이블 공통 열 이름, 버튼, 검색 상자 등
@@ -350,6 +352,7 @@ export const m = {
 
   // /views/oj/rank/ACMRank.vue
   ACM_Ranklist: 'ACM 랭킹',
+  Pass_Ranklist: '해결 수 랭킹',
   User: '사용자',
   Nickname: '닉네임',
   Signature: '자기 소개',

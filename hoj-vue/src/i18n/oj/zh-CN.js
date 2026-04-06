@@ -134,6 +134,7 @@ export const m = {
   CF_Username: 'Codeforces 用户名',
   School: '学校',
   Student_Number: '学号',
+  Grade: '年级',
   Blog: '博客',
   Github: 'Github',
   Gender: '性别',
@@ -210,6 +211,7 @@ export const m = {
   Supported_Remote_Online_Judge: '支持的远程评测平台',
   Statistics_Submissions_In_The_Last_Week: '最近一周提交统计',
   Daily_Problem: '每日一题',
+  Team_Award: '团队获奖',
   Go_Solve: '去做',
   Next_Problem: '下一题',
   Recommendation_Reason: '推荐理由',
@@ -354,6 +356,7 @@ export const m = {
 
   // /views/oj/rank/ACMRank.vue
   ACM_Ranklist: 'ACM 排行榜',
+  Pass_Ranklist: '通过数排行榜',
   User: '用户',
   Nickname: '昵称',
   Signature: '个性简介',

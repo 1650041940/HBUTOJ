@@ -212,6 +212,19 @@ const ojApi = {
     })
   },
 
+  // 团队获奖
+  getTeamAwardList(currentPage, limit) {
+    return ajax('/api/team-award', 'get', {
+      params: {
+        currentPage,
+        limit,
+      }
+    })
+  },
+  getTeamAwardPageSize() {
+    return ajax('/api/team-award/page-size', 'get', {})
+  },
+
   // 每日一题 / 推荐
   getDailyProblem() {
     return ajax('/api/daily-problem', 'get', {})
@@ -661,13 +674,14 @@ const ojApi = {
   },
 
   // ACM赛制或OI赛制的排行榜
-  getUserRank(currentPage, limit, type, searchUser) {
+  getUserRank(currentPage, limit, type, searchUser, grade) {
     return ajax('/api/get-rank-list', 'get', {
       params: {
         currentPage,
         limit,
         type,
-        searchUser
+        searchUser,
+        grade,
       }
     })
   },
@@ -1912,6 +1926,31 @@ const adminApi = {
       params: params
     })
   },
+
+  // 团队获奖（后台管理）
+  admin_getTeamAwardList(currentPage, limit, keyword) {
+    let params = { currentPage, limit }
+    if (keyword) {
+      params.keyword = keyword
+    }
+    return ajax('/api/admin/team-award/list', 'get', { params })
+  },
+  admin_addTeamAward(data) {
+    return ajax('/api/admin/team-award/add', 'post', { data })
+  },
+  admin_updateTeamAward(data) {
+    return ajax('/api/admin/team-award/update', 'put', { data })
+  },
+  admin_deleteTeamAward(id) {
+    return ajax('/api/admin/team-award/delete', 'delete', { params: { id } })
+  },
+  admin_getTeamAwardPageSize() {
+    return ajax('/api/admin/team-award/page-size', 'get', {})
+  },
+  admin_setTeamAwardPageSize(pageSize) {
+    return ajax('/api/admin/team-award/page-size', 'put', { params: { pageSize } })
+  },
+
   admin_getContestAnnouncementList(cid, currentPage, limit) {
     return ajax('/api/admin/contest/announcement', 'get', {
       params: {

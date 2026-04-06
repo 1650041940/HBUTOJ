@@ -134,6 +134,7 @@ export const m = {
   CF_Username: 'Codeforces 使用者名稱',
   School: '學校',
   Student_Number: '學號',
+  Grade: '年級',
   Blog: '部落格',
   Github: 'Github',
   Gender: '性別',
@@ -209,6 +210,7 @@ export const m = {
   Latest_Problem: '最新題目',
   Supported_Remote_Online_Judge: '支援的遠端評測平台',
   Statistics_Submissions_In_The_Last_Week: '最近一週提交統計',
+  Team_Award: '團隊獲獎',
 
 
   // 表格通用列名,按鈕，搜尋框等
@@ -350,6 +352,7 @@ export const m = {
 
   // /views/oj/rank/ACMRank.vue
   ACM_Ranklist: 'ACM 排行榜',
+  Pass_Ranklist: '通過數排行榜',
   User: '使用者',
   Nickname: '暱稱',
   Signature: '個性簡介',

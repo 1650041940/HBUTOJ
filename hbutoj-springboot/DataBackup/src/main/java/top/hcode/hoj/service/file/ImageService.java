@@ -13,4 +13,6 @@ public interface ImageService {
     public CommonResult<Group> uploadGroupAvatar(MultipartFile image, Long gid);
 
     public CommonResult<Map<Object, Object>> uploadCarouselImg(MultipartFile image);
+
+    public CommonResult<Map<Object, Object>> uploadTeamAwardImg(MultipartFile image);
 }

@@ -135,6 +135,7 @@ export const m = {
   CF_Username: 'Codeforces Username',
   School: 'School',
   Student_Number: 'Student Number',
+  Grade: 'Grade',
   Blog: 'Blog',
   Github: 'Github',
   Gender: 'Gender',
@@ -210,6 +211,7 @@ export const m = {
   Supported_Remote_Online_Judge: 'Supported Remote Online Judge',
   Statistics_Submissions_In_The_Last_Week: 'Statistics: Submissions In The Last Week',
   Daily_Problem: 'Daily Problem',
+  Team_Award: 'Team Awards',
   Go_Solve: 'Solve',
   Next_Problem: 'Next',
   Recommendation_Reason: 'Reason',
@@ -351,6 +353,7 @@ export const m = {
 
   // /views/oj/rank/ACMRank.vue
   ACM_Ranklist: 'ACM Ranklist',
+  Pass_Ranklist: 'Ranklist by Solved',
   User: 'User',
   Nickname: 'Nickname',
   Signature: 'Signature',

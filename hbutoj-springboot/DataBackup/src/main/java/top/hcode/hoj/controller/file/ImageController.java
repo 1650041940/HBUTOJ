@@ -3,6 +3,7 @@ package top.hcode.hoj.controller.file;
 
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.Logical;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,6 +51,14 @@ public class ImageController {
     @RequiresRoles("root")
     public CommonResult<Map<Object, Object>> uploadCarouselImg(@RequestParam("file") MultipartFile image) {
         return imageService.uploadCarouselImg(image);
+    }
+
+    @RequestMapping(value = "/upload-team-award-img", method = RequestMethod.POST)
+    @RequiresAuthentication
+    @ResponseBody
+    @RequiresRoles(value = {"root", "admin"}, logical = Logical.OR)
+    public CommonResult<Map<Object, Object>> uploadTeamAwardImg(@RequestParam("file") MultipartFile image) {
+        return imageService.uploadTeamAwardImg(image);
     }
 
 }

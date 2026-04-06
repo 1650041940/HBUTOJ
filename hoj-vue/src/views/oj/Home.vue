@@ -385,6 +385,55 @@
             </el-col>
           </el-row>
         </el-card>
+
+        <el-card class="card-top">
+          <div slot="header" class="clearfix">
+            <span class="panel-title home-title">
+              <i class="el-icon-medal"></i> {{ $t('m.Team_Award') }}
+            </span>
+          </div>
+          <div v-loading="loading.teamAwardLoading">
+            <template v-if="teamAwardList.length">
+              <el-row :gutter="12">
+                <el-col
+                  v-for="item in teamAwardList"
+                  :key="item.id"
+                  :xs="24"
+                  :sm="24"
+                >
+                  <div class="team-award-item">
+                    <el-image
+                      class="team-award-photo"
+                      :src="item.photo"
+                      fit="cover"
+                    >
+                      <div slot="error" class="image-slot">
+                        <i class="el-icon-picture-outline"></i>
+                      </div>
+                    </el-image>
+                    <div class="team-award-body">
+                      <div class="team-award-title">{{ item.title || item.contestName }}</div>
+                      <div class="team-award-sub">
+                        <span v-if="item.award">{{ item.award }}</span>
+                        <span v-if="item.awardTime"> · {{ item.awardTime | localtime((format = 'YYYY-MM-DD')) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </el-col>
+              </el-row>
+              <Pagination
+                :total="teamAwardTotal"
+                :page-size="teamAwardLimit"
+                :current.sync="teamAwardPage"
+                @on-change="getTeamAwardList"
+                :layout="'prev, pager, next'"
+              ></Pagination>
+            </template>
+            <template v-else>
+              <span>{{ $t('m.No_Data') }}</span>
+            </template>
+          </div>
+        </el-card>
       </el-col>
     </el-row>
   </div>
@@ -403,11 +452,13 @@ import myMessage from "@/common/message";
 const Announcements = () => import("@/components/oj/common/Announcements.vue");
 const SubmissionStatistic = () =>
   import("@/components/oj/home/SubmissionStatistic.vue");
+const Pagination = () => import("@/components/oj/common/Pagination");
 export default {
   name: "home",
   components: {
     Announcements,
     SubmissionStatistic,
+    Pagination,
     Avatar,
   },
   data() {
@@ -423,7 +474,12 @@ export default {
         recentUpdatedProblemsLoading: false,
         recentContests: false,
         dailyProblemLoading: false,
+        teamAwardLoading: false,
       },
+      teamAwardPage: 1,
+      teamAwardLimit: 6,
+      teamAwardTotal: 0,
+      teamAwardList: [],
       dailyProblem: null,
       dailyProblemIndex: 1,
       carouselImgList: [
@@ -491,11 +547,27 @@ export default {
     this.getRecentContests();
     this.getRecent7ACRank();
     this.getRecentUpdatedProblemList();
+    this.getTeamAwardList(1);
     if (this.isAuthenticated) {
       this.getDailyProblem();
     }
   },
   methods: {
+    getTeamAwardList(page) {
+      this.loading.teamAwardLoading = true;
+      api.getTeamAwardList(page, null).then(
+        (res) => {
+          this.teamAwardPage = page;
+          this.teamAwardTotal = res.data.data.total;
+          this.teamAwardLimit = res.data.data.size;
+          this.teamAwardList = res.data.data.records || [];
+          this.loading.teamAwardLoading = false;
+        },
+        () => {
+          this.loading.teamAwardLoading = false;
+        }
+      );
+    },
     getDailyProblem() {
       this.loading.dailyProblemLoading = true;
       this.dailyProblemIndex = 1;
@@ -701,6 +773,31 @@ li {
 .contest-info li {
   display: inline-block;
   padding-right: 10px;
+}
+
+.team-award-item {
+  margin-bottom: 12px;
+}
+
+.team-award-photo {
+  width: 100%;
+  height: 160px;
+  border-radius: 4px;
+}
+
+.team-award-body {
+  padding-top: 8px;
+}
+
+.team-award-title {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.team-award-sub {
+  margin-top: 2px;
+  font-size: 12px;
 }
 
 /deep/.contest-card-running .el-card__header {

@@ -218,6 +218,8 @@ public class Constants {
 
         HOME_CAROUSEL_FOLDER("/hoj/file/carousel"),
 
+        TEAM_AWARD_FOLDER("/hoj/file/team_award"),
+
         MARKDOWN_FILE_FOLDER("/hoj/file/md"),
 
         PROBLEM_FILE_FOLDER("/hoj/file/problem"),

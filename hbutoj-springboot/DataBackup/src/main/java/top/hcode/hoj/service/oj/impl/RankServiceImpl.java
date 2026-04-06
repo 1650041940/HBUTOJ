@@ -21,9 +21,9 @@ public class RankServiceImpl implements RankService {
     private RankManager rankManager;
 
     @Override
-    public CommonResult<IPage> getRankList(Integer limit, Integer currentPage, String searchUser, Integer type) {
+    public CommonResult<IPage> getRankList(Integer limit, Integer currentPage, String searchUser, String grade, Integer type) {
         try {
-            return CommonResult.successResponse(rankManager.getRankList(limit, currentPage, searchUser, type));
+            return CommonResult.successResponse(rankManager.getRankList(limit, currentPage, searchUser, grade, type));
         } catch (StatusFailException e) {
             return CommonResult.errorResponse(e.getMessage());
         }

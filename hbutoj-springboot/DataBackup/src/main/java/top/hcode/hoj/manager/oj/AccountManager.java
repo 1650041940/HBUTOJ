@@ -474,6 +474,7 @@ public class AccountManager {
         commonValidator.validateContentLength(userInfoVo.getGithub(), "Github", 255);
         commonValidator.validateContentLength(userInfoVo.getSchool(), "学校", 100);
         commonValidator.validateContentLength(userInfoVo.getNumber(), "学号", 200);
+        commonValidator.validateContentLength(userInfoVo.getGrade(), "年级", 20);
         commonValidator.validateContentLength(userInfoVo.getCfUsername(), "Codeforces用户名", 255);
 
         // 获取当前登录的用户
@@ -489,9 +490,32 @@ public class AccountManager {
                 .set("gender", userInfoVo.getGender())
                 .set("github", userInfoVo.getGithub())
                 .set("school", userInfoVo.getSchool())
-                .set("number", userInfoVo.getNumber());
+                .set("number", userInfoVo.getNumber())
+                .set("grade", userInfoVo.getGrade());
 
-        boolean isOk = userInfoEntityService.update(updateWrapper);
+        boolean isOk;
+        try {
+            isOk = userInfoEntityService.update(updateWrapper);
+        } catch (Exception e) {
+            // Fallback for partially-upgraded DB: ignore grade if column doesn't exist yet.
+            String msg = e.getMessage();
+            if (msg != null && msg.contains("Unknown column") && msg.contains("grade")) {
+                UpdateWrapper<UserInfo> fallback = new UpdateWrapper<>();
+                fallback.eq("uuid", userRolesVo.getUid())
+                        .set("cf_username", userInfoVo.getCfUsername())
+                        .set("realname", userInfoVo.getRealname())
+                        .set("nickname", userInfoVo.getNickname())
+                        .set("signature", userInfoVo.getSignature())
+                        .set("blog", userInfoVo.getBlog())
+                        .set("gender", userInfoVo.getGender())
+                        .set("github", userInfoVo.getGithub())
+                        .set("school", userInfoVo.getSchool())
+                        .set("number", userInfoVo.getNumber());
+                isOk = userInfoEntityService.update(fallback);
+            } else {
+                throw e;
+            }
+        }
 
         if (isOk) {
             UserRolesVO userRoles = userRoleEntityService.getUserRoles(userRolesVo.getUid(), null);

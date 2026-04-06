@@ -94,6 +94,9 @@
           <el-menu-item index="/admin/contest">{{
             $t('m.Contest_List')
           }}</el-menu-item>
+          <el-menu-item index="/admin/contest/team-award">{{
+            $t('m.Team_Award')
+          }}</el-menu-item>
           <el-menu-item index="/admin/contest/create">{{
             $t('m.Create_Contest')
           }}</el-menu-item>

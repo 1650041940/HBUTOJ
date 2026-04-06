@@ -214,4 +214,41 @@ public class ImageManager {
                 .map();
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public Map<Object, Object> uploadTeamAwardImg(MultipartFile image) throws StatusFailException, StatusSystemErrorException {
+
+        if (image == null) {
+            throw new StatusFailException("上传的图片文件不能为空！");
+        }
+
+        String suffix = image.getOriginalFilename().substring(image.getOriginalFilename().lastIndexOf(".") + 1);
+        if (!"jpg,jpeg,gif,png,webp,jfif,svg".toUpperCase().contains(suffix.toUpperCase())) {
+            throw new StatusFailException("请选择jpg,jpeg,gif,png,webp,jfif,svg格式的图片！");
+        }
+
+        FileUtil.mkdir(Constants.File.TEAM_AWARD_FOLDER.getPath());
+        String filename = IdUtil.simpleUUID() + "." + suffix;
+        try {
+            image.transferTo(FileUtil.file(Constants.File.TEAM_AWARD_FOLDER.getPath() + File.separator + filename));
+        } catch (Exception e) {
+            log.error("图片文件上传异常-------------->{}", e.getMessage());
+            throw new StatusSystemErrorException("服务器异常：图片上传失败！");
+        }
+
+        AccountProfile userRolesVo = (AccountProfile) SecurityUtils.getSubject().getPrincipal();
+
+        top.hcode.hoj.pojo.entity.common.File imgFile = new top.hcode.hoj.pojo.entity.common.File();
+        imgFile.setName(filename).setFolderPath(Constants.File.TEAM_AWARD_FOLDER.getPath())
+                .setFilePath(Constants.File.TEAM_AWARD_FOLDER.getPath() + File.separator + filename)
+                .setSuffix(suffix)
+                .setType("team_award")
+                .setUid(userRolesVo.getUid());
+        fileEntityService.saveOrUpdate(imgFile);
+
+        return MapUtil.builder()
+                .put("id", imgFile.getId())
+                .put("url", Constants.File.IMG_API.getPath() + filename)
+                .map();
+    }
+
 }

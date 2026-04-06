@@ -45,31 +45,59 @@ public class RankManager {
      * @Return CommonResult
      * @Since 2020/10/27
      */
-    public IPage getRankList(Integer limit, Integer currentPage, String searchUser, Integer type) throws StatusFailException {
+    public IPage getRankList(Integer limit, Integer currentPage, String searchUser, String grade, Integer type) throws StatusFailException {
 
         // 页数，每页题数若为空，设置默认值
         if (currentPage == null || currentPage < 1) currentPage = 1;
         if (limit == null || limit < 1) limit = 30;
 
         List<String> uidList = null;
-        if (!StringUtils.isEmpty(searchUser)) {
+        if (!StringUtils.isEmpty(searchUser) || !StringUtils.isEmpty(grade)) {
             QueryWrapper<UserInfo> userInfoQueryWrapper = new QueryWrapper<>();
 
             userInfoQueryWrapper.select("uuid");
 
-            userInfoQueryWrapper.and(wrapper -> wrapper
-                    .like("username", searchUser)
-                    .or()
-                    .like("nickname", searchUser)
-                    .or()
-                    .like("realname", searchUser));
+            if (!StringUtils.isEmpty(grade)) {
+                userInfoQueryWrapper.eq("grade", grade);
+            }
+
+            if (!StringUtils.isEmpty(searchUser)) {
+                userInfoQueryWrapper.and(wrapper -> wrapper
+                        .like("username", searchUser)
+                        .or()
+                        .like("nickname", searchUser)
+                        .or()
+                        .like("realname", searchUser));
+            }
 
             userInfoQueryWrapper.eq("status", 0);
 
-            uidList = userInfoEntityService.list(userInfoQueryWrapper)
+                try {
+                uidList = userInfoEntityService.list(userInfoQueryWrapper)
                     .stream()
                     .map(UserInfo::getUuid)
                     .collect(Collectors.toList());
+                } catch (Exception e) {
+                // Fallback: DB may not have new column (grade) after partial upgrade.
+                // Keep service available instead of returning 500.
+                if (!StringUtils.isEmpty(searchUser)) {
+                    QueryWrapper<UserInfo> fallback = new QueryWrapper<>();
+                    fallback.select("uuid")
+                        .and(wrapper -> wrapper
+                            .like("username", searchUser)
+                            .or()
+                            .like("nickname", searchUser)
+                            .or()
+                            .like("realname", searchUser))
+                        .eq("status", 0);
+                    uidList = userInfoEntityService.list(fallback)
+                        .stream()
+                        .map(UserInfo::getUuid)
+                        .collect(Collectors.toList());
+                } else {
+                    uidList = null;
+                }
+                }
         }
 
         IPage rankList = null;
