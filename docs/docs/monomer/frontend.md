@@ -31,7 +31,7 @@
 
 ### (2). 部署
 
-1. [下载本项目](https://github.com/1650041940/HBUTOJ/tree/main/hbutoj-vue)，git clone或者download zip
+1. [下载本项目](https://github.com/YOUR_ORG_OR_USER/HBUTOJ/tree/main/hbutoj-vue)，git clone或者download zip
 
 2. 前提是本地有vue-cli4与npm，请自行百度下载
 
@@ -53,7 +53,7 @@
 
    ​
 
-   再将另外一个滚榜的前端文件夹也放到指定的文件夹，先去下载文件夹[scrollBoard](https://github.com/1650041940/HBUTOJ/tree/main/hbutoj-scrollBoard), 然后在服务器上创建文件夹`/hbutoj/www/scrollBoard`，将下载好的文件夹scrollBoard的内容复制进去。
+   再将另外一个滚榜的前端文件夹也放到指定的文件夹，先去下载文件夹[scrollBoard](https://github.com/YOUR_ORG_OR_USER/HBUTOJ/tree/main/hbutoj-scrollBoard), 然后在服务器上创建文件夹`/hbutoj/www/scrollBoard`，将下载好的文件夹scrollBoard的内容复制进去。
 
    ```shell
    mkdir -p /hbutoj/www/scrollBoard
@@ -117,13 +117,13 @@
 ## 二、docker部署
 
 :::tip
-html文件夹下为hoj的vue前端打包的静态资源
+html文件夹下为 hbutoj 的 vue 前端打包的静态资源
 :::
 
 直接下载本项目，进入到当前文件夹执行打包命令
 
 ```shell
-git clone https://github.com/1650041940/hbutoj_deplay.git && cd hbutoj_deplay/src/frontend
+git clone https://github.com/YOUR_ORG_OR_USER/hbutoj_deplay.git && cd hbutoj_deplay/src/frontend
 ```
 
 当前文件夹为打包`hbutoj-frontend`镜像的相关文件，将这些文件复制到同一个文件夹内，之后执行以下命令进行打包成镜像
