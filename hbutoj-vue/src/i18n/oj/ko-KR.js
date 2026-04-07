@@ -244,6 +244,7 @@ export const m = {
   All: '전체',
   My_OJ: '메인 OJ',
   Level: '난이도',
+  Difficulty_Rating: '난이도 레이팅',
   Tags: '태그',
   Search_Filter_Tag: '태그 이름 입력...',
   Pick_a_random_question: '무작위 문제 선택',

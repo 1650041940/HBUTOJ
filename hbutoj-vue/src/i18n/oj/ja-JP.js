@@ -244,6 +244,7 @@ export const m = {
   All: 'すべて',
   My_OJ: 'メインOJ',
   Level: '難易度',
+  Difficulty_Rating: '難易度レート',
   Tags: 'タグ',
   Search_Filter_Tag: 'タグ名を入力...',
   Pick_a_random_question: 'ランダムに問題を選択',

@@ -248,6 +248,7 @@ export const m = {
   All: '全部',
   My_OJ: '主题库',
   Level: '难度',
+  Difficulty_Rating: '难度分',
   Tags: '标签',
   Search_Filter_Tag: '输入标签名称...',
   Pick_a_random_question: '随机选一题',

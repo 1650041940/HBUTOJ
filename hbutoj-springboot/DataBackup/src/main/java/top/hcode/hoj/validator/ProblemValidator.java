@@ -73,6 +73,11 @@ public class ProblemValidator {
                         "子任务（最低得分）(subtask_lowest)、 子任务（平均得分）(subtask_average)！");
             }
         }
+
+        Integer difficultyRating = problem.getDifficultyRating();
+        if (difficultyRating != null && (difficultyRating < 800 || difficultyRating > 3500)) {
+            throw new StatusFailException("题目难度分范围请合理填写！(800~3500)");
+        }
     }
 
     public void validateProblemUpdate(Problem problem) throws StatusFailException {

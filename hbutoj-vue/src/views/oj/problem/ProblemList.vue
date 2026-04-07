@@ -191,6 +191,17 @@
           </vxe-table-column>
 
           <vxe-table-column
+            field="difficultyRating"
+            :title="$t('m.Difficulty_Rating')"
+            min-width="120"
+            align="center"
+          >
+            <template v-slot="{ row }">
+              <span>{{ row.difficultyRating == null ? 1500 : row.difficultyRating }}</span>
+            </template>
+          </vxe-table-column>
+
+          <vxe-table-column
             field="tag"
             :title="$t('m.Tags')"
             min-width="230"

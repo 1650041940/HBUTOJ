@@ -247,6 +247,7 @@ export const m = {
   All: 'All',
   My_OJ: 'Main',
   Level: 'Level',
+  Difficulty_Rating: 'Difficulty Rating',
   Tags: 'Tags',
   Search_Filter_Tag: 'Enter the tag name...',
   Pick_a_random_question: 'Pick a random question',

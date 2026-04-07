@@ -179,6 +179,13 @@
                           }}</span></span>
                       <br />
                     </template>
+
+                    <span>{{ $t('m.Difficulty_Rating') }}：{{
+                        problemData.problem.difficultyRating == null
+                          ? 1500
+                          : problemData.problem.difficultyRating
+                      }}</span>
+                    <br />
                     <template v-if="problemData.problem.type == 1">
                       <span>{{ $t('m.Score') }}：{{ problemData.problem.ioScore }}
                       </span>

@@ -163,6 +163,25 @@
         </el-row>
 
         <el-row :gutter="20">
+          <el-col
+            :md="6"
+            :xs="24"
+          >
+            <el-form-item
+              :label="$t('m.Difficulty_Rating')"
+              required
+            >
+              <el-input
+                type="Number"
+                :placeholder="$t('m.Difficulty_Rating')"
+                v-model="problem.difficultyRating"
+                :disabled="problem.isRemote"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
           <el-col :span="24">
             <el-form-item
               prop="input_description"
@@ -927,6 +946,7 @@ export default {
         memoryLimit: 256,
         stackLimit: 128,
         difficulty: 0,
+        difficultyRating: 1500,
         auth: 1,
         codeShare: true,
         examples: [], // 题面上的样例输入输出
@@ -1031,6 +1051,7 @@ export default {
         memoryLimit: 256,
         stackLimit: 128,
         difficulty: 0,
+        difficultyRating: 1500,
         auth: 1,
         codeShare: true,
         examples: [],
@@ -1541,6 +1562,18 @@ export default {
         myMessage.error(this.$i18n.t("m.When_the_read_write_mode_is_File_IO_the_input_file_name_or_output_file_name_cannot_be_empty"));
         return;
       }
+
+      let difficultyRating = this.problem.difficultyRating;
+      if (difficultyRating === null || difficultyRating === undefined || difficultyRating === "") {
+        myMessage.error("难度分必须为 800~3500 的整数");
+        return;
+      }
+      difficultyRating = parseInt(difficultyRating, 10);
+      if (isNaN(difficultyRating) || difficultyRating < 800 || difficultyRating > 3500) {
+        myMessage.error("难度分必须为 800~3500 的整数");
+        return;
+      }
+      this.problem.difficultyRating = difficultyRating;
 
       // // 不强制校验题目样例不能为空
       // if (!this.problem.examples.length && !this.problem.isRemote) {

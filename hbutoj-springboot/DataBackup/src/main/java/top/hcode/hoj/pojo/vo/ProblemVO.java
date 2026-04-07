@@ -29,6 +29,9 @@ public class ProblemVO implements Serializable {
     @ApiModelProperty(value = "题目难度")
     private Integer difficulty;
 
+    @ApiModelProperty(value = "题目难度分(用于做题rating/推荐)")
+    private Integer difficultyRating;
+
     @ApiModelProperty(value = "题目类型")
     private Integer type;
 

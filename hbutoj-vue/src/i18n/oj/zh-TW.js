@@ -244,6 +244,7 @@ export const m = {
   All: '全部',
   My_OJ: '主題庫',
   Level: '難度',
+  Difficulty_Rating: '難度分',
   Tags: '標籤',
   Search_Filter_Tag: '輸入標籤名稱...',
   Pick_a_random_question: '隨機選一題',
