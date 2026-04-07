@@ -6,7 +6,7 @@
 
 :::
 
-接着，找到`/hoj-vue/src/common/constants.js`的文件，修改里面的难度常量代码`PROBLEM_LEVEL`如下，修改完后，请自行build前端项目生成dist的静态文件夹，上传到服务器后，修改挂载，重启hbutoj-frontend容器即可，重启完后，浏览器可能有缓存，多刷新即可！！！
+接着，找到`/hbutoj-vue/src/common/constants.js`的文件，修改里面的难度常量代码`PROBLEM_LEVEL`如下，修改完后，请自行build前端项目生成dist的静态文件夹，上传到服务器后，修改挂载，重启hbutoj-frontend容器即可，重启完后，浏览器可能有缓存，多刷新即可！！！
 
 ```javascript
 export const PROBLEM_LEVEL={

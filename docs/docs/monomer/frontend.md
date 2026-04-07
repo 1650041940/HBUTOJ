@@ -31,11 +31,11 @@
 
 ### (2). 部署
 
-1. [下载本项目](https://github.com/1650041940/HBUTOJ/tree/main/hoj-vue)，git clone或者download zip
+1. [下载本项目](https://github.com/1650041940/HBUTOJ/tree/main/hbutoj-vue)，git clone或者download zip
 
 2. 前提是本地有vue-cli4与npm，请自行百度下载
 
-3. 然后在当前hoj-vue文件夹的src路径运行打包命令
+3. 然后在当前hbutoj-vue文件夹的src路径运行打包命令
 
    ```powershell
    npm run build

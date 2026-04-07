@@ -84,7 +84,7 @@ docker-compose up -d
 
 >  附加：如何自定义前端请看这里 => [自定义前端文档](/use/update-fe.html)
 
-（1）首先到`./hoj/hoj-vue`文件夹中，拉取[hoj-vue](https://github.com/1650041940/HBUTOJ/tree/main/hoj-vue)仓库最新的代码，请注意解决出现的冲突。
+（1）首先到`./hbutoj-vue`文件夹中，拉取[hbutoj-vue](https://github.com/1650041940/HBUTOJ/tree/main/hbutoj-vue)仓库最新的代码，请注意解决出现的冲突。
 
 ```shell
 git pull
@@ -102,7 +102,7 @@ git merge temp                # 合并temp分支到本地的master分支
 git branch -d temp            # 删除temp这个临时分支
 ```
 
-（2）接着，重新用npm打包，在`./hoj/hoj-vue/dist`文件夹会生成静态的前端文件，放到原来指定的位置即可
+（2）接着，重新用npm打包，在`./hbutoj-vue/dist`文件夹会生成静态的前端文件，放到原来指定的位置即可
 
 ```shell
 npm run build

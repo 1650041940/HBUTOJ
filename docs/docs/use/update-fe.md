@@ -3,7 +3,7 @@
 
 ## 一、完全自定义前端
 
-直接下载 [hoj-vue](https://github.com/1650041940/HBUTOJ/tree/main/hoj-vue)
+直接下载 [hbutoj-vue](https://github.com/1650041940/HBUTOJ/tree/main/hbutoj-vue)
 
 修改后，使用`npm run build`，生成一个dist文件夹，结构如下：
 

@@ -146,7 +146,7 @@ JUDGESERVER_JAR="$(ls -1 JudgeServer/target/hoj-judgeServer-*.jar | head -n 1)"
 popd >/dev/null
 
 # 2) Build frontend assets
-pushd "$ROOT_DIR/hoj-vue" >/dev/null
+pushd "$ROOT_DIR/hbutoj-vue" >/dev/null
 
 echo "==> Building frontend assets (npm ci + npm run build)"
 echo "==> Using npm registry: $HBUTOJ_NPM_REGISTRY"
@@ -163,7 +163,7 @@ fi
 
 npm run build
 
-FRONTEND_DIST="$ROOT_DIR/hoj-vue/dist"
+FRONTEND_DIST="$ROOT_DIR/hbutoj-vue/dist"
 if [[ ! -d "$FRONTEND_DIST" ]]; then
   echo "ERROR: frontend build did not produce dist/: $FRONTEND_DIST" >&2
   exit 1

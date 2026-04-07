@@ -3,7 +3,7 @@
 由于有的机房的网络不支持一些域名的访问，有防火墙挡住，所以可能前端页面的js和css的CDN访问不了，导致页面打不开。
 
 :::info
-hoj挂载了一些前端静态资源库的免费CDN，全部都是域名`bytecdntp.com`下的免费CDN
+HBUTOJ 挂载了一些前端静态资源库的免费CDN，全部都是域名`bytecdntp.com`下的免费CDN
 :::
 
 可以在对应的电脑浏览器上打开以下链接，如果能正常访问则没有问题。
@@ -22,9 +22,9 @@ hbutoj-frontend(前端vue项目)如果不挂载任何CDN，最终打包生成的
 如果本身HBUTOJ部署在**学校内网机器**上或者**云服务器是无带宽上限、按流量计费的实例**，那么可以不用考虑带宽问题，可以直接取消CDN挂载，直接全部自己打包成对应的静态文件，然后挂载到docker的`hbutoj-frontend`镜像里面
 :::
 **操作如下:**
-  1. 下载前端源代码：[hoj-vue](https://github.com/1650041940/HBUTOJ/tree/main/hoj-vue)
+  1. 下载前端源代码：[hbutoj-vue](https://github.com/1650041940/HBUTOJ/tree/main/hbutoj-vue)
 
-  2. 进入`hoj-vue`文件夹，编辑`vue.config.js`文件，按下面的修改
+  2. 进入`hbutoj-vue`文件夹，编辑`vue.config.js`文件，按下面的修改
 
      ```js
      // 该变量改成false
@@ -59,7 +59,7 @@ hbutoj-frontend(前端vue项目)如果不挂载任何CDN，最终打包生成的
        ]
      ```
 
-  3. 进入`hoj-vue/src`文件夹，编辑`main.js`文件，将内容替换成如下：
+  3. 进入`hbutoj-vue/src`文件夹，编辑`main.js`文件，将内容替换成如下：
 
      ```js
      import Vue from 'vue'
@@ -163,7 +163,7 @@ hbutoj-frontend(前端vue项目)如果不挂载任何CDN，最终打包生成的
      ```
 
 
-  4. 然后使用在`hoj-vue`目录下，使用`npm run build`，npm请自行百度下载安装，之后会生成一个dist文件夹，结构如下：
+  4. 然后使用在`hbutoj-vue`目录下，使用`npm run build`，npm请自行百度下载安装，之后会生成一个dist文件夹，结构如下：
 
      ```
      dist
