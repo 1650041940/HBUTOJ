@@ -33,6 +33,15 @@ public class DailyProblemManager {
     private static final int MAX_TOP_TAGS = 5;
     private static final int MAX_PICK_POOL = 50;
 
+    private static final int DIFFICULTY_RATING_MIN = 800;
+    private static final int DIFFICULTY_RATING_MAX = 3500;
+
+    private static final DifficultyRatingRange RANGE_ENTRY = new DifficultyRatingRange(800, 1100, "入门");
+    private static final DifficultyRatingRange RANGE_EASY = new DifficultyRatingRange(1200, 1500, "简单");
+    private static final DifficultyRatingRange RANGE_MEDIUM = new DifficultyRatingRange(1600, 1900, "中等");
+    private static final DifficultyRatingRange RANGE_HARD = new DifficultyRatingRange(2000, 2300, "困难");
+    private static final DifficultyRatingRange RANGE_EXTREME = new DifficultyRatingRange(2400, 3500, "极难");
+
     @Autowired
     private UserAcproblemEntityService userAcproblemEntityService;
 
@@ -68,15 +77,18 @@ public class DailyProblemManager {
         Set<Long> solvedSet = new HashSet<>(recentAcPids);
 
         int targetDifficultyRating = isPublic ? 900 : estimateTargetDifficultyRating(uid, recentAcPids);
+        DifficultyRatingRange ratingRange = isPublic
+            ? new DifficultyRatingRange(800, 1100, "入门")
+            : pickDifficultyRatingRange(targetDifficultyRating);
 
         TagProfile tagProfile = isPublic ? TagProfile.empty() : buildTagProfile(uid);
         List<Long> tagPool = !CollectionUtils.isEmpty(tagProfile.weakTagIds)
             ? tagProfile.weakTagIds
             : loadTopTagIds(recentAcPids);
 
-        List<Problem> candidates = loadCandidateProblems(tagPool, solvedSet, excludePid, targetDifficultyRating);
+        List<Problem> candidates = loadCandidateProblems(tagPool, solvedSet, excludePid, ratingRange);
         if (CollectionUtils.isEmpty(candidates)) {
-            candidates = loadFallbackProblems(solvedSet, excludePid, targetDifficultyRating);
+            candidates = loadFallbackProblems(solvedSet, excludePid, ratingRange);
         }
         if (CollectionUtils.isEmpty(candidates)) {
             return null;
@@ -104,7 +116,7 @@ public class DailyProblemManager {
 
         String reason = isPublic
             ? "今日推荐（未登录）"
-            : buildReason(tagProfile, tagPool, targetDifficultyRating);
+            : buildReason(tagProfile, tagPool, targetDifficultyRating, ratingRange);
 
         Integer rawDifficultyRating = chosen.getDifficultyRating();
         int difficultyRating = (rawDifficultyRating == null || rawDifficultyRating == 0) ? 800 : rawDifficultyRating;
@@ -118,6 +130,18 @@ public class DailyProblemManager {
                 .tags(chosenTags)
                 .reason(reason)
                 .build();
+    }
+
+    private static class DifficultyRatingRange {
+        final int min;
+        final int max;
+        final String label;
+
+        private DifficultyRatingRange(int min, int max, String label) {
+            this.min = min;
+            this.max = max;
+            this.label = label;
+        }
     }
 
     private static class TagAttemptStats {
@@ -269,7 +293,26 @@ public class DailyProblemManager {
     }
 
     private int clampDifficultyRating(int rating) {
-        return Math.max(800, Math.min(3500, rating));
+        return Math.max(DIFFICULTY_RATING_MIN, Math.min(DIFFICULTY_RATING_MAX, rating));
+    }
+
+    private DifficultyRatingRange pickDifficultyRatingRange(int rating) {
+        int r = clampDifficultyRating(rating);
+        // 为了避免段位边界的“空档”（如 1100~1200），用阈值中点把用户 rating 归入最近的一个区间。
+        // Entry/Easy 分界中点：1150；Easy/Medium：1550；Medium/Hard：1950；Hard/Extreme：2350。
+        if (r < 1150) {
+            return RANGE_ENTRY;
+        }
+        if (r < 1550) {
+            return RANGE_EASY;
+        }
+        if (r < 1950) {
+            return RANGE_MEDIUM;
+        }
+        if (r < 2350) {
+            return RANGE_HARD;
+        }
+        return RANGE_EXTREME;
     }
 
     private int estimateTargetDifficultyRatingFromAc(List<Long> recentAcPids) {
@@ -317,7 +360,7 @@ public class DailyProblemManager {
                 .collect(Collectors.toList());
     }
 
-    private List<Problem> loadCandidateProblems(List<Long> tagPoolIds, Set<Long> solvedSet, Long excludePid, int targetDifficultyRating) {
+    private List<Problem> loadCandidateProblems(List<Long> tagPoolIds, Set<Long> solvedSet, Long excludePid, DifficultyRatingRange ratingRange) {
         if (CollectionUtils.isEmpty(tagPoolIds)) {
             return Collections.emptyList();
         }
@@ -348,10 +391,8 @@ public class DailyProblemManager {
         wrapper.eq("is_group", false);
         wrapper.in("id", candidatePids);
 
-    // 先尝试难度分附近
-        int minRating = Math.max(800, targetDifficultyRating - 200);
-        int maxRating = Math.min(3500, targetDifficultyRating + 200);
-        wrapper.apply("COALESCE(NULLIF(difficulty_rating,0),800) between {0} and {1}", minRating, maxRating);
+        // 按用户所在 rating 区间过滤（而不是 ±200）
+        wrapper.apply("COALESCE(NULLIF(difficulty_rating,0),800) between {0} and {1}", ratingRange.min, ratingRange.max);
         wrapper.orderByDesc("gmt_modified");
         wrapper.last("limit 500");
         List<Problem> list = problemEntityService.list(wrapper);
@@ -370,7 +411,7 @@ public class DailyProblemManager {
         return problemEntityService.list(wrapper2);
     }
 
-    private List<Problem> loadFallbackProblems(Set<Long> solvedSet, Long excludePid, int targetDifficultyRating) {
+    private List<Problem> loadFallbackProblems(Set<Long> solvedSet, Long excludePid, DifficultyRatingRange ratingRange) {
         QueryWrapper<Problem> wrapper = new QueryWrapper<>();
         wrapper.select("id", "problem_id", "title", "difficulty", "difficulty_rating");
         wrapper.eq("auth", 1);
@@ -381,9 +422,7 @@ public class DailyProblemManager {
         if (excludePid != null) {
             wrapper.ne("id", excludePid);
         }
-        int minRating = Math.max(800, targetDifficultyRating - 200);
-        int maxRating = Math.min(3500, targetDifficultyRating + 200);
-        wrapper.apply("COALESCE(NULLIF(difficulty_rating,0),800) between {0} and {1}", minRating, maxRating);
+        wrapper.apply("COALESCE(NULLIF(difficulty_rating,0),800) between {0} and {1}", ratingRange.min, ratingRange.max);
         wrapper.orderByDesc("gmt_modified");
         wrapper.last("limit 200");
         return problemEntityService.list(wrapper);
@@ -438,7 +477,7 @@ public class DailyProblemManager {
         return (long) key.hashCode();
     }
 
-    private String buildReason(TagProfile tagProfile, List<Long> tagPoolIds, int targetDifficultyRating) {
+    private String buildReason(TagProfile tagProfile, List<Long> tagPoolIds, int targetDifficultyRating, DifficultyRatingRange ratingRange) {
         if (!CollectionUtils.isEmpty(tagProfile.weakTagIds)) {
             Long tid = tagProfile.weakTagIds.get(0);
             TagAttemptStats stats = tagProfile.statsByTagId.get(tid);
@@ -446,19 +485,19 @@ public class DailyProblemManager {
             if (!StrUtil.isBlank(tagName) && stats != null && stats.attempts > 0) {
                 int percent = (int) Math.round(stats.successRate() * 100);
                 String prefix = tagProfile.lowConfidence ? "数据较少，初步判断：" : "";
-                return prefix + "你在「" + tagName + "」题方面成功率偏低（" + stats.accepted + "/" + stats.attempts + "，约" + percent + "%），建议针对性练习；本题难度分≈" + targetDifficultyRating + "。";
+                return prefix + "你在「" + tagName + "」题方面成功率偏低（" + stats.accepted + "/" + stats.attempts + "，约" + percent + "%），建议针对性练习；本题难度分落在你的区间：" + ratingRange.label + "（" + ratingRange.min + "~" + ratingRange.max + "）。";
             }
         }
 
         if (CollectionUtils.isEmpty(tagPoolIds)) {
-            return "难度分≈" + targetDifficultyRating;
+            return "难度分区间：" + ratingRange.label + "（" + ratingRange.min + "~" + ratingRange.max + "）";
         }
 
         Collection<Tag> tags = tagEntityService.listByIds(tagPoolIds.stream().limit(2).collect(Collectors.toList()));
         String tagText = tags.stream().map(Tag::getName).filter(Objects::nonNull).collect(Collectors.joining("、"));
         if (StrUtil.isBlank(tagText)) {
-            return "难度分≈" + targetDifficultyRating;
+            return "难度分区间：" + ratingRange.label + "（" + ratingRange.min + "~" + ratingRange.max + "）";
         }
-        return "根据你最近的标签：" + tagText + "（难度分≈" + targetDifficultyRating + "）";
+        return "根据你最近的薄弱标签/相关标签：" + tagText + "（难度分区间：" + ratingRange.label + " " + ratingRange.min + "~" + ratingRange.max + "）";
     }
 }
