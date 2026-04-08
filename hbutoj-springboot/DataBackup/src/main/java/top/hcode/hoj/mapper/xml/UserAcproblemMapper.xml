@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.hcode.hoj.mapper.UserAcproblemMapper">
+
+	<select id="getUserSolvedProblemStats" resultType="top.hcode.hoj.pojo.vo.UserSolvedProblemStatVO">
+		SELECT uap.uid AS uid,
+			   uap.pid AS pid,
+			   COALESCE(NULLIF(p.difficulty_rating, 0), 800) AS difficultyRating,
+			   COUNT(j.submit_id) AS attempts
+		FROM user_acproblem uap
+				 INNER JOIN problem p ON p.id = uap.pid
+				 INNER JOIN judge j ON j.uid = uap.uid
+			AND j.pid = uap.pid
+			AND j.cid = 0
+			AND j.submit_id &lt;= uap.submit_id
+		GROUP BY uap.uid, uap.pid
+	</select>
+
+</mapper>

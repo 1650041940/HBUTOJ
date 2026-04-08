@@ -1,0 +1,25 @@
+.tmp/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+.vscode/
+
+# Logs
+*.log
+
+# Node / Vue build artifacts
+node_modules/
+dist/
+.nuxt/
+.output/
+.cache/
+
+# Java / Maven build artifacts
+**/target/
+
+# Misc
+*.swp
+*.swo
