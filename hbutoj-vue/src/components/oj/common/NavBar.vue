@@ -841,6 +841,10 @@ export default {
   height: 42px;
   margin-top: 5px;
 }
+/deep/ .logo .el-image,
+/deep/ .logo .el-image__inner {
+  background-color: transparent !important;
+}
 .el-dropdown-link {
   cursor: pointer;
   color: #409eff !important;

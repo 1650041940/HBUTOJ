@@ -12,7 +12,7 @@
             effect="dark"
           >
           <div class="logo" @click="changeWebLanguage(webLanguage == 'zh-CN' ? 'en-US' : 'zh-CN')">
-            <img :src="imgUrl" alt="Online Judge Admin" />
+            <img :src="imgUrl" :alt="(websiteConfig.shortName || 'OJ') + ' Admin'" />
           </div>
         </el-tooltip>
         <el-menu-item index="/admin/">
@@ -645,8 +645,8 @@ export default {
   cursor: pointer;
 }
 .vertical_menu .logo img {
-  background-color: #fff;
-  border: 3px solid #fff;
+  background-color: transparent;
+  border: 0;
   width: 110px;
   height: 110px;
 }
