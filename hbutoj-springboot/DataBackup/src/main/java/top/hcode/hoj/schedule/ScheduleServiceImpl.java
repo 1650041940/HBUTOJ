@@ -70,7 +70,7 @@ import java.util.stream.Collectors;
  * "C" 代表“Calendar”的意思。它的意思是计划所关联的日期，如果日期没有被关联，则相当于日历中所有日期。
  */
 @Service
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class ScheduleServiceImpl implements ScheduleService {
 
     @Autowired
@@ -449,7 +449,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     /**
-     * 每月1号 04:30 刷新：题目难度（月度调整）+ 用户做题rating（月度刷新）
+     * 每月1号 04:30 记录题目难度与做题 rating 月度快照
+     * 不再自动改动管理员手工设置的题目难度分
      */
     @Scheduled(cron = "0 30 4 1 * *")
     public void monthlyAdjustProblemDifficultyAndPracticeRating() {

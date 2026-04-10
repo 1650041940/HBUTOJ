@@ -18,7 +18,7 @@ import javax.annotation.Resource;
  */
 
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class AdminTrainingCategoryManager {
 
     @Resource

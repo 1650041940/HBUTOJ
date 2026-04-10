@@ -29,7 +29,7 @@ public class Problem implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty(value = "题目的自定义ID 例如（HOJ-1000）")
+    @ApiModelProperty(value = "题目的自定义ID 例如（HBUTOJ-1000）")
     private String problemId;
 
     @ApiModelProperty(value = "题目")
@@ -77,7 +77,7 @@ public class Problem implements Serializable {
     @ApiModelProperty(value = "题目难度")
     private Integer difficulty;
 
-    @ApiModelProperty(value = "题目难度分(用于做题rating/推荐，范围建议600~2600)")
+    @ApiModelProperty(value = "题目难度分(用于做题rating/推荐，建议 800~3500，且为整百分)")
     @TableField("difficulty_rating")
     private Integer difficultyRating;
 

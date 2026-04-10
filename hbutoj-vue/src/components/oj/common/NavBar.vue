@@ -47,6 +47,10 @@
               ><i class="el-icon-s-data"></i
               >{{ $t('m.NavBar_Rank') }}</el-menu-item
             >
+            <el-menu-item index="/rating-rank"
+              ><i class="fa fa-line-chart navbar-icon"></i
+              >{{ $t('m.NavBar_Rating_Rank') }}</el-menu-item
+            >
             <el-menu-item index="/discussion"
               v-if="websiteConfig.openPublicDiscussion"
               ><i class="el-icon-s-comment"></i
@@ -491,6 +495,18 @@
               <mu-icon value=":el-icon-s-data" size="24"></mu-icon>
             </mu-list-item-action>
             <mu-list-item-title>{{ $t('m.NavBar_Rank') }}</mu-list-item-title>
+          </mu-list-item>
+
+          <mu-list-item
+            button
+            to="/rating-rank"
+            @click="opendrawer = !opendrawer"
+            active-class="mobile-menu-active"
+          >
+            <mu-list-item-action>
+              <mu-icon value=":fa fa-line-chart" size="24"></mu-icon>
+            </mu-list-item-action>
+            <mu-list-item-title>{{ $t('m.NavBar_Rating_Rank') }}</mu-list-item-title>
           </mu-list-item>
 
           <mu-list-item

@@ -23,7 +23,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 @Component
 public class RemoteJudgeGetResult {
 

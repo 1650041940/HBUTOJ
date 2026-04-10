@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
  * @Date: 2021/6/24 21:19
  * @Description:
  */
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class POJJudge extends RemoteJudgeStrategy {
     public static final String HOST = "http://poj.org";
     public static final String LOGIN_URL = "/login";

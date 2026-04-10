@@ -30,7 +30,7 @@ import java.util.Properties;
 
 @Component
 @RefreshScope
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class EmailManager {
 
     @Autowired

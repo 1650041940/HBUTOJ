@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  * @Date: 2022/1/28 23:20
  * @Description:
  */
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class AtCoderJudge extends RemoteJudgeStrategy {
 
     public static final String HOST = "https://atcoder.jp";

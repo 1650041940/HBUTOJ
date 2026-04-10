@@ -41,7 +41,7 @@ import java.util.concurrent.*;
  * @Description:
  */
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class ProblemFileManager {
     @Autowired
     private LanguageEntityService languageEntityService;

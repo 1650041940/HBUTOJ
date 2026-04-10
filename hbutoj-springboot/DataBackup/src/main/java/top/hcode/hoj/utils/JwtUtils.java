@@ -13,7 +13,7 @@ import top.hcode.hoj.shiro.ShiroConstant;
 import java.util.Date;
 
 
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 @Data
 @Component
 @ConfigurationProperties(prefix = "hoj.jwt")

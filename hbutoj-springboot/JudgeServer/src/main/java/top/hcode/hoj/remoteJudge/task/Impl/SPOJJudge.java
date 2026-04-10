@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
  * @Date: 2022/1/27 23:19
  * @Description:
  */
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class SPOJJudge extends RemoteJudgeStrategy {
 
     public static final String HOST = "https://www.spoj.com";

@@ -85,7 +85,7 @@ public class ProblemManager {
      * @Since 2020/10/27
      */
     public Page<ProblemVO> getProblemList(Integer limit, Integer currentPage,
-                                          String keyword, List<Long> tagId, Integer difficulty, String oj) {
+                                          String keyword, List<Long> tagId, String difficultyRange, String oj) {
         // 页数，每页题数若为空，设置默认值
         if (currentPage == null || currentPage < 1) currentPage = 1;
         if (limit == null || limit < 1) limit = 10;
@@ -97,8 +97,42 @@ public class ProblemManager {
         if (oj != null && !Constants.RemoteOJ.isRemoteOJ(oj)) {
             oj = "Mine";
         }
+        Integer legacyDifficulty = null;
+        Integer difficultyRatingMin = null;
+        Integer difficultyRatingMax = null;
+        if (!StringUtils.isEmpty(difficultyRange)) {
+            String normalized = difficultyRange.trim().toLowerCase();
+            switch (normalized) {
+                case "entry":
+                    difficultyRatingMin = 800;
+                    difficultyRatingMax = 1100;
+                    break;
+                case "easy":
+                    difficultyRatingMin = 1200;
+                    difficultyRatingMax = 1500;
+                    break;
+                case "medium":
+                    difficultyRatingMin = 1600;
+                    difficultyRatingMax = 1900;
+                    break;
+                case "hard":
+                    difficultyRatingMin = 2000;
+                    difficultyRatingMax = 2300;
+                    break;
+                case "extreme":
+                    difficultyRatingMin = 2400;
+                    difficultyRatingMax = 3500;
+                    break;
+                default:
+                    try {
+                        legacyDifficulty = Integer.parseInt(normalized);
+                    } catch (NumberFormatException ignored) {
+                    }
+                    break;
+            }
+        }
         return problemEntityService.getProblemList(limit, currentPage, null, keyword,
-                difficulty, tagId, oj);
+                legacyDifficulty, difficultyRatingMin, difficultyRatingMax, tagId, oj);
     }
 
     /**

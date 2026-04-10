@@ -170,21 +170,22 @@
                           problemData.problem.memoryLimit
                         }}MB</span><br />
                     </template>
-                    <template v-if="problemData.problem.difficulty != null">
+                    <template v-if="problemData.problem.difficultyRating != null">
                       <span>{{ $t('m.Level') }}：<span
                           class="el-tag el-tag--small"
-                          :style="getLevelColor(problemData.problem.difficulty)"
+                          :style="getDifficultyBandStyle(problemData.problem.difficultyRating)"
                         >{{
-                            getLevelName(problemData.problem.difficulty)
+                            getDifficultyBandName(problemData.problem.difficultyRating)
                           }}</span></span>
                       <br />
                     </template>
 
-                    <span>{{ $t('m.Difficulty_Rating') }}：{{
-                        problemData.problem.difficultyRating == null
-                          ? 1500
-                          : problemData.problem.difficultyRating
-                      }}</span>
+                    <span>{{ $t('m.Difficulty_Rating') }}：
+                      <span
+                        class="el-tag el-tag--small"
+                        :style="getDifficultyRatingStyle(problemData.problem.difficultyRating)"
+                      >{{ formatDifficultyRating(problemData.problem.difficultyRating) }}</span>
+                    </span>
                     <br />
                     <template v-if="problemData.problem.type == 1">
                       <span>{{ $t('m.Score') }}：{{ problemData.problem.ioScore }}
@@ -857,6 +858,11 @@ import { pie, largePie } from "./chartData";
 import api from "@/common/api";
 import myMessage from "@/common/message";
 import { addCodeBtn } from "@/common/codeblock";
+import {
+  getDifficultyBandByRating,
+  getRatingTagStyle,
+  normalizeDisplayRating,
+} from "@/common/rating";
 import CodeMirror from "@/components/oj/common/CodeMirror.vue";
 import Pagination from "@/components/oj/common/Pagination";
 import ProblemHorizontalMenu from "@/components/oj/common/ProblemHorizontalMenu";
@@ -1709,6 +1715,21 @@ export default {
     },
     getLevelName(difficulty) {
       return utils.getLevelName(difficulty);
+    },
+    getDifficultyBand(rating) {
+      return getDifficultyBandByRating(rating);
+    },
+    getDifficultyBandName(rating) {
+      return this.$t('m.' + this.getDifficultyBand(rating).labelKey);
+    },
+    getDifficultyBandStyle(rating) {
+      return getRatingTagStyle(rating);
+    },
+    formatDifficultyRating(difficultyRating) {
+      return normalizeDisplayRating(difficultyRating);
+    },
+    getDifficultyRatingStyle(difficultyRating) {
+      return getRatingTagStyle(difficultyRating);
     },
     goUserHome(username) {
       this.$router.push({

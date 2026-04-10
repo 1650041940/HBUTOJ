@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * @Description:项目启动后，初始化运行该run方法
  */
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class StartupRunner implements CommandLineRunner {
 
     @Autowired
@@ -425,7 +425,7 @@ public class StartupRunner implements CommandLineRunner {
                     .setOj("ME");
             boolean isOk = languageEntityService.save(rubyLanguage);
             if (!isOk) {
-                log.error("[Init System Config] [HOJ] Failed to add new language [{}]! Please check whether the language table corresponding to the database has the language!", "Ruby");
+                log.error("[Init System Config] [HBUTOJ] Failed to add new language [{}]! Please check whether the language table corresponding to the database has the language!", "Ruby");
             }
         }
 
@@ -454,7 +454,7 @@ public class StartupRunner implements CommandLineRunner {
                     .setOj("ME");
             boolean isOk = languageEntityService.save(rustLanguage);
             if (!isOk) {
-                log.error("[Init System Config] [HOJ] Failed to add new language [{}]! Please check whether the language table corresponding to the database has the language!", "Rust");
+                log.error("[Init System Config] [HBUTOJ] Failed to add new language [{}]! Please check whether the language table corresponding to the database has the language!", "Rust");
             }
         }
     }
@@ -473,7 +473,7 @@ public class StartupRunner implements CommandLineRunner {
                 Language newLanguage = buildHOJLanguage(language);
                 boolean isOk = languageEntityService.save(newLanguage);
                 if (!isOk) {
-                    log.error("[Init System Config] [HOJ] Failed to add new language [{}]! Please check whether the language table corresponding to the database has the language!", language);
+                    log.error("[Init System Config] [HBUTOJ] Failed to add new language [{}]! Please check whether the language table corresponding to the database has the language!", language);
                 }
             }
         }

@@ -22,7 +22,7 @@ import top.hcode.hoj.util.Constants;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class CodeForcesJudge extends RemoteJudgeStrategy {
 
 

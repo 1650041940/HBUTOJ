@@ -545,7 +545,7 @@ CREATE TABLE `problem` (
   `is_remote` tinyint(1) DEFAULT '0' COMMENT '是否为vj判题',
   `source` text COMMENT '题目来源',
   `difficulty` int(11) DEFAULT '0' COMMENT '题目难度,0简单，1中等，2困难',
-  `difficulty_rating` int(11) DEFAULT '0' COMMENT '题目难度分(用于做题rating/推荐，建议600~2600)',
+  `difficulty_rating` int(11) DEFAULT '1200' COMMENT '题目难度分(用于做题rating/推荐，建议 800~3500，且为整百分)',
   `hint` longtext COMMENT '备注,提醒',
   `auth` int(11) DEFAULT '1' COMMENT '默认为1公开，2为私有，3为比赛题目',
   `io_score` int(11) DEFAULT '100' COMMENT '当该题目为io题目时的分数',

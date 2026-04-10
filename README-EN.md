@@ -24,8 +24,6 @@ HBUTOJ is a fork / derivative work based on the open-source project HOJ. Thanks 
 
 (Upstream project: HOJ. To avoid documentation divergence, we do not keep upstream repo direct links here.)
 
-Note: the public-facing name is HBUTOJ. Some internal identifiers (package names / config keys) may still keep upstream naming for compatibility.
-
 ## Overview
 
 - One click deployment based on **Docker** and **Docke-compose**

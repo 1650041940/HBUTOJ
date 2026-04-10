@@ -12,7 +12,7 @@ import java.net.UnknownHostException;
  * @Date: 2020/10/30 11:12
  * @Description:
  */
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class IpUtils {
 
     public static String getUserIpAddr(HttpServletRequest request) {

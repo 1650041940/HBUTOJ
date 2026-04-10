@@ -38,7 +38,7 @@ import java.util.UUID;
  * @Description:
  */
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class JwtFilter extends AuthenticatingFilter {
 
     @Autowired

@@ -1354,7 +1354,7 @@ IF NOT EXISTS (
 ) THEN
 
 	ALTER TABLE `hoj`.`problem`
-		ADD COLUMN `difficulty_rating` int(11) DEFAULT '0' COMMENT '题目难度分(用于做题rating/推荐，建议600~2600)' AFTER `difficulty`;
+		ADD COLUMN `difficulty_rating` int(11) DEFAULT '1200' COMMENT '题目难度分(用于做题rating/推荐，建议 800~3500，且为整百分)' AFTER `difficulty`;
 
 END IF;
 
@@ -1364,3 +1364,45 @@ DELIMITER ;
 CALL add_problem_difficulty_rating;
 
 DROP PROCEDURE add_problem_difficulty_rating;
+
+/*
+* 2026.04.09  统一题目 difficulty_rating 默认值为 1200，并将历史 0/NULL/非整百分 数据归一化
+*/
+DROP PROCEDURE
+IF EXISTS normalize_problem_difficulty_rating;
+DELIMITER $$
+
+CREATE PROCEDURE normalize_problem_difficulty_rating ()
+BEGIN
+
+IF EXISTS (
+	SELECT
+		1
+	FROM
+		information_schema.`COLUMNS`
+	WHERE
+		table_schema = DATABASE()
+		AND table_name = 'problem'
+		AND column_name = 'difficulty_rating'
+) THEN
+
+	ALTER TABLE `hoj`.`problem`
+		MODIFY COLUMN `difficulty_rating` int(11) DEFAULT '1200' COMMENT '题目难度分(用于做题rating/推荐，建议 800~3500，且为整百分)';
+
+	UPDATE `problem`
+	SET `difficulty_rating` = 1200
+	WHERE `difficulty_rating` IS NULL OR `difficulty_rating` = 0;
+
+	UPDATE `problem`
+	SET `difficulty_rating` = LEAST(3500, GREATEST(800, ROUND(`difficulty_rating` / 100) * 100))
+	WHERE `difficulty_rating` IS NOT NULL;
+
+END IF;
+
+END$$
+
+DELIMITER ;
+
+CALL normalize_problem_difficulty_rating;
+
+DROP PROCEDURE normalize_problem_difficulty_rating;

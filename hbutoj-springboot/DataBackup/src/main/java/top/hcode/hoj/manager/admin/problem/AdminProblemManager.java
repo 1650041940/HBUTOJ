@@ -28,6 +28,7 @@ import top.hcode.hoj.pojo.entity.problem.Problem;
 import top.hcode.hoj.pojo.entity.problem.ProblemCase;
 import top.hcode.hoj.shiro.AccountProfile;
 import top.hcode.hoj.utils.Constants;
+import top.hcode.hoj.utils.RatingUtils;
 import top.hcode.hoj.validator.ProblemValidator;
 
 import javax.annotation.Resource;
@@ -42,7 +43,7 @@ import java.util.List;
 
 @Component
 @RefreshScope
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class AdminProblemManager {
     @Autowired
     private ProblemEntityService problemEntityService;
@@ -65,7 +66,7 @@ public class AdminProblemManager {
     @Autowired
     private RemoteProblemManager remoteProblemManager;
 
-    public IPage<Problem> getProblemList(Integer limit, Integer currentPage, String keyword, Integer auth, String oj) {
+    public IPage<Problem> getProblemList(Integer limit, Integer currentPage, String keyword, Integer auth, String difficultyRange, String oj) {
         if (currentPage == null || currentPage < 1) currentPage = 1;
         if (limit == null || limit < 1) limit = 10;
         IPage<Problem> iPage = new Page<>(currentPage, limit);
@@ -86,6 +87,28 @@ public class AdminProblemManager {
 
         if (auth != null && auth != 0) {
             queryWrapper.eq("auth", auth);
+        }
+
+        if (!StringUtils.isEmpty(difficultyRange)) {
+            switch (difficultyRange.trim().toLowerCase()) {
+                case "entry":
+                    queryWrapper.apply("COALESCE(NULLIF(difficulty_rating,0),1200) between 800 and 1100");
+                    break;
+                case "easy":
+                    queryWrapper.apply("COALESCE(NULLIF(difficulty_rating,0),1200) between 1200 and 1500");
+                    break;
+                case "medium":
+                    queryWrapper.apply("COALESCE(NULLIF(difficulty_rating,0),1200) between 1600 and 1900");
+                    break;
+                case "hard":
+                    queryWrapper.apply("COALESCE(NULLIF(difficulty_rating,0),1200) between 2000 and 2300");
+                    break;
+                case "extreme":
+                    queryWrapper.apply("COALESCE(NULLIF(difficulty_rating,0),1200) between 2400 and 3500");
+                    break;
+                default:
+                    break;
+            }
         }
 
         if (!StringUtils.isEmpty(keyword)) {
@@ -136,6 +159,7 @@ public class AdminProblemManager {
     }
 
     public void addProblem(ProblemDTO problemDto) throws StatusFailException {
+        normalizeDifficultyRating(problemDto.getProblem());
 
         problemValidator.validateProblem(problemDto.getProblem());
 
@@ -154,6 +178,7 @@ public class AdminProblemManager {
 
     @Transactional(rollbackFor = Exception.class)
     public void updateProblem(ProblemDTO problemDto) throws StatusForbiddenException, StatusFailException {
+        normalizeDifficultyRating(problemDto.getProblem());
 
         problemValidator.validateProblemUpdate(problemDto.getProblem());
 
@@ -277,6 +302,13 @@ public class AdminProblemManager {
         }
         log.info("[{}],[{}],value:[{}],pid:[{}],operatorUid:[{}],operatorUsername:[{}]",
                 "Admin_Problem", "Change_Auth", problem.getAuth(), problem.getId(), userRolesVo.getUid(), userRolesVo.getUsername());
+    }
+
+    private void normalizeDifficultyRating(Problem problem) {
+        if (problem == null) {
+            return;
+        }
+        problem.setDifficultyRating(RatingUtils.normalizeProblemDifficultyRating(problem.getDifficultyRating()));
     }
 
 

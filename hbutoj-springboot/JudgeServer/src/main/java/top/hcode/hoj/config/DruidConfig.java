@@ -16,7 +16,7 @@ import java.util.Objects;
  * @Description:
  */
 @Configuration
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 @RefreshScope
 @Data
 public class DruidConfig {
@@ -111,7 +111,10 @@ public class DruidConfig {
                 mysqlName, mysqlHost, mysqlPort, mysqlUsername, mysqlUserPassword);
 
         DruidDataSource datasource = new DruidDataSource();
-        String url = "jdbc:mysql://" + mysqlHost + ":" + mysqlPort + "/" + mysqlName + "?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true";
+        String url = "jdbc:mysql://" + mysqlHost + ":" + mysqlPort + "/" + mysqlName
+                + "?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai"
+                + "&allowMultiQueries=true&rewriteBatchedStatements=true"
+                + "&useSSL=false&sslMode=DISABLED&allowPublicKeyRetrieval=true";
         datasource.setUrl(url);
         datasource.setUsername(mysqlUsername);
         datasource.setPassword(mysqlUserPassword);

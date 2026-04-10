@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
  * @Date: 2021/2/17 22:40
  * @Description:
  */
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class ProblemContext {
 
     ProblemStrategy problemStrategy;

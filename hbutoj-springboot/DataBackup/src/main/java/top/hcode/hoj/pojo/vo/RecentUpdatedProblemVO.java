@@ -17,7 +17,7 @@ public class RecentUpdatedProblemVO {
     @ApiModelProperty(value = "主键id")
     private Long id;
 
-    @ApiModelProperty(value = "题目的自定义ID 例如（HOJ-1000）")
+    @ApiModelProperty(value = "题目的自定义ID 例如（HBUTOJ-1000）")
     private String problemId;
 
     @ApiModelProperty(value = "题目")

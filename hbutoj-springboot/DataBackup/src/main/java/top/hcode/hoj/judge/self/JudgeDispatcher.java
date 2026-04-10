@@ -21,7 +21,7 @@ import top.hcode.hoj.utils.RedisUtils;
  * @Description:
  */
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 @RefreshScope
 public class JudgeDispatcher {
 

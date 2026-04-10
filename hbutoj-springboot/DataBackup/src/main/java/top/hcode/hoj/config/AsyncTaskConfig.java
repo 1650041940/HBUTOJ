@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @Description: 通用异步线程池
  */
 @Configuration
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class AsyncTaskConfig implements AsyncConfigurer {
     @Override
     public Executor getAsyncExecutor() {

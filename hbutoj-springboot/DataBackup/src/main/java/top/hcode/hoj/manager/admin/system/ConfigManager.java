@@ -42,7 +42,7 @@ import java.util.*;
  */
 
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class ConfigManager {
     @Autowired
     private ConfigVO configVo;

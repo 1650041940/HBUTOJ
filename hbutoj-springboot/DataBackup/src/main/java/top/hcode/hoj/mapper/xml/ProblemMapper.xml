@@ -19,7 +19,7 @@
                         p.problem_id,
                         p.title,
                         p.difficulty,
-                        COALESCE(p.difficulty_rating, 1500) AS difficulty_rating,
+                        COALESCE(NULLIF(p.difficulty_rating, 0), 1200) AS difficulty_rating,
                         p.type
         FROM problem p
         <if test="tid != null and tid.size() > 0">
@@ -47,8 +47,11 @@
                 </if>
                 )
             </if>
-            <if test="difficulty != null">
-                and p.difficulty = #{difficulty}
+            <if test="legacyDifficulty != null">
+                and p.difficulty = #{legacyDifficulty}
+            </if>
+            <if test="difficultyRatingMin != null and difficultyRatingMax != null">
+                and COALESCE(NULLIF(p.difficulty_rating,0),1200) between #{difficultyRatingMin} and #{difficultyRatingMax}
             </if>
             <if test="oj != null and oj !='Mine'">
                 and p.problem_id like concat(#{oj},'%') and p.is_remote=true

@@ -76,6 +76,8 @@
         <result column="title_name" property="titleName"></result>
         <result column="title_color" property="titleColor"></result>
         <result column="rating" property="rating"></result>
+        <result column="practice_rating" property="practiceRating"></result>
+        <result column="contest_rating" property="contestRating"></result>
         <result column="total" property="total"></result>
         <collection property="scoreList" ofType="java.lang.Integer" select="getProblemScore" column="uid">
         </collection>
@@ -83,11 +85,16 @@
 
     <select id="getUserHomeInfo" resultMap="map_UserHomeVo">
         SELECT u.uuid as uid,u.username,u.nickname,u.gender,u.signature,u.school,u.github,u.blog,
-        u.avatar,u.title_name,u.title_color,ur.rating,
+        u.avatar,u.title_name,u.title_color,
+        COALESCE(upr.rating, 1200) AS rating,
+        COALESCE(upr.rating, 1200) AS practice_rating,
+        COALESCE(ucr.rating, 1500) AS contest_rating,
         (SELECT COUNT(uid) FROM judge WHERE uid=u.uuid AND cid=0 AND gid is null) AS total
-        FROM user_info u,user_record ur
+        FROM user_info u
+        LEFT JOIN user_practice_rating upr ON upr.uid = u.uuid
+        LEFT JOIN user_contest_rating ucr ON ucr.uid = u.uuid
         <where>
-         u.uuid = ur.uid AND u.status = 0
+         u.status = 0
          <if test="uid!=null">
              AND u.uuid = #{uid}
          </if>

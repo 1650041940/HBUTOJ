@@ -32,7 +32,7 @@
 
 #### 3. 支持
 
-HOJ支持testlib.h头文件的直接使用  具体使用文档请看[https://oi-wiki.org/tools/testlib/](https://oi-wiki.org/tools/testlib/)
+HBUTOJ支持testlib.h头文件的直接使用  具体使用文档请看[https://oi-wiki.org/tools/testlib/](https://oi-wiki.org/tools/testlib/)
 
 #### 4. 例题
 

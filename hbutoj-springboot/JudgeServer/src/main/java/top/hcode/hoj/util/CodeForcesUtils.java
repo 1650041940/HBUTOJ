@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.script.*;
 import java.util.List;
 
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class CodeForcesUtils {
     private static String RCPC;
 

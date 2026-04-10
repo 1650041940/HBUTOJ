@@ -13,7 +13,7 @@ public class DailyProblemVO {
     @ApiModelProperty(value = "题目主键id")
     private Long id;
 
-    @ApiModelProperty(value = "题目的自定义ID 例如（HOJ-1000）")
+    @ApiModelProperty(value = "题目的自定义ID 例如（HBUTOJ-1000）")
     private String problemId;
 
     @ApiModelProperty(value = "题目标题")
@@ -21,6 +21,9 @@ public class DailyProblemVO {
 
     @ApiModelProperty(value = "难度")
     private Integer difficulty;
+
+    @ApiModelProperty(value = "难度分")
+    private Integer difficultyRating;
 
     @ApiModelProperty(value = "标签")
     private List<String> tags;

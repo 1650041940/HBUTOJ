@@ -73,7 +73,7 @@
         <span class="panel-title home-title">{{ $t('m.Import_Problem') }}</span>
       </div>
       <el-upload
-        ref="hoj"
+        ref="hbutoj"
         action="/api/file/import-problem"
         name="file"
         :file-list="fileList1"
@@ -87,7 +87,7 @@
       >
         <el-button
           size="small"
-          :loading="loading.hoj"
+          :loading="loading.hbutoj"
           type="primary"
           slot="trigger"
           icon="el-icon-folder-opened"
@@ -97,8 +97,8 @@
           style="margin-left: 10px;"
           size="small"
           type="success"
-          @click="submitUpload('hoj')"
-          :loading="loading.hoj"
+          @click="submitUpload('hbutoj')"
+          :loading="loading.hbutoj"
           :disabled="!fileList1.length"
           icon="el-icon-upload"
           >{{ $t('m.Upload') }}</el-button
@@ -248,7 +248,7 @@ export default {
       problems: [],
       selected_problems: [],
       loading: {
-        hoj: false,
+        hbutoj: false,
         qduoj: false,
         fps: false,
         hydro:false,
@@ -317,7 +317,7 @@ export default {
       this.fileList4 = fileList.slice(-1);
     },
     uploadSucceeded(response, file, fileList) {
-      this.loading.hoj = false;
+      this.loading.hbutoj = false;
       this.loading.qduoj = false;
       this.loading.fps = false;
       this.loading.hydro = false;
@@ -335,7 +335,7 @@ export default {
       }
     },
     uploadFailed() {
-      this.loading.hoj = false;
+      this.loading.hbutoj = false;
       this.loading.qduoj = false;
       this.loading.fps = false;
       this.loading.hydro = false;

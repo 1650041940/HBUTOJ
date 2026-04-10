@@ -111,6 +111,12 @@
               <p style="margin: 0 0 8px 0;">
                 <a @click="goDailyProblem">{{ dailyProblem.problemId }} - {{ dailyProblem.title }}</a>
               </p>
+              <p style="margin: 0 0 8px 0;" v-if="dailyProblem.difficultyRating !== null && dailyProblem.difficultyRating !== undefined">
+                {{ $t('m.Difficulty_Rating') }}：
+                <el-tag size="mini" :style="getDifficultyRatingStyle(dailyProblem.difficultyRating)">
+                  {{ formatDifficultyRating(dailyProblem.difficultyRating) }}
+                </el-tag>
+              </p>
               <p style="margin: 0 0 8px 0;" v-if="dailyProblem.difficulty !== null && dailyProblem.difficulty !== undefined">
                 {{ $t('m.Difficulty') }}：{{ dailyProblem.difficulty }}
               </p>
@@ -449,6 +455,7 @@ import {
 import { mapState, mapGetters } from "vuex";
 import Avatar from "vue-avatar";
 import myMessage from "@/common/message";
+import { getRatingTagStyle, normalizeDisplayRating } from "@/common/rating";
 const Announcements = () => import("@/components/oj/common/Announcements.vue");
 const SubmissionStatistic = () =>
   import("@/components/oj/home/SubmissionStatistic.vue");
@@ -605,6 +612,12 @@ export default {
         name: 'ProblemDetails',
         params: { problemID: this.dailyProblem.problemId },
       });
+    },
+    formatDifficultyRating(difficultyRating) {
+      return normalizeDisplayRating(difficultyRating);
+    },
+    getDifficultyRatingStyle(difficultyRating) {
+      return getRatingTagStyle(difficultyRating);
     },
     getHomeCarousel() {
       api.getHomeCarousel().then((res) => {

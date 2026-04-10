@@ -22,7 +22,7 @@ import java.util.HashMap;
  * @Description:
  */
 @Service
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 @RefreshScope
 public class JudgeServerEntityServiceImpl extends ServiceImpl<JudgeServerMapper, JudgeServer> implements JudgeServerEntityService {
 

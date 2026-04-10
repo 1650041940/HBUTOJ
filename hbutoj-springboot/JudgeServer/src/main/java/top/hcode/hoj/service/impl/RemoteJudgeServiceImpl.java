@@ -17,7 +17,7 @@ import top.hcode.hoj.service.RemoteJudgeService;
  * @Description:
  */
 @Service
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class RemoteJudgeServiceImpl implements RemoteJudgeService {
 
     @Autowired

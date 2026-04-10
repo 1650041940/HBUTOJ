@@ -84,6 +84,22 @@
               ></el-option>
             </el-select>
           </span>
+          <span v-if="!query.contestId">
+            <el-select
+              v-model="query.difficultyRange"
+              @change="ProblemListChangeFilter"
+              size="small"
+              style="width: 180px;"
+            >
+              <el-option :label="$t('m.All_Problem')" :value="''"></el-option>
+              <el-option
+                v-for="band in DIFFICULTY_BANDS"
+                :key="band.key"
+                :label="getDifficultyBandNameByKey(band.key)"
+                :value="band.key"
+              ></el-option>
+            </el-select>
+          </span>
         </div>
       </div>
       <vxe-table
@@ -102,6 +118,9 @@
           :title="$t('m.Display_ID')"
           v-if="!isContest"
         >
+          <template v-slot="{ row }">
+            <a class="admin-problem-link" @click="goEdit(row.id)">{{ row.problemId }}</a>
+          </template>
         </vxe-table-column>
 
         <vxe-table-column
@@ -126,6 +145,25 @@
           show-overflow
           v-if="!isContest"
         >
+          <template v-slot="{ row }">
+            <a class="admin-problem-link" @click="goEdit(row.id)">{{ row.title }}</a>
+          </template>
+        </vxe-table-column>
+
+        <vxe-table-column min-width="120" :title="$t('m.Level')">
+          <template v-slot="{ row }">
+            <span class="el-tag el-tag--small" :style="getDifficultyBandStyle(row.difficultyRating)">
+              {{ getDifficultyBandName(row.difficultyRating) }}
+            </span>
+          </template>
+        </vxe-table-column>
+
+        <vxe-table-column min-width="120" field="difficultyRating" :title="$t('m.Difficulty_Rating')">
+          <template v-slot="{ row }">
+            <span class="el-tag el-tag--small" :style="getDifficultyBandStyle(row.difficultyRating)">
+              {{ formatDifficultyRating(row.difficultyRating) }}
+            </span>
+          </template>
         </vxe-table-column>
 
         <vxe-table-column
@@ -355,6 +393,7 @@ import utils from '@/common/utils';
 import AddPublicProblem from '@/components/admin/AddPublicProblem.vue';
 import myMessage from '@/common/message';
 import { REMOTE_OJ } from '@/common/constants';
+import { DIFFICULTY_BANDS, getDifficultyBandByRating, getRatingTagStyle, normalizeDisplayRating } from '@/common/rating';
 import { mapGetters } from 'vuex';
 export default {
   name: 'ProblemList',
@@ -366,6 +405,7 @@ export default {
       total: 0,
       query: {
         problemListAuth: 0,
+        difficultyRange: '',
         oj: 'All',
         pageSize: 10,
         keyword: '',
@@ -385,6 +425,7 @@ export default {
       otherOJName: 'HDU',
       otherOJProblemId: '',
       REMOTE_OJ: {},
+      DIFFICULTY_BANDS: [],
       displayId: '',
 
       showPagination: false,
@@ -419,11 +460,29 @@ export default {
       this.query.problemListAuth = query.problemListAuth
         ? parseInt(query.problemListAuth)
         : 0;
+      this.query.difficultyRange = query.difficultyRange || '';
       this.query.oj = query.oj || 'All';
       this.query.contestId = this.$route.params.contestId;
       this.contestProblemMap = {};
       this.getProblemList();
       this.REMOTE_OJ = Object.assign({}, REMOTE_OJ);
+      this.DIFFICULTY_BANDS = DIFFICULTY_BANDS.slice();
+    },
+    formatDifficultyRating(difficultyRating) {
+      return normalizeDisplayRating(difficultyRating);
+    },
+    getDifficultyBand(rating) {
+      return getDifficultyBandByRating(rating);
+    },
+    getDifficultyBandNameByKey(key) {
+      let band = this.DIFFICULTY_BANDS.find((item) => item.key === key);
+      return band ? this.$t('m.' + band.labelKey) : '';
+    },
+    getDifficultyBandName(rating) {
+      return this.$t('m.' + this.getDifficultyBand(rating).labelKey);
+    },
+    getDifficultyBandStyle(rating) {
+      return getRatingTagStyle(rating);
     },
 
     goEdit(problemId) {
@@ -490,6 +549,7 @@ export default {
         currentPage: this.query.currentPage,
         keyword: this.query.keyword,
         cid: this.query.contestId,
+        difficultyRange: this.query.difficultyRange,
         oj: this.query.oj,
       };
       if (this.problemListAuth != 0) {
@@ -655,6 +715,10 @@ export default {
 </script>
 
 <style scoped>
+.admin-problem-link {
+  color: #2d8cf0;
+  cursor: pointer;
+}
 .filter-row span button {
   margin-top: 5px;
   margin-bottom: 5px;

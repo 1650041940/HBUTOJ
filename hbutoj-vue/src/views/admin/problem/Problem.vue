@@ -148,14 +148,14 @@
             >
               <el-select
                 class="difficulty-select"
-                placeholder="Enter the level of problem"
-                v-model="problem.difficulty"
+                v-model="difficultyBandModel"
+                placeholder="Enter the difficulty band"
               >
                 <el-option
-                  :label="getLevelName(key)"
-                  :value="parseInt(key)"
-                  v-for="(value, key, index) in PROBLEM_LEVEL"
-                  :key="index"
+                  :label="getDifficultyBandNameByKey(band.key)"
+                  :value="band.key"
+                  v-for="band in DIFFICULTY_BANDS"
+                  :key="band.key"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -177,6 +177,24 @@
                 v-model="problem.difficultyRating"
                 :disabled="problem.isRemote"
               ></el-input>
+              <div class="difficulty-rating-helper">
+                当前档位会根据你输入的难度分自动变化：{{ getDifficultyBandName(problem.difficultyRating) }}
+              </div>
+              <div class="difficulty-rating-helper">
+                你可以直接自由输入难度分。默认 1200，按整百分保存。区间：800-1100 入门，1200-1500 简单，1600-1900 中等，2000-2300 困难，2400+ 极难。
+              </div>
+              <div class="difficulty-rating-presets">
+                <el-button
+                  v-for="band in DIFFICULTY_BANDS"
+                  :key="band.key"
+                  size="mini"
+                  plain
+                  @click="setDifficultyRatingPreset(band.min)"
+                  :disabled="problem.isRemote"
+                >
+                  {{ band.min }} / {{ getDifficultyBandNameByKey(band.key) }}
+                </el-button>
+              </div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -891,6 +909,7 @@ import { mapGetters } from "vuex";
 import api from "@/common/api";
 import myMessage from "@/common/message";
 import { PROBLEM_LEVEL, JUDGE_CASE_MODE } from "@/common/constants";
+import { DIFFICULTY_BANDS, getDifficultyBandByRating, normalizeDisplayRating } from "@/common/rating";
 const Editor = () => import("@/components/admin/Editor.vue");
 const Accordion = () => import("@/components/admin/Accordion.vue");
 const AddExtraFile = () => import("@/components/admin/AddExtraFile.vue");
@@ -946,7 +965,7 @@ export default {
         memoryLimit: 256,
         stackLimit: 128,
         difficulty: 0,
-        difficultyRating: 1500,
+        difficultyRating: 1200,
         auth: 1,
         codeShare: true,
         examples: [], // 题面上的样例输入输出
@@ -1007,11 +1026,13 @@ export default {
       judgeExtraFile: null,
       judgeCaseModeRecord: "default",
       sampleIndex: 1,
+      DIFFICULTY_BANDS: [],
     };
   },
   mounted() {
     this.PROBLEM_LEVEL = Object.assign({}, PROBLEM_LEVEL);
     this.JUDGE_CASE_MODE = Object.assign({}, JUDGE_CASE_MODE);
+    this.DIFFICULTY_BANDS = DIFFICULTY_BANDS.slice();
     this.routeName = this.$route.name;
     let contestID = this.$route.params.contestId;
     this.uploadFileUrl = "/api/file/upload-testcase-zip";
@@ -1051,7 +1072,7 @@ export default {
         memoryLimit: 256,
         stackLimit: 128,
         difficulty: 0,
-        difficultyRating: 1500,
+        difficultyRating: 1200,
         auth: 1,
         codeShare: true,
         examples: [],
@@ -1111,6 +1132,9 @@ export default {
       this.codeTemplate = [];
       this.init();
     },
+    "problem.difficultyRating"() {
+      this.syncLegacyDifficultyByRating();
+    },
 
     problemLanguages(newVal) {
       let data = {};
@@ -1159,6 +1183,38 @@ export default {
     },
   },
   methods: {
+    setDifficultyRatingPreset(value) {
+      this.problem.difficultyRating = value;
+      this.syncLegacyDifficultyByRating();
+    },
+    onDifficultyBandChange(key) {
+      let band = this.DIFFICULTY_BANDS.find((item) => item.key === key);
+      if (!band) {
+        return;
+      }
+      this.problem.difficultyRating = band.min;
+      this.syncLegacyDifficultyByRating();
+    },
+    getDifficultyBandKey(value) {
+      return getDifficultyBandByRating(value).key;
+    },
+    getDifficultyBandNameByKey(key) {
+      let band = this.DIFFICULTY_BANDS.find((item) => item.key === key);
+      return band ? this.$t('m.' + band.labelKey) : '';
+    },
+    getDifficultyBandName(value) {
+      return this.$t('m.' + getDifficultyBandByRating(value).labelKey);
+    },
+    syncLegacyDifficultyByRating() {
+      let rating = normalizeDisplayRating(this.problem.difficultyRating, 1200);
+      if (rating <= 1500) {
+        this.problem.difficulty = 0;
+      } else if (rating <= 1900) {
+        this.problem.difficulty = 1;
+      } else {
+        this.problem.difficulty = 2;
+      }
+    },
     init() {
       this.sampleIndex = 1;
       if (this.mode === "edit") {
@@ -1182,6 +1238,7 @@ export default {
           this.spjRecord.spjCode = data.spjCode;
           this.judgeCaseModeRecord = data.judgeCaseModeRecord;
           this.problem = data;
+          this.syncLegacyDifficultyByRating();
           this.problem["examples"] = utils.stringToExamples(data.examples);
           if (this.problem["examples"].length > 0) {
             this.problem["examples"][0]["isOpen"] = true;
@@ -1234,6 +1291,7 @@ export default {
           this.problemTags = res.data.data;
         });
       } else {
+        this.syncLegacyDifficultyByRating();
         this.addExample();
         this.testCaseUploaded = false;
         this.title = this.$i18n.t("m.Create_Problem");
@@ -1565,15 +1623,15 @@ export default {
 
       let difficultyRating = this.problem.difficultyRating;
       if (difficultyRating === null || difficultyRating === undefined || difficultyRating === "") {
-        myMessage.error("难度分必须为 800~3500 的整数");
-        return;
+        difficultyRating = 1200;
       }
       difficultyRating = parseInt(difficultyRating, 10);
       if (isNaN(difficultyRating) || difficultyRating < 800 || difficultyRating > 3500) {
-        myMessage.error("难度分必须为 800~3500 的整数");
+        myMessage.error("难度分必须在 800~3500 之间，系统会自动按整百分保存");
         return;
       }
-      this.problem.difficultyRating = difficultyRating;
+      this.problem.difficultyRating = Math.round(difficultyRating / 100) * 100;
+      this.syncLegacyDifficultyByRating();
 
       // // 不强制校验题目样例不能为空
       // if (!this.problem.examples.length && !this.problem.isRemote) {
@@ -1900,6 +1958,14 @@ export default {
   },
   computed: {
     ...mapGetters(["userInfo"]),
+    difficultyBandModel: {
+      get() {
+        return this.getDifficultyBandKey(this.problem.difficultyRating);
+      },
+      set(key) {
+        this.onDifficultyBandChange(key);
+      },
+    },
   },
 };
 </script>
@@ -1913,6 +1979,18 @@ export default {
 }
 .difficulty-select {
   width: 120px;
+}
+.difficulty-rating-helper {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #606266;
+  line-height: 1.5;
+}
+.difficulty-rating-presets {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 .input-new-tag {
   width: 120px;

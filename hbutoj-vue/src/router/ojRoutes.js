@@ -9,6 +9,7 @@ import SubmissionDetails from "@/views/oj/status/SubmissionDetails.vue"
 import ContestList from "@/views/oj/contest/ContestList.vue"
 import Problem from "@/views/oj/problem/Problem.vue"
 import PassRank from "@/views/oj/rank/PassRank.vue"
+import RatingRank from "@/views/oj/rank/RatingRank.vue"
 import ContestDetails from "@/views/oj/contest/ContestDetails.vue"
 import ACMScoreBoard from "@/views/oj/contest/outside/ACMScoreBoard.vue"
 import OIScoreBoard from "@/views/oj/contest/outside/OIScoreBoard.vue"
@@ -251,7 +252,9 @@ const ojRoutes = [
   },
   {
     path: '/rating-rank',
-    redirect: '/rank'
+    name: 'RatingRank',
+    component: RatingRank,
+    meta: { title: 'Rating Rank' }
   },
   {
     path: '/reset-password',

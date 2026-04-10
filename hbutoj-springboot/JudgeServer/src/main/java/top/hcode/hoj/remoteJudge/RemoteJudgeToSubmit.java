@@ -14,7 +14,7 @@ import top.hcode.hoj.service.RemoteJudgeService;
 import top.hcode.hoj.util.Constants;
 
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 @RefreshScope
 public class RemoteJudgeToSubmit {
 

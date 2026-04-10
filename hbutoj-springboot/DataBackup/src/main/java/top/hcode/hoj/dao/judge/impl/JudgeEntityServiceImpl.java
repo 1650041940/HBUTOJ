@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * @since 2020-10-23
  */
 @Service
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class JudgeEntityServiceImpl extends ServiceImpl<JudgeMapper, Judge> implements JudgeEntityService {
 
     @Autowired

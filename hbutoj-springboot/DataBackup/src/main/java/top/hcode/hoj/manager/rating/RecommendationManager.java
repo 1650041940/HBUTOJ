@@ -9,6 +9,7 @@ import top.hcode.hoj.mapper.UserPracticeRatingMapper;
 import top.hcode.hoj.pojo.entity.rating.UserPracticeRating;
 import top.hcode.hoj.pojo.vo.RecommendProblemVO;
 import top.hcode.hoj.shiro.AccountProfile;
+import top.hcode.hoj.utils.RatingUtils;
 
 import javax.annotation.Resource;
 import java.util.Collections;
@@ -32,7 +33,9 @@ public class RecommendationManager {
         String uid = userRolesVo.getUid();
 
         UserPracticeRating rating = userPracticeRatingMapper.selectById(uid);
-        int target = rating == null || rating.getRating() == null ? 1200 : rating.getRating();
+        int target = rating == null || rating.getRating() == null
+                ? RatingUtils.DEFAULT_PRACTICE_RATING
+                : rating.getRating();
 
         List<RecommendProblemVO> candidates = recommendationMapper.getRecommendCandidates(uid, target, excludePid, 50);
         if (candidates == null || candidates.isEmpty()) {

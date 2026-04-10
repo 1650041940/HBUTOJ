@@ -671,7 +671,7 @@ export default {
         mode[lang.name] = lang.contentType;
       });
       this.mode = mode;
-      this.editor.setOption("mode", this.mode[this.language]);
+      this.editor.setOption("mode", this.getEditorMode(this.language));
     });
     this.editor.setOption("theme", this.theme);
     this.editor.setSize('100%', this.height);
@@ -699,7 +699,7 @@ export default {
       this.$emit("update:value", newCode);
     },
     onLangChange(newVal) {
-      this.editor.setOption("mode", this.mode[newVal]);
+      this.editor.setOption("mode", this.getEditorMode(newVal));
       this.$emit("changeLang", newVal);
     },
     onThemeChange(newTheme) {
@@ -780,7 +780,7 @@ export default {
         type: this.type,
         userInput: this.userInput,
         expectedOutput: this.expectedOutput,
-        mode: this.mode[this.language],
+        mode: this.getSubmitMode(this.language),
         isRemoteJudge: this.isRemoteJudge,
       };
       api.submitTestJudge(data).then(
@@ -835,6 +835,46 @@ export default {
       };
       // 设置每1秒检查一下该题的提交结果
       this.refreshStatus = setTimeout(checkStatus, 1000);
+    },
+    getEditorMode(language) {
+      return this.mode[language] || this.inferModeByLanguage(language) || "text/plain";
+    },
+    getSubmitMode(language) {
+      return this.mode[language] || this.inferModeByLanguage(language);
+    },
+    inferModeByLanguage(language) {
+      if (!language) {
+        return null;
+      }
+      let value = language.toLowerCase();
+      if (value.includes("c++")) {
+        return "text/x-c++src";
+      }
+      if (value.includes("c#")) {
+        return "text/x-csharp";
+      }
+      if ((value.startsWith("c ") || value.startsWith("c11") || value.startsWith("c17") || value === "c") && !value.includes("c++")) {
+        return "text/x-csrc";
+      }
+      if (value.includes("python") || value.includes("pypy")) {
+        return "text/x-python";
+      }
+      if (value.includes("golang") || value.includes("go 1") || value === "go") {
+        return "text/x-go";
+      }
+      if (value.includes("java") && !value.includes("javascript") && !value.includes("kotlin")) {
+        return "text/x-java";
+      }
+      if (value.includes("php")) {
+        return "text/x-php";
+      }
+      if (value.includes("ruby")) {
+        return "text/x-ruby";
+      }
+      if (value.includes("rust")) {
+        return "text/x-rustsrc";
+      }
+      return null;
     },
     closeDrawer() {
       this.$emit("update:openTestCaseDrawer", false);

@@ -17,6 +17,12 @@ public class RatingRankVO implements Serializable {
 
     private String nickname;
 
+    private String avatar;
+
+    private String titleName;
+
+    private String titleColor;
+
     private Integer rating;
 
     @ApiModelProperty(value = "比赛场次/做题AC数")

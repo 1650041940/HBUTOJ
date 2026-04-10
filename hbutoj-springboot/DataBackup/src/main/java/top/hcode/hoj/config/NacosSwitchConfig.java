@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @Data
 @Configuration
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class NacosSwitchConfig {
 
     @Value("${spring.cloud.nacos.url}")

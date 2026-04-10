@@ -21,20 +21,21 @@ import top.hcode.hoj.pojo.vo.*;
 import top.hcode.hoj.shiro.AccountProfile;
 import top.hcode.hoj.manager.oj.ContestCalculateRankManager;
 import top.hcode.hoj.utils.Constants;
+import top.hcode.hoj.utils.RatingUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class RatingManager {
 
-    private static final int DEFAULT_PRACTICE_RATING = 1200;
-    private static final int DEFAULT_CONTEST_RATING = 1500;
+    private static final int DEFAULT_PRACTICE_RATING = RatingUtils.DEFAULT_PRACTICE_RATING;
+    private static final int DEFAULT_CONTEST_RATING = RatingUtils.DEFAULT_CONTEST_RATING;
 
-    private static final int DIFFICULTY_MIN = 600;
-    private static final int DIFFICULTY_MAX = 2600;
+    private static final int DIFFICULTY_MIN = RatingUtils.MIN_PROBLEM_DIFFICULTY_RATING;
+    private static final int DIFFICULTY_MAX = RatingUtils.MAX_PROBLEM_DIFFICULTY_RATING;
 
     @Resource
     private ProblemEntityService problemEntityService;
@@ -127,16 +128,13 @@ public class RatingManager {
     @Transactional(rollbackFor = Exception.class)
     public void monthlyAdjustProblemDifficultyAndPracticeRating() {
         DateTime now = DateUtil.date();
-        DateTime start = DateUtil.beginOfMonth(DateUtil.offsetMonth(now, -1));
-        DateTime end = DateUtil.beginOfMonth(now);
-        String month = DateUtil.format(start, "yyyy-MM");
+        String month = DateUtil.format(DateUtil.beginOfMonth(DateUtil.offsetMonth(now, -1)), "yyyy-MM");
 
         initMissingProblemDifficulty(month);
-        adjustProblemDifficultyByMonth(start, end, month);
+        snapshotProblemDifficulty(month);
+        snapshotCurrentPracticeRating(month);
 
-        recalcAllUsersPracticeRating(month);
-
-        log.info("月度题目难度与做题rating刷新完成，month={} start={} end={}", month, start, end);
+        log.info("月度题目难度与做题rating快照完成，month={}", month);
     }
 
     private void initMissingProblemDifficulty(String month) {
@@ -144,26 +142,11 @@ public class RatingManager {
         if (CollectionUtils.isEmpty(problems)) {
             return;
         }
-        Random random = new Random(Objects.hash(month));
         List<Problem> needInit = new ArrayList<>();
         for (Problem p : problems) {
             Integer dr = p.getDifficultyRating();
             if (dr == null || dr <= 0) {
-                // 若历史数据只有 difficulty(0/1/2)，则按难度等级给一个合理的初始区间
-                int base;
-                Integer level = p.getDifficulty();
-                if (level != null && level == 0) {
-                    base = 900;
-                } else if (level != null && level == 1) {
-                    base = 1400;
-                } else if (level != null && level == 2) {
-                    base = 1900;
-                } else {
-                    base = 1500;
-                }
-
-                int init = base - 150 + random.nextInt(301); // [base-150, base+150]
-                init = clampDifficulty(init);
+                int init = RatingUtils.DEFAULT_PROBLEM_DIFFICULTY_RATING;
                 needInit.add(new Problem().setId(p.getId()).setDifficultyRating(init));
             }
         }
@@ -172,99 +155,46 @@ public class RatingManager {
         }
     }
 
-    private void adjustProblemDifficultyByMonth(Date start, Date end, String month) {
-        List<ProblemDifficultyMonthlyStatVO> stats = judgeMapper.getProblemDifficultyMonthlyStats(start, end);
-        if (CollectionUtils.isEmpty(stats)) {
+    private void snapshotProblemDifficulty(String month) {
+        List<Problem> problems = problemEntityService.list(new QueryWrapper<Problem>().select("id", "difficulty_rating"));
+        if (CollectionUtils.isEmpty(problems)) {
             return;
         }
-
-        Map<Long, Integer> currentDifficulty = problemEntityService
-            .list(new QueryWrapper<Problem>().select("id", "difficulty_rating"))
-                .stream()
-            .collect(Collectors.toMap(Problem::getId, p -> Optional.ofNullable(p.getDifficultyRating()).orElse(DEFAULT_PRACTICE_RATING), (a, b) -> a));
-
-        List<Problem> toUpdate = new ArrayList<>();
-        for (ProblemDifficultyMonthlyStatVO stat : stats) {
-            if (stat.getPid() == null) {
+        for (Problem problem : problems) {
+            if (problem.getId() == null) {
                 continue;
             }
-
-            Integer attemptedUsers = Optional.ofNullable(stat.getAttemptedUsers()).orElse(0);
-            Integer acceptedUsers = Optional.ofNullable(stat.getAcceptedUsers()).orElse(0);
-            if (attemptedUsers < 5) {
-                continue;
-            }
-
             QueryWrapper<ProblemDifficultyHistory> existQ = new QueryWrapper<ProblemDifficultyHistory>()
-                    .eq("pid", stat.getPid())
+                    .eq("pid", problem.getId())
                     .eq("month", month);
             if (problemDifficultyHistoryMapper.selectCount(existQ) > 0) {
                 continue;
             }
-
-            int oldDifficulty = clampDifficulty(currentDifficulty.getOrDefault(stat.getPid(), DEFAULT_PRACTICE_RATING));
-            double rate = attemptedUsers == 0 ? 0.0 : (acceptedUsers * 1.0 / attemptedUsers);
-            double avgAttempts = Optional.ofNullable(stat.getAvgAttempts()).orElse(1.0);
-
-            double rawDelta = 100.0 * (0.5 - rate) + 30.0 * (avgAttempts - 1.0);
-            int delta = (int) Math.round(rawDelta);
-            delta = Math.max(-150, Math.min(150, delta));
-
-            int newDifficulty = clampDifficulty(oldDifficulty + delta);
-
-            ProblemDifficultyHistory history = new ProblemDifficultyHistory()
-                    .setPid(stat.getPid())
+            int difficulty = RatingUtils.normalizeProblemDifficultyRating(problem.getDifficultyRating());
+            problemDifficultyHistoryMapper.insert(new ProblemDifficultyHistory()
+                    .setPid(problem.getId())
                     .setMonth(month)
-                    .setOldDifficulty(oldDifficulty)
-                    .setDelta(newDifficulty - oldDifficulty)
-                    .setNewDifficulty(newDifficulty)
-                    .setAttemptedUsers(attemptedUsers)
-                    .setAcceptedUsers(acceptedUsers)
-                    .setAvgAttempts(avgAttempts);
-            problemDifficultyHistoryMapper.insert(history);
-
-            if (newDifficulty != oldDifficulty) {
-                toUpdate.add(new Problem().setId(stat.getPid()).setDifficultyRating(newDifficulty));
-            }
-        }
-
-        if (!toUpdate.isEmpty()) {
-            problemEntityService.updateBatchById(toUpdate, 200);
+                    .setOldDifficulty(difficulty)
+                    .setDelta(0)
+                    .setNewDifficulty(difficulty)
+                    .setAttemptedUsers(0)
+                    .setAcceptedUsers(0)
+                    .setAvgAttempts(null));
         }
     }
 
-    private void recalcAllUsersPracticeRating(String month) {
-        // 初始化所有用户记录（保证排行榜完整）
-        List<UserInfo> users = userInfoEntityService.list(new QueryWrapper<UserInfo>().select("uuid"));
-        if (CollectionUtils.isEmpty(users)) {
+    private void snapshotCurrentPracticeRating(String month) {
+        List<UserPracticeRating> ratings = userPracticeRatingMapper.selectList(new QueryWrapper<UserPracticeRating>()
+                .select("uid", "rating", "solved_count"));
+        if (CollectionUtils.isEmpty(ratings)) {
             return;
         }
 
-        Map<String, UserPracticeRating> ratingMap = new HashMap<>();
-        for (UserInfo u : users) {
-            String uid = u.getUuid();
-            UserPracticeRating rating = userPracticeRatingMapper.selectById(uid);
-            if (rating == null) {
-                rating = new UserPracticeRating()
-                        .setUid(uid)
-                        .setRating(DEFAULT_PRACTICE_RATING)
-                        .setSolvedCount(0)
-                        .setLastCalcMonth(null);
-                userPracticeRatingMapper.insert(rating);
+        for (UserPracticeRating current : ratings) {
+            String uid = current.getUid();
+            if (uid == null) {
+                continue;
             }
-            ratingMap.put(uid, rating);
-        }
-
-        // 按用户聚合已AC题目及尝试次数
-        List<UserSolvedProblemStatVO> solvedStats = userAcproblemMapper.getUserSolvedProblemStats();
-        Map<String, List<UserSolvedProblemStatVO>> statsByUser = CollectionUtils.isEmpty(solvedStats)
-                ? Collections.emptyMap()
-                : solvedStats.stream().collect(Collectors.groupingBy(UserSolvedProblemStatVO::getUid));
-
-        for (UserInfo u : users) {
-            String uid = u.getUuid();
-            UserPracticeRating current = ratingMap.get(uid);
-
             QueryWrapper<UserPracticeRatingHistory> existQ = new QueryWrapper<UserPracticeRatingHistory>()
                     .eq("uid", uid)
                     .eq("month", month);
@@ -272,26 +202,17 @@ public class RatingManager {
                 continue;
             }
 
-            List<UserSolvedProblemStatVO> userStats = statsByUser.getOrDefault(uid, Collections.emptyList());
-            int solvedCount = userStats.size();
-            int newRating = calcPracticeRating(userStats);
-
             int oldRating = Optional.ofNullable(current.getRating()).orElse(DEFAULT_PRACTICE_RATING);
-            int delta = newRating - oldRating;
+            int solvedCount = Optional.ofNullable(current.getSolvedCount()).orElse(0);
 
             UserPracticeRatingHistory history = new UserPracticeRatingHistory()
                     .setUid(uid)
                     .setMonth(month)
                     .setOldRating(oldRating)
-                    .setDelta(delta)
-                    .setNewRating(newRating)
+                    .setDelta(0)
+                    .setNewRating(oldRating)
                     .setSolvedCount(solvedCount);
             userPracticeRatingHistoryMapper.insert(history);
-
-            current.setRating(newRating);
-            current.setSolvedCount(solvedCount);
-            current.setLastCalcMonth(month);
-            userPracticeRatingMapper.updateById(current);
         }
     }
 
@@ -299,18 +220,7 @@ public class RatingManager {
         if (CollectionUtils.isEmpty(stats)) {
             return DEFAULT_PRACTICE_RATING;
         }
-        double sum = 0.0;
-        for (UserSolvedProblemStatVO s : stats) {
-            int difficulty = Optional.ofNullable(s.getDifficultyRating()).orElse(DEFAULT_PRACTICE_RATING);
-            int attempts = Optional.ofNullable(s.getAttempts()).orElse(1);
-            if (attempts < 1) attempts = 1;
-            double weight = 1.0 / (1.0 + 0.35 * (attempts - 1));
-            sum += difficulty * weight;
-        }
-        double avg = sum / stats.size();
-        double bonus = 50.0 * (Math.log(1.0 + stats.size()) / Math.log(2.0));
-        int rating = (int) Math.round(0.9 * avg + bonus);
-        return clampDifficulty(rating);
+        return RatingUtils.calculatePracticeRating(stats);
     }
 
     private int clampDifficulty(int v) {

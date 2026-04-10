@@ -1,10 +1,12 @@
 package top.hcode.hoj.judge;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.hcode.hoj.common.exception.SystemError;
 import top.hcode.hoj.dao.ContestRecordEntityService;
 import top.hcode.hoj.dao.UserAcproblemEntityService;
+import top.hcode.hoj.dao.UserPracticeRatingEntityService;
 import top.hcode.hoj.judge.entity.LanguageConfig;
 import top.hcode.hoj.pojo.dto.TestJudgeReq;
 import top.hcode.hoj.pojo.dto.TestJudgeRes;
@@ -32,6 +34,9 @@ public class JudgeContext {
 
     @Autowired
     private ContestRecordEntityService contestRecordEntityService;
+
+    @Autowired
+    private UserPracticeRatingEntityService userPracticeRatingEntityService;
 
     @Resource
     private LanguageConfigLoader languageConfigLoader;
@@ -78,6 +83,14 @@ public class JudgeContext {
     public TestJudgeRes testJudge(TestJudgeReq testJudgeReq) {
         // c和c++为一倍时间和空间，其它语言为2倍时间和空间
         LanguageConfig languageConfig = languageConfigLoader.getLanguageConfigByName(testJudgeReq.getLanguage());
+        if (languageConfig == null) {
+            return TestJudgeRes.builder()
+                    .status(Constants.Judge.STATUS_COMPILE_ERROR.getStatus())
+                    .time(0L)
+                    .memory(0L)
+                    .stderr("Unsupported language: " + testJudgeReq.getLanguage())
+                    .build();
+        }
         if (languageConfig.getSrcName() == null
                 || (!languageConfig.getSrcName().endsWith(".c")
                 && !languageConfig.getSrcName().endsWith(".cpp"))) {
@@ -108,11 +121,17 @@ public class JudgeContext {
         if (cid == 0) { // 非比赛提交
             // 如果是AC,就更新user_acproblem表,
             if (status.intValue() == Constants.Judge.STATUS_ACCEPTED.getStatus() && gid == null) {
-                userAcproblemEntityService.saveOrUpdate(new UserAcproblem()
-                        .setPid(pid)
-                        .setUid(uid)
-                        .setSubmitId(submitId)
-                );
+                QueryWrapper<UserAcproblem> wrapper = new QueryWrapper<>();
+                wrapper.eq("uid", uid).eq("pid", pid).last("limit 1");
+                UserAcproblem existed = userAcproblemEntityService.getOne(wrapper, false);
+                if (existed == null) {
+                    userAcproblemEntityService.save(new UserAcproblem()
+                            .setPid(pid)
+                            .setUid(uid)
+                            .setSubmitId(submitId)
+                    );
+                }
+                userPracticeRatingEntityService.refreshPracticeRating(uid);
             }
 
         } else { //如果是比赛提交

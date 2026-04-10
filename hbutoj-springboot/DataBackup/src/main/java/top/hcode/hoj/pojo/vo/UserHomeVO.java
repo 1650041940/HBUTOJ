@@ -53,8 +53,14 @@ public class UserHomeVO {
     @ApiModelProperty(value = "总提交数")
     private Integer total;
 
-    @ApiModelProperty(value = "cf得分")
+    @ApiModelProperty(value = "做题 rating（兼容旧字段）")
     private Integer rating;
+
+    @ApiModelProperty(value = "做题 rating")
+    private Integer practiceRating;
+
+    @ApiModelProperty(value = "比赛 rating")
+    private Integer contestRating;
 
     @ApiModelProperty(value = "OI得分列表")
     private List<Integer> scoreList;

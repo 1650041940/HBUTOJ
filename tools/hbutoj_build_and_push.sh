@@ -181,6 +181,10 @@ echo "==> Copy judgeserver jar into deploy repo"
 rm -f "$DEPLOY_REPO/src/judgeserver"/*.jar
 cp -f "$ROOT_DIR/hbutoj-springboot/$JUDGESERVER_JAR" "$DEPLOY_REPO/src/judgeserver/"
 
+echo "==> Sync sandbox binaries into deploy repo"
+cp -f "$ROOT_DIR/sandbox/Sandbox-amd64-v1.8.0" "$DEPLOY_REPO/src/judgeserver/Sandbox-amd64-v1.8.0"
+cp -f "$ROOT_DIR/sandbox/Sandbox-arm64-v1.8.0" "$DEPLOY_REPO/src/judgeserver/Sandbox-arm64-v1.8.0"
+
 echo "==> Copy frontend dist into deploy repo"
 rm -rf "$DEPLOY_REPO/src/frontend/html"/*
 cp -a "$FRONTEND_DIST"/. "$DEPLOY_REPO/src/frontend/html/"
@@ -203,7 +207,23 @@ docker_build_push() {
 
   if [[ "$HBUTOJ_PUSH" == "true" ]]; then
     echo "==> docker push: $full_image"
-    docker push "$full_image"
+    if ! docker push "$full_image"; then
+      echo "ERROR: docker push failed: $full_image" >&2
+
+      if [[ "$image_prefix" != *"/"* && "$image_prefix" != *"."* && "$image_prefix" != *":"* ]]; then
+        echo "Hint: '$image_prefix' looks like a Docker Hub namespace." >&2
+        echo "      You must 'docker login' with an account that can push to '$image_prefix/$image_repo'." >&2
+        echo "      If this namespace is not yours (e.g. upstream author), set a different prefix, e.g.:" >&2
+        echo "        export HBUTOJ_MYSQL_CHECKER_IMAGE_PREFIX=<your_dockerhub_user>" >&2
+        echo "        # or: export HBUTOJ_MYSQL_CHECKER_IMAGE_PREFIX=ghcr.io/<your_github_user>" >&2
+      else
+        echo "Hint: check registry login and permissions for prefix: $image_prefix" >&2
+        echo "      For GHCR, ensure: docker login ghcr.io" >&2
+      fi
+
+      echo "Hint: to skip pushing, set: export HBUTOJ_PUSH=false" >&2
+      exit 1
+    fi
   else
     echo "==> skip push (HBUTOJ_PUSH=$HBUTOJ_PUSH): $full_image"
   fi

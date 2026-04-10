@@ -85,22 +85,22 @@
                 size="medium"
                 class="filter-item"
                 :effect="
-                  query.difficulty === 'All' || query.difficulty === ''
+                  query.difficultyRange === 'All' || query.difficultyRange === ''
                     ? 'dark'
                     : 'plain'
                 "
-                @click="filterByDifficulty('All')"
+                @click="filterByDifficultyRange('All')"
                 >{{ $t('m.All') }}</el-tag
               >
               <el-tag
                 size="medium"
                 class="filter-item"
-                v-for="(value, key, index) in PROBLEM_LEVEL"
-                :effect="query.difficulty == key ? 'dark' : 'plain'"
-                :style="getLevelBlockColor(key)"
-                :key="index"
-                @click="filterByDifficulty(key)"
-                >{{ getLevelName(key) }}</el-tag
+                v-for="band in DIFFICULTY_BANDS"
+                :effect="query.difficultyRange == band.key ? 'dark' : 'plain'"
+                :style="getDifficultyBandBlockStyle(band)"
+                :key="band.key"
+                @click="filterByDifficultyRange(band.key)"
+                >{{ getDifficultyBandNameByKey(band.key) }}</el-tag
               >
             </div>
           </section>
@@ -179,13 +179,13 @@
           <vxe-table-column
             field="difficulty"
             :title="$t('m.Level')"
-            min-width="100"
+            min-width="120"
           >
             <template v-slot="{ row }">
               <span
                 class="el-tag el-tag--small"
-                :style="getLevelColor(row.difficulty)"
-                >{{ getLevelName(row.difficulty) }}</span
+                :style="getDifficultyBandStyle(row.difficultyRating)"
+                >{{ getDifficultyBandName(row.difficultyRating) }}</span
               >
             </template>
           </vxe-table-column>
@@ -197,7 +197,9 @@
             align="center"
           >
             <template v-slot="{ row }">
-              <span>{{ row.difficultyRating == null ? 1500 : row.difficultyRating }}</span>
+              <span class="el-tag el-tag--small" :style="getDifficultyRatingStyle(row.difficultyRating)">
+                {{ formatDifficultyRating(row.difficultyRating) }}
+              </span>
             </template>
           </vxe-table-column>
 
@@ -352,6 +354,12 @@ import {
 } from '@/common/constants';
 import utils from '@/common/utils';
 import myMessage from '@/common/message';
+import {
+  DIFFICULTY_BANDS,
+  getDifficultyBandByRating,
+  getRatingTagStyle,
+  normalizeDisplayRating,
+} from '@/common/rating';
 import 'element-ui/lib/theme-chalk/display.css';
 import Pagination from '@/components/oj/common/Pagination';
 export default {
@@ -362,6 +370,7 @@ export default {
   data() {
     return {
       PROBLEM_LEVEL: {},
+      DIFFICULTY_BANDS: [],
       JUDGE_STATUS: {},
       JUDGE_STATUS_RESERVE: {},
       REMOTE_OJ: {},
@@ -383,7 +392,7 @@ export default {
       routeName: '',
       query: {
         keyword: '',
-        difficulty: 'All',
+        difficultyRange: 'All',
         oj: '',
         tagId: '',
         currentPage: 1,
@@ -406,6 +415,7 @@ export default {
 
   mounted() {
     this.PROBLEM_LEVEL = Object.assign({}, PROBLEM_LEVEL);
+    this.DIFFICULTY_BANDS = DIFFICULTY_BANDS.slice();
     this.JUDGE_STATUS_RESERVE = Object.assign({}, JUDGE_STATUS_RESERVE);
     this.JUDGE_STATUS = Object.assign({}, JUDGE_STATUS);
     this.REMOTE_OJ = Object.assign({}, REMOTE_OJ);
@@ -435,7 +445,7 @@ export default {
     init() {
       this.routeName = this.$route.name;
       let query = this.$route.query;
-      this.query.difficulty = query.difficulty || '';
+      this.query.difficultyRange = query.difficultyRange || query.difficulty || '';
       this.query.oj = query.oj || 'Mine';
       this.query.keyword = query.keyword || '';
       try {
@@ -515,9 +525,11 @@ export default {
     },
     getProblemList() {
       let queryParams = Object.assign({}, this.query);
-      if (queryParams.difficulty == 'All') {
-        queryParams.difficulty = '';
+      if (queryParams.difficultyRange == 'All') {
+        queryParams.difficultyRange = '';
       }
+      queryParams.difficulty = queryParams.difficultyRange;
+      delete queryParams.difficultyRange;
       if (queryParams.oj == 'All') {
         queryParams.oj = '';
       } else if (!queryParams.oj) {
@@ -649,8 +661,8 @@ export default {
       this.query.currentPage = 1;
       this.pushRouter();
     },
-    filterByDifficulty(difficulty) {
-      this.query.difficulty = difficulty;
+    filterByDifficultyRange(difficultyRange) {
+      this.query.difficultyRange = difficultyRange;
       this.query.currentPage = 1;
       this.pushRouter();
     },
@@ -690,16 +702,35 @@ export default {
     getLevelName(difficulty) {
       return utils.getLevelName(difficulty);
     },
+    getDifficultyBand(rating) {
+      return getDifficultyBandByRating(rating);
+    },
+    getDifficultyBandName(rating) {
+      return this.$t('m.' + this.getDifficultyBand(rating).labelKey);
+    },
+    getDifficultyBandNameByKey(key) {
+      let band = DIFFICULTY_BANDS.find((item) => item.key === key);
+      return band ? this.$t('m.' + band.labelKey) : '';
+    },
+    getDifficultyBandStyle(rating) {
+      return getRatingTagStyle(rating);
+    },
+    getDifficultyBandBlockStyle(band) {
+      if (band.key == this.query.difficultyRange) {
+        return getRatingTagStyle(band.min);
+      }
+    },
+    formatDifficultyRating(difficultyRating) {
+      return normalizeDisplayRating(difficultyRating);
+    },
+    getDifficultyRatingStyle(difficultyRating) {
+      return getRatingTagStyle(difficultyRating);
+    },
     getIconColor(status) {
       return (
         'font-weight: 600;font-size: 16px;color:' +
         this.JUDGE_STATUS[status].rgb
       );
-    },
-    getLevelBlockColor(difficulty) {
-      if (difficulty == this.query.difficulty) {
-        return this.getLevelColor(difficulty);
-      }
     },
     getTagClassificationName(classification){
       if(classification !=null){

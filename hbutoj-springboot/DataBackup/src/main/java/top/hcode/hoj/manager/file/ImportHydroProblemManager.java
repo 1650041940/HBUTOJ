@@ -39,7 +39,7 @@ import java.util.*;
  * @Date 2022/10/15
  */
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class ImportHydroProblemManager {
 
 

@@ -1,6 +1,6 @@
 # 单体部署⑥——判题服务部署
 
-> HOJ使用安全沙盒的是开源的[go-judge](https://github.com/criyle/go-judge)，具体使用可看该项目文档。
+> HBUTOJ使用安全沙盒的是开源的[go-judge](https://github.com/criyle/go-judge)，具体使用可看该项目文档。
 
 > 注意：判题服务可以部署多台云服务器，步骤一样
 

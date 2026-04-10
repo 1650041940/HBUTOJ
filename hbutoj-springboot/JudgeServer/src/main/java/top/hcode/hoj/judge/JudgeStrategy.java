@@ -27,7 +27,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.util.*;
 
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 @Component
 public class JudgeStrategy {
 

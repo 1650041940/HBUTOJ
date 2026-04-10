@@ -26,7 +26,7 @@ import java.util.Objects;
  * @Description:
  */
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class JudgeReceiver extends AbstractReceiver {
 
     @Autowired

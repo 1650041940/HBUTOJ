@@ -78,8 +78,9 @@ public class ProblemEntityServiceImpl extends ServiceImpl<ProblemMapper, Problem
     private final static Pattern EOL_PATTERN = Pattern.compile("[^\\S\\n]+(?=\\n)");
 
     @Override
-    public Page<ProblemVO> getProblemList(int limit, int currentPage, Long pid, String title, Integer difficulty,
-                                          List<Long> tid, String oj) {
+    public Page<ProblemVO> getProblemList(int limit, int currentPage, Long pid, String title,
+                                          Integer legacyDifficulty, Integer difficultyRatingMin,
+                                          Integer difficultyRatingMax, List<Long> tid, String oj) {
 
         //新建分页
         Page<ProblemVO> page = new Page<>(currentPage, limit);
@@ -89,7 +90,8 @@ public class ProblemEntityServiceImpl extends ServiceImpl<ProblemMapper, Problem
             tagListSize = tid.size();
         }
 
-        List<ProblemVO> problemList = problemMapper.getProblemList(page, pid, title, difficulty, tid, tagListSize, oj);
+        List<ProblemVO> problemList = problemMapper.getProblemList(page, pid, title, legacyDifficulty,
+                difficultyRatingMin, difficultyRatingMax, tid, tagListSize, oj);
 
         if (problemList.size() > 0) {
             List<Long> pidList = problemList.stream().map(ProblemVO::getPid).collect(Collectors.toList());

@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @Date 2022/11/22
  */
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class LanguageConfigLoader {
 
     private static List<String> defaultEnv = Arrays.asList(

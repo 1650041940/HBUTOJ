@@ -14,7 +14,7 @@
 
 #### 1. 问题引用
 
-- 原HOJ仓库issue引用：本地构建没问题，CentOS 7 下构建报错（上游链接已移除，issue 编号：I5HZNP）
+- 原HBUTOJ仓库issue引用：本地构建没问题，CentOS 7 下构建报错（上游链接已移除，issue 编号：I5HZNP）
 
 - `hbutoj-judgeserver`容器一直重启，`docker logs hbutoj-judgeserver`查看日志发现，启动Go-judge（Sandbox）报错：`prefork environment failed container: failed to start container fork/exec /proc/self/exe: invalid argument`
 
@@ -60,10 +60,10 @@
 
 #### 1. 问题引用
 
-- 在部署HOJ之前，想修改默认的密码
+- 在部署HBUTOJ之前，想修改默认的密码
 
 
-- 在部署HOJ之后，想修改已设置的密码
+- 在部署HBUTOJ之后，想修改已设置的密码
 
 #### 2. 如何解决
 
@@ -121,7 +121,7 @@
 
      （5）修改`.env`文件中的`MYSQL_ROOT_PASSWORD`的密码为新的数据库密码。
 
-     （6）重启所有HOJ的容器：`docker-compose restart`。
+     （6）重启所有HBUTOJ的容器：`docker-compose restart`。
 
    - **如果修改Nacos的密码**：需要登录到Nacos控制台进行修改，操作如下
 
@@ -132,5 +132,5 @@
      ![nacos修改密码](/nacos_pwd.png)
      （3）到服务器上修改`.env`文件中的`NACOS_PASSWORD`的密码为新的Nacos密码。
 
-     （4）重启所有HOJ的容器：`docker-compose restart`。
+     （4）重启所有HBUTOJ的容器：`docker-compose restart`。
 

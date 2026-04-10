@@ -30,6 +30,7 @@ import top.hcode.hoj.pojo.entity.problem.Tag;
 import top.hcode.hoj.pojo.vo.ProblemVO;
 import top.hcode.hoj.shiro.AccountProfile;
 import top.hcode.hoj.utils.Constants;
+import top.hcode.hoj.utils.RatingUtils;
 import top.hcode.hoj.validator.GroupValidator;
 import top.hcode.hoj.validator.ProblemValidator;
 
@@ -150,6 +151,7 @@ public class GroupProblemManager {
     }
 
     public void addProblem(ProblemDTO problemDto) throws StatusForbiddenException, StatusNotFoundException, StatusFailException {
+        normalizeDifficultyRating(problemDto.getProblem());
 
         problemValidator.validateGroupProblem(problemDto.getProblem());
 
@@ -207,6 +209,7 @@ public class GroupProblemManager {
     }
 
     public void updateProblem(ProblemDTO problemDto) throws StatusForbiddenException, StatusNotFoundException, StatusFailException {
+        normalizeDifficultyRating(problemDto.getProblem());
 
         problemValidator.validateGroupProblemUpdate(problemDto.getProblem());
 
@@ -321,6 +324,13 @@ public class GroupProblemManager {
         } else {
             throw new StatusFailException("删除失败！");
         }
+    }
+
+    private void normalizeDifficultyRating(Problem problem) {
+        if (problem == null) {
+            return;
+        }
+        problem.setDifficultyRating(RatingUtils.normalizeProblemDifficultyRating(problem.getDifficultyRating()));
     }
 
     public List<ProblemCase> getProblemCases(Long pid, Boolean isUpload) throws StatusForbiddenException, StatusNotFoundException, StatusFailException {

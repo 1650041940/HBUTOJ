@@ -316,11 +316,11 @@ export const FOCUS_MODE_ROUTE_NAME = {
 
 export const STORAGE_KEY = {
   AUTHED: 'authed',
-  PROBLEM_CODE_AND_SETTING: 'hojProblemCodeAndSetting',
+  PROBLEM_CODE_AND_SETTING: 'hbutojProblemCodeAndSetting',
   languages: 'languages',
-  CONTEST_ANNOUNCE:'hojContestAnnounce',
-  individualLanguageAndSetting:'hojIndividualLanguageAndSetting',
-  CONTEST_RANK_CONCERNED:'hojContestRankConcerned'
+  CONTEST_ANNOUNCE:'hbutojContestAnnounce',
+  individualLanguageAndSetting:'hbutojIndividualLanguageAndSetting',
+  CONTEST_RANK_CONCERNED:'hbutojContestRankConcerned'
 }
 
 export function buildIndividualLanguageAndSettingKey () {
@@ -341,4 +341,3 @@ export function buildContestAnnounceKey (uid, contestID) {
 export function buildContestRankConcernedKey(contestID) {
   return `${STORAGE_KEY.CONTEST_RANK_CONCERNED}_${contestID}`
 }
-

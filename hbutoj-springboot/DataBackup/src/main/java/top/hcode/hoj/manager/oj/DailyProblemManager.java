@@ -10,12 +10,16 @@ import top.hcode.hoj.dao.problem.ProblemEntityService;
 import top.hcode.hoj.dao.problem.ProblemTagEntityService;
 import top.hcode.hoj.dao.problem.TagEntityService;
 import top.hcode.hoj.dao.user.UserAcproblemEntityService;
+import top.hcode.hoj.mapper.UserPracticeRatingMapper;
 import top.hcode.hoj.pojo.entity.problem.Problem;
 import top.hcode.hoj.pojo.entity.problem.ProblemTag;
 import top.hcode.hoj.pojo.entity.problem.Tag;
+import top.hcode.hoj.pojo.entity.rating.UserPracticeRating;
 import top.hcode.hoj.pojo.entity.user.UserAcproblem;
 import top.hcode.hoj.pojo.vo.DailyProblemVO;
+import top.hcode.hoj.utils.RatingUtils;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,17 +27,15 @@ import java.util.stream.Collectors;
 public class DailyProblemManager {
 
     private static final int USER_PROFILE_AC_LIMIT = 200;
-    private static final int MAX_TOP_TAGS = 5;
     private static final int MAX_PICK_POOL = 50;
-
-    private static final int DIFFICULTY_RATING_MIN = 800;
-    private static final int DIFFICULTY_RATING_MAX = 3500;
+    private static final int MAX_CANDIDATE_POOL = 500;
+    private static final int MAX_REASON_TAGS = 2;
 
     private static final DifficultyRatingRange RANGE_ENTRY = new DifficultyRatingRange(800, 1100, "入门");
-    private static final DifficultyRatingRange RANGE_EASY = new DifficultyRatingRange(1200, 1500, "简单");
-    private static final DifficultyRatingRange RANGE_MEDIUM = new DifficultyRatingRange(1600, 1900, "中等");
+    private static final DifficultyRatingRange RANGE_EASY = new DifficultyRatingRange(1200, 1500, "基础");
+    private static final DifficultyRatingRange RANGE_MEDIUM = new DifficultyRatingRange(1600, 1900, "进阶");
     private static final DifficultyRatingRange RANGE_HARD = new DifficultyRatingRange(2000, 2300, "困难");
-    private static final DifficultyRatingRange RANGE_EXTREME = new DifficultyRatingRange(2400, 3500, "极难");
+    private static final DifficultyRatingRange RANGE_EXTREME = new DifficultyRatingRange(2400, 3500, "挑战");
 
     @Autowired
     private UserAcproblemEntityService userAcproblemEntityService;
@@ -46,6 +48,9 @@ public class DailyProblemManager {
 
     @Autowired
     private TagEntityService tagEntityService;
+
+    @Resource
+    private UserPracticeRatingMapper userPracticeRatingMapper;
 
     public DailyProblemVO getDailyProblem(String uid) {
         return recommend(uid, 0, null);
@@ -63,30 +68,32 @@ public class DailyProblemManager {
         List<Long> recentAcPids = isPublic ? Collections.emptyList() : loadRecentAcPids(uid);
         Set<Long> solvedSet = new HashSet<>(recentAcPids);
 
-        int targetDifficulty = estimateTargetDifficulty(recentAcPids);
-        int targetDifficultyRating = isPublic ? 900 : estimateTargetDifficultyRating(recentAcPids);
-        DifficultyRatingRange ratingRange = isPublic ? RANGE_ENTRY : pickDifficultyRatingRange(targetDifficultyRating);
+        int targetDifficultyRating = isPublic
+                ? RatingUtils.DEFAULT_PROBLEM_DIFFICULTY_RATING
+                : loadPracticeRating(uid);
+        DifficultyRatingRange ratingRange = pickDifficultyRatingRange(targetDifficultyRating);
 
-        List<Long> topTagIds = loadTopTagIds(recentAcPids);
-
-        List<Problem> candidates = loadCandidateProblems(topTagIds, solvedSet, excludePid, ratingRange);
+        List<Problem> candidates = loadCandidateProblems(solvedSet, excludePid, ratingRange);
         if (CollectionUtils.isEmpty(candidates)) {
-            candidates = loadFallbackProblems(solvedSet, excludePid, ratingRange);
+            candidates = loadFallbackProblems(solvedSet, excludePid);
         }
         if (CollectionUtils.isEmpty(candidates)) {
             return null;
         }
 
         Map<Long, Set<Long>> pidToTagIds = loadPidToTagIds(
-                candidates.stream().map(Problem::getId).collect(Collectors.toSet())
-        );
+                candidates.stream().map(Problem::getId).collect(Collectors.toSet()));
+        Map<Long, Integer> tagSolvedCount = isPublic ? Collections.emptyMap() : loadUserTagSolvedCount(recentAcPids);
+        Map<Long, Tag> tagMap = loadTagMap(pidToTagIds.values().stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet()));
 
         List<Problem> sorted = candidates.stream()
-                .sorted((a, b) -> Integer.compare(score(b, pidToTagIds, topTagIds, targetDifficulty), score(a, pidToTagIds, topTagIds, targetDifficulty)))
+                .sorted((a, b) -> compareProblem(a, b, pidToTagIds, tagSolvedCount, targetDifficultyRating, isPublic))
                 .limit(MAX_PICK_POOL)
                 .collect(Collectors.toList());
 
-        if (sorted.isEmpty()) {
+        if (CollectionUtils.isEmpty(sorted)) {
             return null;
         }
 
@@ -95,32 +102,21 @@ public class DailyProblemManager {
         Problem chosen = sorted.get(chosenIdx);
 
         Set<Long> chosenTagIds = pidToTagIds.getOrDefault(chosen.getId(), Collections.emptySet());
-        List<String> chosenTags = resolveTagNames(chosenTagIds);
+        List<String> chosenTags = resolveTagNames(chosenTagIds, tagMap);
+        int chosenDifficultyRating = RatingUtils.normalizeProblemDifficultyRating(chosen.getDifficultyRating());
 
-        String reason = isPublic
-            ? "今日推荐（未登录）"
-            : buildReason(topTagIds, targetDifficulty, ratingRange);
+        String reason = buildReason(isPublic, targetDifficultyRating, ratingRange, chosenDifficultyRating,
+                chosenTagIds, tagSolvedCount, tagMap);
 
         return DailyProblemVO.builder()
                 .id(chosen.getId())
                 .problemId(chosen.getProblemId())
                 .title(chosen.getTitle())
                 .difficulty(chosen.getDifficulty())
+                .difficultyRating(chosenDifficultyRating)
                 .tags(chosenTags)
                 .reason(reason)
                 .build();
-    }
-
-    private static class DifficultyRatingRange {
-        final int min;
-        final int max;
-        final String label;
-
-        private DifficultyRatingRange(int min, int max, String label) {
-            this.min = min;
-            this.max = max;
-            this.label = label;
-        }
     }
 
     private List<Long> loadRecentAcPids(String uid) {
@@ -133,147 +129,54 @@ public class DailyProblemManager {
         if (CollectionUtils.isEmpty(acList)) {
             return Collections.emptyList();
         }
-        return acList.stream().map(UserAcproblem::getPid).filter(Objects::nonNull).distinct().collect(Collectors.toList());
-    }
-
-    private int estimateTargetDifficulty(List<Long> recentAcPids) {
-        if (CollectionUtils.isEmpty(recentAcPids)) {
-            return 1;
-        }
-        Collection<Problem> problems = problemEntityService.listByIds(recentAcPids);
-        if (CollectionUtils.isEmpty(problems)) {
-            return 1;
-        }
-        IntSummaryStatistics stats = problems.stream()
-                .map(Problem::getDifficulty)
+        return acList.stream()
+                .map(UserAcproblem::getPid)
                 .filter(Objects::nonNull)
-                .mapToInt(Integer::intValue)
-                .summaryStatistics();
-        if (stats.getCount() == 0) {
-            return 1;
-        }
-        int avg = (int) Math.round(stats.getAverage());
-        return Math.max(1, avg + 1);
+                .distinct()
+                .collect(Collectors.toList());
     }
 
-    private int estimateTargetDifficultyRating(List<Long> recentAcPids) {
-        if (CollectionUtils.isEmpty(recentAcPids)) {
-            return 900;
+    private int loadPracticeRating(String uid) {
+        UserPracticeRating rating = userPracticeRatingMapper.selectById(uid);
+        if (rating == null || rating.getRating() == null || rating.getRating() <= 0) {
+            return RatingUtils.DEFAULT_PRACTICE_RATING;
         }
-        Collection<Problem> problems = problemEntityService.listByIds(recentAcPids);
-        if (CollectionUtils.isEmpty(problems)) {
-            return 900;
-        }
-
-        IntSummaryStatistics stats = problems.stream()
-                .map(Problem::getDifficultyRating)
-                .map(r -> r == null || r == 0 ? DIFFICULTY_RATING_MIN : r)
-                .mapToInt(Integer::intValue)
-                .summaryStatistics();
-        if (stats.getCount() == 0) {
-            return 900;
-        }
-        int avg = (int) Math.round(stats.getAverage());
-        return clampDifficultyRating(avg);
-    }
-
-    private int clampDifficultyRating(int rating) {
-        return Math.max(DIFFICULTY_RATING_MIN, Math.min(DIFFICULTY_RATING_MAX, rating));
+        return rating.getRating();
     }
 
     private DifficultyRatingRange pickDifficultyRatingRange(int rating) {
-        int r = clampDifficultyRating(rating);
-        // 用阈值中点把用户 rating 归入最近的一个区间，避免区间边界“空档”。
-        if (r < 1150) {
+        if (rating < 1200) {
             return RANGE_ENTRY;
         }
-        if (r < 1550) {
+        if (rating < 1600) {
             return RANGE_EASY;
         }
-        if (r < 1950) {
+        if (rating < 2000) {
             return RANGE_MEDIUM;
         }
-        if (r < 2350) {
+        if (rating < 2400) {
             return RANGE_HARD;
         }
         return RANGE_EXTREME;
     }
 
-    private List<Long> loadTopTagIds(List<Long> recentAcPids) {
-        if (CollectionUtils.isEmpty(recentAcPids)) {
-            return Collections.emptyList();
-        }
-        QueryWrapper<ProblemTag> wrapper = new QueryWrapper<>();
-        wrapper.select("pid", "tid");
-        wrapper.in("pid", recentAcPids);
-        List<ProblemTag> tags = problemTagEntityService.list(wrapper);
-        if (CollectionUtils.isEmpty(tags)) {
-            return Collections.emptyList();
-        }
-
-        Map<Long, Long> tidCount = tags.stream()
-                .filter(pt -> pt.getTid() != null)
-                .collect(Collectors.groupingBy(ProblemTag::getTid, Collectors.counting()));
-
-        return tidCount.entrySet().stream()
-                .sorted((a, b) -> Long.compare(b.getValue(), a.getValue()))
-                .limit(MAX_TOP_TAGS)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-    }
-
-    private List<Problem> loadCandidateProblems(List<Long> topTagIds, Set<Long> solvedSet, Long excludePid, DifficultyRatingRange ratingRange) {
-        if (CollectionUtils.isEmpty(topTagIds)) {
-            return Collections.emptyList();
-        }
-
-        QueryWrapper<ProblemTag> ptWrapper = new QueryWrapper<>();
-        ptWrapper.select("pid");
-        ptWrapper.in("tid", topTagIds);
-        ptWrapper.last("limit 2000");
-        List<ProblemTag> ptList = problemTagEntityService.list(ptWrapper);
-        if (CollectionUtils.isEmpty(ptList)) {
-            return Collections.emptyList();
-        }
-
-        Set<Long> candidatePids = ptList.stream()
-                .map(ProblemTag::getPid)
-                .filter(Objects::nonNull)
-                .filter(pid -> !solvedSet.contains(pid))
-                .filter(pid -> excludePid == null || !excludePid.equals(pid))
-                .collect(Collectors.toSet());
-
-        if (candidatePids.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        QueryWrapper<Problem> wrapper = new QueryWrapper<>();
-        wrapper.select("id", "problem_id", "title", "difficulty", "difficulty_rating");
-        wrapper.eq("auth", 1);
-        wrapper.eq("is_group", false);
-        wrapper.in("id", candidatePids);
-
-        // 优先按难度分段位区间过滤
-        wrapper.apply("COALESCE(NULLIF(difficulty_rating,0),{0}) between {1} and {2}", DIFFICULTY_RATING_MIN, ratingRange.min, ratingRange.max);
+    private List<Problem> loadCandidateProblems(Set<Long> solvedSet, Long excludePid, DifficultyRatingRange ratingRange) {
+        QueryWrapper<Problem> wrapper = buildBaseProblemQuery(solvedSet, excludePid);
+        wrapper.apply("COALESCE(NULLIF(difficulty_rating,0),{0}) between {1} and {2}",
+                RatingUtils.DEFAULT_PROBLEM_DIFFICULTY_RATING, ratingRange.min, ratingRange.max);
         wrapper.orderByDesc("gmt_modified");
-        wrapper.last("limit 500");
-        List<Problem> list = problemEntityService.list(wrapper);
-        if (!CollectionUtils.isEmpty(list)) {
-            return list;
-        }
-
-        // 放宽：不按难度分过滤（仅保留标签池）
-        QueryWrapper<Problem> wrapper2 = new QueryWrapper<>();
-        wrapper2.select("id", "problem_id", "title", "difficulty", "difficulty_rating");
-        wrapper2.eq("auth", 1);
-        wrapper2.eq("is_group", false);
-        wrapper2.in("id", candidatePids);
-        wrapper2.orderByDesc("gmt_modified");
-        wrapper2.last("limit 500");
-        return problemEntityService.list(wrapper2);
+        wrapper.last("limit " + MAX_CANDIDATE_POOL);
+        return problemEntityService.list(wrapper);
     }
 
-    private List<Problem> loadFallbackProblems(Set<Long> solvedSet, Long excludePid, DifficultyRatingRange ratingRange) {
+    private List<Problem> loadFallbackProblems(Set<Long> solvedSet, Long excludePid) {
+        QueryWrapper<Problem> wrapper = buildBaseProblemQuery(solvedSet, excludePid);
+        wrapper.orderByDesc("gmt_modified");
+        wrapper.last("limit " + MAX_CANDIDATE_POOL);
+        return problemEntityService.list(wrapper);
+    }
+
+    private QueryWrapper<Problem> buildBaseProblemQuery(Set<Long> solvedSet, Long excludePid) {
         QueryWrapper<Problem> wrapper = new QueryWrapper<>();
         wrapper.select("id", "problem_id", "title", "difficulty", "difficulty_rating");
         wrapper.eq("auth", 1);
@@ -284,10 +187,7 @@ public class DailyProblemManager {
         if (excludePid != null) {
             wrapper.ne("id", excludePid);
         }
-        wrapper.apply("COALESCE(NULLIF(difficulty_rating,0),{0}) between {1} and {2}", DIFFICULTY_RATING_MIN, ratingRange.min, ratingRange.max);
-        wrapper.orderByDesc("gmt_modified");
-        wrapper.last("limit 200");
-        return problemEntityService.list(wrapper);
+        return wrapper;
     }
 
     private Map<Long, Set<Long>> loadPidToTagIds(Set<Long> pids) {
@@ -303,52 +203,142 @@ public class DailyProblemManager {
         }
         return list.stream()
                 .filter(pt -> pt.getPid() != null && pt.getTid() != null)
-                .collect(Collectors.groupingBy(ProblemTag::getPid, Collectors.mapping(ProblemTag::getTid, Collectors.toSet())));
+                .collect(Collectors.groupingBy(ProblemTag::getPid,
+                        Collectors.mapping(ProblemTag::getTid, Collectors.toSet())));
     }
 
-    private List<String> resolveTagNames(Set<Long> tagIds) {
+    private Map<Long, Integer> loadUserTagSolvedCount(List<Long> recentAcPids) {
+        if (CollectionUtils.isEmpty(recentAcPids)) {
+            return Collections.emptyMap();
+        }
+        QueryWrapper<ProblemTag> wrapper = new QueryWrapper<>();
+        wrapper.select("pid", "tid");
+        wrapper.in("pid", recentAcPids);
+        List<ProblemTag> list = problemTagEntityService.list(wrapper);
+        if (CollectionUtils.isEmpty(list)) {
+            return Collections.emptyMap();
+        }
+        return list.stream()
+                .filter(pt -> pt.getTid() != null)
+                .collect(Collectors.toMap(ProblemTag::getTid, item -> 1, Integer::sum));
+    }
+
+    private Map<Long, Tag> loadTagMap(Set<Long> tagIds) {
         if (CollectionUtils.isEmpty(tagIds)) {
-            return Collections.emptyList();
+            return Collections.emptyMap();
         }
         Collection<Tag> tags = tagEntityService.listByIds(tagIds);
         if (CollectionUtils.isEmpty(tags)) {
-            return Collections.emptyList();
+            return Collections.emptyMap();
         }
-        return tags.stream().map(Tag::getName).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+        return tags.stream()
+                .filter(tag -> tag.getId() != null)
+                .collect(Collectors.toMap(Tag::getId, tag -> tag, (a, b) -> a, LinkedHashMap::new));
     }
 
-    private int score(Problem problem, Map<Long, Set<Long>> pidToTagIds, List<Long> topTagIds, int targetDifficulty) {
-        int tagMatch = 0;
-        if (!CollectionUtils.isEmpty(topTagIds)) {
-            Set<Long> tagSet = pidToTagIds.getOrDefault(problem.getId(), Collections.emptySet());
-            for (Long tid : topTagIds) {
-                if (tagSet.contains(tid)) {
-                    tagMatch++;
-                }
-            }
+    private List<String> resolveTagNames(Set<Long> tagIds, Map<Long, Tag> tagMap) {
+        if (CollectionUtils.isEmpty(tagIds) || CollectionUtils.isEmpty(tagMap)) {
+            return Collections.emptyList();
         }
-        Integer diff = problem.getDifficulty();
-        int difficultyPenalty = diff == null ? 0 : Math.abs(diff - targetDifficulty);
-        return tagMatch * 10 - difficultyPenalty * 2;
+        return tagIds.stream()
+                .map(tagMap::get)
+                .filter(Objects::nonNull)
+                .map(Tag::getName)
+                .filter(StrUtil::isNotBlank)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private int compareProblem(Problem left,
+                               Problem right,
+                               Map<Long, Set<Long>> pidToTagIds,
+                               Map<Long, Integer> tagSolvedCount,
+                               int targetDifficultyRating,
+                               boolean isPublic) {
+        int leftScore = scoreProblem(left, pidToTagIds, tagSolvedCount, targetDifficultyRating, isPublic);
+        int rightScore = scoreProblem(right, pidToTagIds, tagSolvedCount, targetDifficultyRating, isPublic);
+        if (leftScore != rightScore) {
+            return Integer.compare(rightScore, leftScore);
+        }
+
+        int leftDistance = Math.abs(RatingUtils.normalizeProblemDifficultyRating(left.getDifficultyRating()) - targetDifficultyRating);
+        int rightDistance = Math.abs(RatingUtils.normalizeProblemDifficultyRating(right.getDifficultyRating()) - targetDifficultyRating);
+        if (leftDistance != rightDistance) {
+            return Integer.compare(leftDistance, rightDistance);
+        }
+
+        return Long.compare(right.getId(), left.getId());
+    }
+
+    private int scoreProblem(Problem problem,
+                             Map<Long, Set<Long>> pidToTagIds,
+                             Map<Long, Integer> tagSolvedCount,
+                             int targetDifficultyRating,
+                             boolean isPublic) {
+        int difficultyRating = RatingUtils.normalizeProblemDifficultyRating(problem.getDifficultyRating());
+        int distancePenalty = Math.abs(difficultyRating - targetDifficultyRating);
+        if (isPublic) {
+            return -distancePenalty;
+        }
+
+        Set<Long> tagIds = pidToTagIds.getOrDefault(problem.getId(), Collections.emptySet());
+        int weakTagScore = 0;
+        for (Long tagId : tagIds) {
+            int solvedCount = tagSolvedCount.getOrDefault(tagId, 0);
+            weakTagScore += solvedCount == 0 ? 12 : Math.max(1, 8 - Math.min(solvedCount, 7));
+        }
+        return weakTagScore * 100 - distancePenalty;
     }
 
     private long buildSeed(String uid, int index) {
         String date = DateUtil.format(new Date(), "yyyy-MM-dd");
-        String key = uid + ":" + date + ":" + index;
-        return (long) key.hashCode();
+        return (uid + ":" + date + ":" + index).hashCode();
     }
 
-    private String buildReason(List<Long> topTagIds, int targetDifficulty, DifficultyRatingRange ratingRange) {
-        String ratingText = "难度分区间：" + ratingRange.label + "（" + ratingRange.min + "~" + ratingRange.max + "）";
-        if (CollectionUtils.isEmpty(topTagIds)) {
-            return ratingText;
+    private String buildReason(boolean isPublic,
+                               int targetDifficultyRating,
+                               DifficultyRatingRange ratingRange,
+                               int chosenDifficultyRating,
+                               Set<Long> chosenTagIds,
+                               Map<Long, Integer> tagSolvedCount,
+                               Map<Long, Tag> tagMap) {
+        if (isPublic) {
+            return "默认推荐一道 " + chosenDifficultyRating + " 难度分的公开题，适合先热身。";
         }
-        // 取前2个标签名字
-        Collection<Tag> tags = tagEntityService.listByIds(topTagIds.stream().limit(2).collect(Collectors.toList()));
-        String tagText = tags.stream().map(Tag::getName).filter(Objects::nonNull).collect(Collectors.joining("、"));
-        if (StrUtil.isBlank(tagText)) {
-            return ratingText;
+
+        if (CollectionUtils.isEmpty(tagSolvedCount)) {
+            return String.format("你的当前做题 Rating 约为 %d，系统先推荐一道难度分 %d 的题目作为起步训练。",
+                    targetDifficultyRating, chosenDifficultyRating);
         }
-        return "根据你常做的标签：" + tagText + "（" + ratingText + "）";
+
+        List<String> weakTags = chosenTagIds.stream()
+                .sorted(Comparator.comparingInt(tagId -> tagSolvedCount.getOrDefault(tagId, 0)))
+                .map(tagMap::get)
+                .filter(Objects::nonNull)
+                .map(Tag::getName)
+                .filter(StrUtil::isNotBlank)
+                .distinct()
+                .limit(MAX_REASON_TAGS)
+                .collect(Collectors.toList());
+
+        if (!CollectionUtils.isEmpty(weakTags)) {
+            return String.format("你的当前做题 Rating 约为 %d，最近较少练习「%s」，因此推荐一道难度分 %d 的题目帮助补齐这些标签。",
+                    targetDifficultyRating, String.join("、", weakTags), chosenDifficultyRating);
+        }
+
+        return String.format("你的当前做题 Rating 约为 %d，适合继续练习 %s 区间（%d~%d）的题目，这道题的难度分为 %d。",
+                targetDifficultyRating, ratingRange.label, ratingRange.min, ratingRange.max, chosenDifficultyRating);
+    }
+
+    private static class DifficultyRatingRange {
+        final int min;
+        final int max;
+        final String label;
+
+        private DifficultyRatingRange(int min, int max, String label) {
+            this.min = min;
+            this.max = max;
+            this.label = label;
+        }
     }
 }

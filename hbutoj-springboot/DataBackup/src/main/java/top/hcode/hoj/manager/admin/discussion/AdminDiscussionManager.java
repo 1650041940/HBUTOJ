@@ -21,7 +21,7 @@ import java.util.List;
  * @Description:
  */
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class AdminDiscussionManager {
 
     @Autowired

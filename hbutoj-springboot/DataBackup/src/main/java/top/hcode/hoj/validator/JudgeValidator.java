@@ -99,24 +99,9 @@ public class JudgeValidator {
 
         // Remote Judge的编程语言需要转换成HOJ的编程语言才能进行自测
         if (testJudgeDto.getIsRemoteJudge() != null && testJudgeDto.getIsRemoteJudge()) {
-            String language = MODE_MAP_LANGUAGE.get(testJudgeDto.getMode());
-            if (language != null) {
-                testJudgeDto.setLanguage(language);
-            } else {
-                String dtoLanguage = testJudgeDto.getLanguage();
-                if (dtoLanguage.contains("PyPy 3") || dtoLanguage.contains("PyPy3")) {
-                    testJudgeDto.setLanguage("PyPy3");
-                } else if (dtoLanguage.contains("PyPy")) {
-                    testJudgeDto.setLanguage("PyPy2");
-                } else if (dtoLanguage.contains("Python 3")) {
-                    testJudgeDto.setLanguage("Python3");
-                } else if (dtoLanguage.contains("Python")) {
-                    testJudgeDto.setLanguage("Python2");
-                }else if (dtoLanguage.contains("Node")){
-                    testJudgeDto.setLanguage("JavaScript Node");
-                }else if (dtoLanguage.contains("JavaScript")){
-                    testJudgeDto.setLanguage("JavaScript V8");
-                }
+            String normalizedLanguage = normalizeRemoteJudgeLanguage(testJudgeDto.getLanguage(), testJudgeDto.getMode());
+            if (normalizedLanguage != null) {
+                testJudgeDto.setLanguage(normalizedLanguage);
             }
         }
 
@@ -149,5 +134,87 @@ public class JudgeValidator {
             throw new StatusFailException("提交的代码是无效的，代码字符长度请不要超过65535！");
         }
 
+    }
+
+    private String normalizeRemoteJudgeLanguage(String language, String mode) {
+        String modeLanguage = MODE_MAP_LANGUAGE.get(mode);
+        if (!StringUtils.isEmpty(modeLanguage)) {
+            if ("text/x-c++src".equals(mode)) {
+                return normalizeRemoteCppLanguage(language);
+            }
+            if ("text/x-csrc".equals(mode)) {
+                return "C";
+            }
+            return modeLanguage;
+        }
+
+        if (StringUtils.isEmpty(language)) {
+            return null;
+        }
+
+        String dtoLanguage = language.trim().toLowerCase();
+
+        if (dtoLanguage.contains("pypy 3") || dtoLanguage.contains("pypy3")) {
+            return "PyPy3";
+        }
+        if (dtoLanguage.contains("pypy")) {
+            return "PyPy2";
+        }
+        if (dtoLanguage.contains("python 3")) {
+            return "Python3";
+        }
+        if (dtoLanguage.contains("python")) {
+            return "Python2";
+        }
+        if (dtoLanguage.contains("javascript node") || dtoLanguage.contains("node.js") || dtoLanguage.contains("node")) {
+            return "JavaScript Node";
+        }
+        if (dtoLanguage.contains("javascript") || dtoLanguage.contains("ecmascript") || dtoLanguage.contains("v8")) {
+            return "JavaScript V8";
+        }
+        if (dtoLanguage.contains("c#")) {
+            return "C#";
+        }
+        if (dtoLanguage.contains("rust")) {
+            return "Rust";
+        }
+        if (dtoLanguage.contains("golang") || dtoLanguage.contains("go 1") || dtoLanguage.equals("go")) {
+            return "Golang";
+        }
+        if (dtoLanguage.contains("php")) {
+            return "PHP";
+        }
+        if (dtoLanguage.contains("ruby")) {
+            return "Ruby";
+        }
+        if (dtoLanguage.contains("c++")) {
+            return normalizeRemoteCppLanguage(language);
+        }
+        if ((dtoLanguage.startsWith("c ")
+                || dtoLanguage.startsWith("c11")
+                || dtoLanguage.startsWith("c17")
+                || dtoLanguage.equals("c"))
+                && !dtoLanguage.contains("c++")
+                && !dtoLanguage.contains("c#")) {
+            return "C";
+        }
+        if (dtoLanguage.contains("java") && !dtoLanguage.contains("javascript") && !dtoLanguage.contains("kotlin")) {
+            return "Java";
+        }
+        return null;
+    }
+
+    private String normalizeRemoteCppLanguage(String language) {
+        if (StringUtils.isEmpty(language)) {
+            return "C++";
+        }
+        String value = language.toLowerCase();
+        if (value.contains("20")) {
+            return "C++ 20";
+        }
+        if (value.contains("17")) {
+            return "C++ 17";
+        }
+        return "C++";
     }
 }

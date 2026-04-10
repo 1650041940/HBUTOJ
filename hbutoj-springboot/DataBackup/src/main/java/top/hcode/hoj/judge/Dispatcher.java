@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @Description: 分发调用判题机执行任务
  */
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class Dispatcher {
 
     @Autowired

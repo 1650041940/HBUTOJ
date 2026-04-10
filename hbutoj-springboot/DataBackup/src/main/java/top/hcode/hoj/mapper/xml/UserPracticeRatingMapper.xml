@@ -6,6 +6,9 @@
         SELECT u.uuid AS uid,
                u.username AS username,
                u.nickname AS nickname,
+               u.avatar AS avatar,
+               u.title_name AS titleName,
+               u.title_color AS titleColor,
                r.rating AS rating,
                r.solved_count AS count
         FROM user_practice_rating r

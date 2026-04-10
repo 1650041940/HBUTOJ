@@ -34,7 +34,7 @@ import java.util.Objects;
  */
 
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class AdminTrainingManager {
 
     @Resource

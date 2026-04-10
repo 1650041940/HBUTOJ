@@ -89,7 +89,7 @@ public class StartupRunner implements CommandLineRunner {
             log.error("初始化判题机信息到数据库失败，请重新启动试试！");
         } else {
             HashMap<String, Object> judgeServerInfo = judgeServerEntityService.getJudgeServerInfo();
-            log.info("HOJ-JudgeServer had successfully started! The judge config and sandbox config Info:" + judgeServerInfo);
+            log.info("HBUTOJ-JudgeServer had successfully started! The judge config and sandbox config Info:" + judgeServerInfo);
         }
 
     }

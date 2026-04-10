@@ -11,7 +11,7 @@ import top.hcode.hoj.pojo.vo.ConfigVO;
  * @Description:
  */
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class ConfigUtils {
 
     @Autowired

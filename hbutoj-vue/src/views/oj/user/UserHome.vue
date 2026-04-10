@@ -109,13 +109,16 @@
             </el-card>
           </el-col>
           <el-col :md="6" :sm="24">
-            <el-card shadow="always" class="rating">
+            <el-card shadow="always" class="rating" :style="getPracticeRatingCardStyle(profile.practiceRating || profile.rating)">
               <p>
                 <i class="fa fa-user-secret" aria-hidden="true"></i>
-                {{ $t('m.UserHome_Rating') }}
+                {{ $t('m.Practice_Rating_Rank') }}
               </p>
               <p class="data-number">
-                {{ profile.rating ? profile.rating : '--' }}
+                {{ formatRating(profile.practiceRating || profile.rating) }}
+              </p>
+              <p class="rating-sub">
+                {{ $t('m.Contest_Rating_Rank') }}：{{ formatRating(profile.contestRating, 1500) }}
               </p>
             </el-card>
           </el-col>
@@ -235,6 +238,10 @@ import 'vue-calendar-heatmap/dist/vue-calendar-heatmap.css'
 import { CalendarHeatmap } from 'vue-calendar-heatmap'
 import { PROBLEM_LEVEL } from '@/common/constants';
 import utils from '@/common/utils';
+import {
+  getRatingCardStyle as buildRatingCardStyle,
+  normalizeDisplayRating,
+} from '@/common/rating';
 import Markdown from '@/components/oj/common/Markdown';
 export default {
   components: {
@@ -253,6 +260,8 @@ export default {
         signature: '',
         total: 0,
         rating: 0,
+        practiceRating: 0,
+        contestRating: 0,
         score: 0,
         solvedList: [],
         solvedGroupByDifficulty:null,
@@ -354,6 +363,12 @@ export default {
     getLevelName(difficulty) {
       return utils.getLevelName(difficulty);
     },
+    formatRating(rating, fallback = 1200) {
+      return rating ? normalizeDisplayRating(rating, fallback) : '--';
+    },
+    getPracticeRatingCardStyle(rating) {
+      return buildRatingCardStyle(rating);
+    },
     getProblemListCount(list){
       if(!list){
         return 0;
@@ -420,9 +435,12 @@ export default {
   font-size: 14px;
 }
 .rating {
-  background: #dd6161;
   color: #fff;
   font-size: 14px;
+}
+.rating-sub {
+  margin-top: 6px;
+  font-size: 12px;
 }
 .default-info {
   font-size: 13px;

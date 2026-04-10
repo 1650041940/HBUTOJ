@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  * @Description:
  */
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class TestCaseManager {
 
     @Autowired

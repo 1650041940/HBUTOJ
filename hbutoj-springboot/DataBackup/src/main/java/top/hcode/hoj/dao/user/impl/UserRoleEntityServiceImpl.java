@@ -28,7 +28,7 @@ import java.util.List;
  * @since 2020-10-23
  */
 @Service
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class UserRoleEntityServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> implements UserRoleEntityService {
     @Autowired
     private UserRoleMapper userRoleMapper;

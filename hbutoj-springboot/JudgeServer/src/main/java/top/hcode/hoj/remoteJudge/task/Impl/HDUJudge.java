@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class HDUJudge extends RemoteJudgeStrategy {
     public static final String HOST = "http://acm.hdu.edu.cn";
     public static final String LOGIN_URL = "/userloginex.php?action=login";

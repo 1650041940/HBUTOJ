@@ -8,16 +8,16 @@
 
         <el-row :gutter="12">
           <el-col :xs="24" :sm="12">
-            <el-card shadow="never">
+            <el-card shadow="never" :style="getRatingCardStyle(myRating.practiceRating)">
               <div class="my-rating-title">{{ $t('m.My_Practice_Rating') }}</div>
-              <div class="my-rating-value">{{ myRating.practiceRating !== undefined && myRating.practiceRating !== null ? myRating.practiceRating : '--' }}</div>
+              <div class="my-rating-value">{{ formatRating(myRating.practiceRating) }}</div>
               <div class="my-rating-sub">{{ $t('m.Solved') }}: {{ myRating.solvedCount !== undefined && myRating.solvedCount !== null ? myRating.solvedCount : '--' }}</div>
             </el-card>
           </el-col>
           <el-col :xs="24" :sm="12" style="margin-top: 12px" class="sm-no-margin-top">
-            <el-card shadow="never">
+            <el-card shadow="never" :style="getRatingCardStyle(myRating.contestRating)">
               <div class="my-rating-title">{{ $t('m.My_Contest_Rating') }}</div>
-              <div class="my-rating-value">{{ myRating.contestRating !== undefined && myRating.contestRating !== null ? myRating.contestRating : '--' }}</div>
+              <div class="my-rating-value">{{ formatRating(myRating.contestRating, 1500) }}</div>
               <div class="my-rating-sub">{{ $t('m.Contest_Count') }}: {{ myRating.contestCount !== undefined && myRating.contestCount !== null ? myRating.contestCount : '--' }}</div>
             </el-card>
           </el-col>
@@ -73,7 +73,7 @@
               ></avatar>
               <a
                 @click="getInfoByUsername(row.uid, row.username)"
-                style="color:#2d8cf0;"
+                :style="getRatingTextStyle(row.rating)"
                 >{{ row.username }}</a
               >
             </template>
@@ -86,6 +86,11 @@
             </template>
           </vxe-table-column>
           <vxe-table-column field="rating" :title="$t('m.Rating_Value')" min-width="120">
+            <template v-slot="{ row }">
+              <span :style="getRatingTextStyle(row.rating)">
+                {{ formatRating(row.rating, activeTab === 'contest' ? 1500 : 1200) }}
+              </span>
+            </template>
           </vxe-table-column>
           <vxe-table-column
             field="count"
@@ -112,6 +117,11 @@
 import api from '@/common/api';
 import { mapGetters } from 'vuex';
 import Avatar from 'vue-avatar';
+import {
+  getRatingCardStyle as buildRatingCardStyle,
+  getRatingTextStyle as buildRatingTextStyle,
+  normalizeDisplayRating,
+} from '@/common/rating';
 const Pagination = () => import('@/components/oj/common/Pagination');
 
 export default {
@@ -181,6 +191,15 @@ export default {
         query: { uid, username },
       });
     },
+    getRatingTextStyle(rating) {
+      return buildRatingTextStyle(rating);
+    },
+    getRatingCardStyle(rating) {
+      return buildRatingCardStyle(rating);
+    },
+    formatRating(rating, fallback = 1200) {
+      return rating !== undefined && rating !== null ? normalizeDisplayRating(rating, fallback) : '--';
+    },
   },
   computed: {
     ...mapGetters(['isAuthenticated']),
@@ -196,15 +215,17 @@ export default {
 <style scoped>
 .my-rating-title {
   font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
 }
 .my-rating-value {
   font-size: 28px;
   font-weight: 700;
   margin-top: 6px;
+  color: #fff;
 }
 .my-rating-sub {
   margin-top: 6px;
-  color: #666;
+  color: rgba(255, 255, 255, 0.88);
 }
 
 @media screen and (min-width: 768px) {

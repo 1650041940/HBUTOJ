@@ -44,7 +44,7 @@ import java.util.Set;
 /**
  * 全局异常处理
  */
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 @RestControllerAdvice
 public class GlobalExceptionAdvice {
 

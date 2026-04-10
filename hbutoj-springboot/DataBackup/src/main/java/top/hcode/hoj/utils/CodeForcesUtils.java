@@ -16,7 +16,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class CodeForcesUtils {
     private static String RCPC;
 

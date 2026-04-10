@@ -36,8 +36,9 @@ public class AdminProblemController {
                                                        @RequestParam(value = "currentPage", required = false) Integer currentPage,
                                                        @RequestParam(value = "keyword", required = false) String keyword,
                                                        @RequestParam(value = "auth", required = false) Integer auth,
+                                                       @RequestParam(value = "difficultyRange", required = false) String difficultyRange,
                                                        @RequestParam(value = "oj", required = false) String oj) {
-        return adminProblemService.getProblemList(limit, currentPage, keyword, auth, oj);
+        return adminProblemService.getProblemList(limit, currentPage, keyword, auth, difficultyRange, oj);
     }
 
     @GetMapping("")

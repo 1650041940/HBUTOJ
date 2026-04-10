@@ -6,7 +6,7 @@
         SELECT p.id AS pid,
                p.problem_id AS problemId,
                p.title AS title,
-             COALESCE(p.difficulty_rating, 1500) AS difficulty
+             COALESCE(NULLIF(p.difficulty_rating, 0), 1200) AS difficulty
         FROM problem p
                  LEFT JOIN user_acproblem uap ON uap.uid = #{uid} AND uap.pid = p.id
         <where>
@@ -17,7 +17,7 @@
                 AND p.id != #{excludePid}
             </if>
         </where>
-        ORDER BY ABS(COALESCE(p.difficulty_rating, 1500) - #{target}) ASC, p.id ASC
+        ORDER BY ABS(COALESCE(NULLIF(p.difficulty_rating, 0), 1200) - #{target}) ASC, p.id ASC
         LIMIT #{limit}
     </select>
 

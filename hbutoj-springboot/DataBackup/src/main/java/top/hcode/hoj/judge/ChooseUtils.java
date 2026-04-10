@@ -27,7 +27,7 @@ import java.util.List;
  * @Description: 筛选可用判题机
  */
 @Component
-@Slf4j(topic = "hoj")
+@Slf4j(topic = "hbutoj")
 public class ChooseUtils {
 
     @Autowired

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import top.hcode.hoj.common.exception.StatusFailException;
 import top.hcode.hoj.pojo.entity.problem.Problem;
 import top.hcode.hoj.utils.Constants;
+import top.hcode.hoj.utils.RatingUtils;
 
 import javax.annotation.Resource;
 
@@ -75,8 +76,8 @@ public class ProblemValidator {
         }
 
         Integer difficultyRating = problem.getDifficultyRating();
-        if (difficultyRating != null && (difficultyRating < 800 || difficultyRating > 3500)) {
-            throw new StatusFailException("题目难度分范围请合理填写！(800~3500)");
+        if (!RatingUtils.isProblemDifficultyRatingValid(difficultyRating)) {
+            throw new StatusFailException("题目难度分必须为 800~3500 的整百分值！");
         }
     }
 
